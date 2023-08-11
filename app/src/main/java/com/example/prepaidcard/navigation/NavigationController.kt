@@ -8,12 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.prepaidcard.screens.PageEighteen
-import com.example.prepaidcard.screens.PageEleven
+import com.example.prepaidcard.screens.PageFifteen
 import com.example.prepaidcard.screens.PageFourteen
+import com.example.prepaidcard.screens.PageFourty
+import com.example.prepaidcard.screens.PageFourtyOne
+import com.example.prepaidcard.screens.PageFourtyTwo
 import com.example.prepaidcard.screens.PageSix
 import com.example.prepaidcard.screens.PageTen
-import com.example.prepaidcard.screens.Screen23
 import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.utils.Destination
 
@@ -23,7 +24,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
     NavHost(
         modifier = Modifier
             .fillMaxSize(),
-        navController = rootNavController, startDestination = Destination.PAGE_TEN){
+        navController = rootNavController, startDestination = Destination.PAGE_FOURTY){
 
         composable(Destination.PAGE_FOURTEEN){
             PageFourteen(rootNavController,viewModel)
@@ -45,5 +46,18 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
         composable(Destination.PAGE_EIGHTEEN){
             PageEighteen(rootNavController)
         }*/
+
+        composable(Destination.PAGE_FOURTY){
+            PageFourty(rootNavController)
+        }
+        composable(Destination.PAGE_FOURTY_ONE){
+            PageFourtyOne(rootNavController)
+        }
+        composable(Destination.PAGE_FOURTY_TWO){
+            PageFourtyTwo(rootNavController)
+        }
+        composable(Destination.PAGE_FIFTEEN){
+            PageFifteen(rootNavController)
+        }
     }
 }

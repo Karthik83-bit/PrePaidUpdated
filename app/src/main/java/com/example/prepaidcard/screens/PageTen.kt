@@ -171,7 +171,8 @@ fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Un
 
                         }
                     }
-                } else if (clickedState.value == "Managecard") {
+                }
+                else if (clickedState.value == "Managecard") {
                     Box(
                         Modifier
                             .padding(vertical = 10.dp, horizontal = 10.dp)
@@ -415,7 +416,8 @@ fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Un
                                 })
                         }
                     }
-                } else if (clickedState.value == "LoadCard") {
+                }
+                else if (clickedState.value == "LoadCard") {
                     Box(
                         Modifier
                             .padding(vertical = 10.dp, horizontal = 10.dp)

@@ -19,12 +19,15 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.prepaidcard.R
+import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.ui.theme.CustomBlack
 import com.example.prepaidcard.ui.theme.tealGreen
+import com.example.prepaidcard.utils.Destination
 
 @Composable
-fun PageFifteen() {
+fun PageFifteen(rootNavController: NavHostController) {
     val latoBold = FontFamily(
         Font(R.font.lato_bold, FontWeight.Bold)
     )
@@ -34,24 +37,7 @@ fun PageFifteen() {
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally)
         {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.backspace),
-                    contentDescription = "backspace"
-                )
-                Spacer(modifier = Modifier.width(250.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.qr_code),
-                    contentDescription = "qr_code"
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.notification),
-                    contentDescription = "notification"
-                )
-            }
+            CustomTopBar {rootNavController.navigate(Destination.PAGE_FOURTY_TWO)}
             Spacer(modifier = Modifier.height(150.dp))
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,

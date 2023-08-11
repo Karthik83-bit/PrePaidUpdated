@@ -74,4 +74,7 @@ dependencies {
 
     //navigation
     implementation("androidx.navigation:navigation-compose:2.6.0")
+
+//    splash screen
+    implementation("androidx.core:core-splashscreen:1.0.0")
 }
