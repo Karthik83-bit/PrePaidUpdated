@@ -15,6 +15,7 @@ import com.example.prepaidcard.screens.PageFourtyOne
 import com.example.prepaidcard.screens.PageFourtyTwo
 import com.example.prepaidcard.screens.PageSix
 import com.example.prepaidcard.screens.PageTen
+import com.example.prepaidcard.screens.Screen26
 import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.utils.Destination
 
@@ -24,7 +25,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
     NavHost(
         modifier = Modifier
             .fillMaxSize(),
-        navController = rootNavController, startDestination = Destination.PAGE_FOURTY){
+        navController = rootNavController, startDestination = Destination.VIEW_CARDS_1){
 
         composable(Destination.PAGE_FOURTEEN){
             PageFourteen(rootNavController,viewModel)
@@ -47,8 +48,12 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
             PageEighteen(rootNavController)
         }*/
 
-        composable(Destination.PAGE_FOURTY){
+        composable(Destination.VIEW_CARDS_1){
             PageFourty(rootNavController)
+        }
+        composable(Destination.SCREEN_TWENTY_SIX){
+
+            Screen26(rootNavController)
         }
         composable(Destination.PAGE_FOURTY_ONE){
             PageFourtyOne(rootNavController)

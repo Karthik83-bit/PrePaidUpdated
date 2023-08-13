@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavHostController
 import com.example.newui.components.FlipCard
 import com.example.prepaidcard.R
+import com.example.prepaidcard.components.CustomCheckField
 import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.ui.theme.ColorReset
 import com.example.prepaidcard.ui.theme.Cultured
@@ -46,9 +47,14 @@ import com.example.prepaidcard.utils.Destination
 @Composable
 fun PageFourty(rootNavController: NavHostController, onClick: (state:Boolean)->Unit = {}){
 
-    Scaffold(topBar = { TopAppBar({ CustomTopBar {} }) }) {
+    Scaffold(topBar = { CustomTopBar {
+        rootNavController.popBackStack()
+    }}) {
 
         var textFieldSize by remember { mutableStateOf(Size.Zero) }
+        var cardActivationToggleState = remember {
+            mutableStateOf(false)
+        }
 
         Box(
             Modifier
@@ -65,66 +71,14 @@ fun PageFourty(rootNavController: NavHostController, onClick: (state:Boolean)->U
             ) {
 
                 FlipCard()
+                CustomCheckField(state =cardActivationToggleState , text =  "Card Activation", res =R.drawable.group_one ) {
+                    cardActivationToggleState.value=!cardActivationToggleState.value
+                    rootNavController.navigate(Destination.PAGE_FOURTY_ONE)
+                }
 
-                OutlinedTextField(
-                    value = "Card Activation",
-                    enabled = false,
-                    readOnly = true,
-                    onValueChange = {},
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(30.dp)
-                        .onGloballyPositioned { coordinates ->
-                            textFieldSize = coordinates.size.toSize()
-                        },
-                    leadingIcon = {
-                        Image(
-                            painter = painterResource(id = R.drawable.group_one),
-                            contentDescription = "first card"
-                        )
-                    },
-                    placeholder = {
-                        Column(modifier = Modifier.padding(5.dp)) {
 
-                            Text(
-                                text = "Card Activation", color = HitextColor,
-                                fontFamily = FontFamily(
-                                    Font(R.font.lato_bold)
-                                )
-                            )
-                            Text(
-                                text = "Activate your Prepaid Card",
-                                color = HitextColor,
-                                fontFamily = FontFamily(Font(R.font.lato_regular))
-                            )
-                        }
-                    },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Color.White,
-                        focusedBorderColor = Cultured,
-                        unfocusedBorderColor = Color.Transparent,
-                        disabledBorderColor = Cultured
-                    ),
-                    trailingIcon = {
-                        val toggleState = remember {
-                            mutableStateOf(false)
-                        }
-                        Switch(
-                            checked = toggleState.value,
-                            onCheckedChange = {
-                                toggleState.value = !toggleState.value
-                                onClick(toggleState.value)
-                                rootNavController.navigate(Destination.PAGE_FOURTY_ONE)
-                            },
-                            colors = SwitchDefaults.colors(
-                                checkedTrackColor = ColorReset,
-                                uncheckedIconColor = ColorReset,
-                                uncheckedBorderColor = ColorReset,
-                                disabledUncheckedIconColor = ColorReset
-                            ),
-                        )
-                    }
-                )
+
+
             }
         }
     }

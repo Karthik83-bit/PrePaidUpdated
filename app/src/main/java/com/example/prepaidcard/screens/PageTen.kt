@@ -1,6 +1,7 @@
 package com.example.prepaidcard.screens
 
-import android.media.Image
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -15,18 +16,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,11 +37,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Cyan
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
@@ -48,18 +52,99 @@ import com.example.newui.components.FlipCard
 import com.example.prepaidcard.R
 import com.example.prepaidcard.components.CustomButton
 import com.example.prepaidcard.components.CustomCheckBox
+import com.example.prepaidcard.components.CustomCheckField
+import com.example.prepaidcard.components.CustomScaffoldScreen
+import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.ui.theme.ColorReset
 import com.example.prepaidcard.ui.theme.Cultured
 import com.example.prepaidcard.ui.theme.HitextColor
 import com.example.prepaidcard.ui.theme.cancelGray
 import com.example.prepaidcard.ui.theme.lighttealGreen
 import com.example.prepaidcard.utils.Destination
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Unit = {}) {
+    val ReplaceToggleState = remember {
+        mutableStateOf(false)
+    }
+    val CvvToggleState = remember {
+        mutableStateOf(false)
+    }
+    val ResetPinToggleState = remember {
+        mutableStateOf(false)
+    }
+    val PauseCardToggleState = remember {
+        mutableStateOf(false)
+    }
+    val HotListToggleState = remember {
+        mutableStateOf(false)
+    }
+    val EnterOTPToggleState = remember {
+        mutableStateOf(false)
+    }
+   @Composable
+    fun Sheet() {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                "Are you sure ? You want to cancel your prepaid card",
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp
+            )
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(30.dp), horizontalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                Button(
+                    onClick = {
+                        ResetPinToggleState.value=!ResetPinToggleState.value
+                    },
+                    shape = RoundedCornerShape(5.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(45.dp)
+                        .width(156.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Cyan)
 
-    Scaffold(topBar = { TopAppBar(title = { Text("") }) }) {
+                ) {
+                    Text(text = "Yes", fontSize = 14.sp)
+                }
+                Button(
+                    onClick = {
+
+                    }, shape = RoundedCornerShape(5.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(45.dp)
+                        .width(156.dp),
+                    colors = ButtonDefaults.buttonColors(Color(0xFFA09D9D))
+                ) {
+                    Text("No")
+                }
+            }
+
+
+        }
+    }
+    Scaffold(topBar = {  CustomTopBar {
+        rootNavController.popBackStack()
+    }})
+    {
+    CustomScaffoldScreen(sheet =  ResetPinToggleState, enterOtp = EnterOTPToggleState, hotlist = HotListToggleState, pauseCard =  PauseCardToggleState)
+    {
+
+
 
         var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
@@ -79,15 +164,13 @@ fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Un
 
                 FlipCard()
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    val toggleState = remember {
-                        mutableStateOf(false)
-                    }
+                   
                     Text("CVV****", fontWeight = FontWeight(700))
                     Switch(
-                        checked = toggleState.value,
+                        checked = CvvToggleState.value,
                         onCheckedChange = {
-                            toggleState.value = !toggleState.value
-                            onClick(toggleState.value)
+                            CvvToggleState.value = !CvvToggleState.value
+                            onClick(CvvToggleState.value)
                         },
                         colors = SwitchDefaults.colors(
                             checkedTrackColor = ColorReset,
@@ -165,8 +248,17 @@ fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Un
                                 CustomButton(
                                     text = "SUBMIT",
                                     buttonColor = lighttealGreen
-                                ) {}
-                                CustomButton(text = "CANCEL", buttonColor = cancelGray) {}
+                                ) {
+                                    if(checkBoxState.value=="Last 10 Transaction"){
+                                        rootNavController.navigate(Destination.SCREEN_TWENTY_SIX)
+                                    }
+                                    else{
+                                        rootNavController.navigate(Destination.SCREEN_TWENTY_SIX)
+                                    }
+                                }
+                                CustomButton(text = "CANCEL", buttonColor = cancelGray) {
+                                    rootNavController.popBackStack()
+                                }
                             }
 
                         }
@@ -175,7 +267,7 @@ fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Un
                 else if (clickedState.value == "Managecard") {
                     Box(
                         Modifier
-                            .padding(vertical = 10.dp, horizontal = 10.dp)
+                            .padding(vertical = 10.dp)
                             .fillMaxSize()
                     ) {
                         Column(
@@ -188,294 +280,37 @@ fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Un
                                 modifier = Modifier.padding(10.dp),
                                 fontFamily = FontFamily(Font(R.font.lato_bold))
                             )
-                            OutlinedTextField(
-                                value = "Reset Pin",
-                                enabled = false,
-                                readOnly = true,
-                                onValueChange = {},
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(10.dp)
-                                    .onGloballyPositioned { coordinates ->
-                                        textFieldSize = coordinates.size.toSize()
-                                    },
-                                leadingIcon = {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.group_one),
-                                        contentDescription = "first card"
-                                    )
-                                },
-                                placeholder = {
-                                    Column(modifier = Modifier.padding(5.dp)) {
+                            CustomCheckField(state = ResetPinToggleState, text = "Reset Pin", res =R.drawable.group_one ) {
+                                ResetPinToggleState.value = !ResetPinToggleState.value
+                                onClick(ResetPinToggleState.value)
+                            }
 
-                                        Text(
-                                            text = "Reset Pin", color = HitextColor,
-                                            fontFamily = FontFamily(
-                                                Font(R.font.lato_bold)
-                                            )
-                                        )
-                                        Text(
-                                            text = "Change your Prepaid card PIN",
-                                            color = HitextColor,
-                                            fontFamily = FontFamily(Font(R.font.lato_regular))
-                                        )
-                                    }
-                                },
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    backgroundColor = Color.White,
-                                    focusedBorderColor = Cultured,
-                                    unfocusedBorderColor = Color.Transparent,
-                                    disabledBorderColor = Cultured
-                                ),
-                                trailingIcon = {
-                                    val toggleState = remember {
-                                        mutableStateOf(false)
-                                    }
-                                    Switch(
-                                        checked = toggleState.value,
-                                        onCheckedChange = {
-                                            toggleState.value = !toggleState.value
-                                            onClick(toggleState.value)
-                                        },
-                                        colors = SwitchDefaults.colors(
-                                            checkedTrackColor = ColorReset,
-                                            uncheckedIconColor = ColorReset,
-                                            uncheckedBorderColor = ColorReset,
-                                            disabledUncheckedIconColor = ColorReset
-                                        ),
-                                    )
-                                }
-                            )
-                            OutlinedTextField(
-                                value = "Pause card",
-                                enabled = false,
-                                readOnly = true,
-                                onValueChange = {},
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(10.dp)
-                                    .onGloballyPositioned { coordinates ->
-                                        textFieldSize = coordinates.size.toSize()
-                                    },
-                                leadingIcon = {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.group_two),
-                                        contentDescription = "second card"
-                                    )
-                                },
-                                placeholder = {
-                                    Column(modifier = Modifier.padding(5.dp)) {
-                                        Text(
-                                            text = "Pause card", color = HitextColor,
-                                            fontFamily = FontFamily(
-                                                Font(R.font.lato_bold)
-                                            )
-                                        )
-                                        Text(
-                                            text = "Disable your Prepaid Card Temporary",
-                                            color = HitextColor,
-                                            fontFamily = FontFamily(Font(R.font.lato_regular))
-                                        )
-                                    }
-                                },
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    backgroundColor = Color.White,
-                                    focusedBorderColor = Cultured,
-                                    unfocusedBorderColor = Color.Transparent,
-                                    disabledBorderColor = Cultured
-                                ),
-                                trailingIcon = {
-                                    val toggleState = remember {
-                                        mutableStateOf(false)
-                                    }
-                                    Switch(
-                                        checked = toggleState.value,
-                                        onCheckedChange = {
-                                            toggleState.value = !toggleState.value
-                                            onClick(toggleState.value)
-                                        },
-                                        colors = SwitchDefaults.colors(
-                                            checkedTrackColor = ColorReset,
-                                            uncheckedIconColor = ColorReset,
-                                            uncheckedBorderColor = ColorReset,
-                                            disabledUncheckedIconColor = ColorReset
-                                        ),
-                                    )
-                                })
-                            OutlinedTextField(
-                                value = "Hotlist card",
-                                enabled = false,
-                                readOnly = true,
-                                onValueChange = {},
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(10.dp)
-                                    .onGloballyPositioned { coordinates ->
-                                        textFieldSize = coordinates.size.toSize()
-                                    },
-                                leadingIcon = {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.group_three),
-                                        contentDescription = "third card"
-                                    )
-                                },
-                                placeholder = {
-                                    Column(modifier = Modifier.padding(5.dp)) {
-                                        Text(
-                                            text = "Hotlist card", color = HitextColor,
-                                            fontFamily = FontFamily(
-                                                Font(R.font.lato_bold)
-                                            )
-                                        )
-                                        Text(
-                                            text = "Permanent Block your Prepaid Card",
-                                            color = HitextColor,
-                                            fontFamily = FontFamily(Font(R.font.lato_regular))
-                                        )
-                                    }
-                                },
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    backgroundColor = Color.White,
-                                    focusedBorderColor = Cultured,
-                                    unfocusedBorderColor = Color.Transparent,
-                                    disabledBorderColor = Cultured
-                                ),
-                                trailingIcon = {
-                                    val toggleState = remember {
-                                        mutableStateOf(false)
-                                    }
-                                    Switch(
-                                        checked = toggleState.value,
-                                        onCheckedChange = {
-                                            toggleState.value = !toggleState.value
-                                            onClick(toggleState.value)
-                                        },
-                                        colors = SwitchDefaults.colors(
-                                            checkedTrackColor = ColorReset,
-                                            uncheckedIconColor = ColorReset,
-                                            uncheckedBorderColor = ColorReset,
-                                            disabledUncheckedIconColor = ColorReset
-                                        ),
-                                    )
-                                })
-                            OutlinedTextField(
-                                value = "Replace card",
-                                enabled = false,
-                                readOnly = true,
-                                onValueChange = {},
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(10.dp)
-                                    .onGloballyPositioned { coordinates ->
-                                        textFieldSize = coordinates.size.toSize()
-                                    },
-                                leadingIcon = {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.group_four),
-                                        contentDescription = "fourth card"
-                                    )
-                                },
-                                placeholder = {
-                                    Column(modifier = Modifier.padding(5.dp)) {
-                                        Text(
-                                            text = "Replace card", color = HitextColor,
-                                            fontFamily = FontFamily(
-                                                Font(R.font.lato_bold)
-                                            )
-                                        )
-                                        Text(
-                                            text = "Replace your Prepaid Card",
-                                            color = HitextColor,
-                                            fontFamily = FontFamily(Font(R.font.lato_regular))
-                                        )
-                                    }
-                                },
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    backgroundColor = Color.White,
-                                    focusedBorderColor = Cultured,
-                                    unfocusedBorderColor = Color.Transparent,
-                                    disabledBorderColor = Cultured
-                                ),
-                                trailingIcon = {
-                                    val toggleState = remember {
-                                        mutableStateOf(false)
-                                    }
-                                    Switch(
-                                        checked = toggleState.value,
-                                        onCheckedChange = {
-                                            toggleState.value = !toggleState.value
-                                            onClick(toggleState.value)
-                                        },
-                                        colors = SwitchDefaults.colors(
-                                            checkedTrackColor = ColorReset,
-                                            uncheckedIconColor = ColorReset,
-                                            uncheckedBorderColor = ColorReset,
-                                            disabledUncheckedIconColor = ColorReset
-                                        ),
-                                    )
-                                })
+                            CustomCheckField(state = PauseCardToggleState, text = "Pause card", res = R.drawable.group_two) {
+                                PauseCardToggleState.value = !PauseCardToggleState.value
+                                onClick(PauseCardToggleState.value)
+                            }
+
+                            CustomCheckField(state = HotListToggleState, text = "Hotlist card", res = R.drawable.group_three) {
+                                HotListToggleState.value = !HotListToggleState.value
+                                onClick(HotListToggleState.value)
+
+                            }
+
+                            CustomCheckField(state = ReplaceToggleState, text = "Replace card", res =R.drawable.group_four ) {
+                                ReplaceToggleState.value = !ReplaceToggleState.value
+                                onClick(ReplaceToggleState.value)
+                            }
+
                         }
                     }
                 }
-                else if (clickedState.value == "LoadCard") {
-                    Box(
-                        Modifier
-                            .padding(vertical = 10.dp, horizontal = 10.dp)
-                            .fillMaxSize()
-                    ) {
-                        Column(horizontalAlignment = Alignment.Start) {
-                            Text(
-                                "Card Load / Reload",
-                                fontWeight = FontWeight(600),
-                                fontSize = 20.sp,
-                                modifier = Modifier.padding(10.dp),
-                                fontFamily = FontFamily(Font(R.font.lato_bold))
-                            )
-                            OutlinedTextField(
-                                value = "₹ Enter Amount",
-                                enabled = false,
-                                readOnly = true,
-                                onValueChange = {},
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(10.dp)
-                                    .onGloballyPositioned { coordinates ->
-                                        textFieldSize = coordinates.size.toSize()
-                                    },
-                                placeholder = { Text(text = "₹ Enter Amount") },
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    backgroundColor = Cultured,
-                                    focusedBorderColor = Cultured,
-                                    unfocusedBorderColor = Color.Transparent,
-                                    disabledBorderColor = Cultured
-                                ),
-                            )
 
-                                val checkList = listOf<String>(
-                                    "Via UPI",
-                                    "Debit Card / Credit Card",
-                                    "From Wallet"
-                                )
-                                checkList.forEach {
-                                    CustomCheckBox(checkBoxState, it)
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(20.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                                ) {
-                                    CustomButton(
-                                        text = "SUBMIT",
-                                        buttonColor = lighttealGreen
-                                    ) {}
-                                    CustomButton(text = "CANCEL", buttonColor = cancelGray) {}
-                                }
-
-                            }
-                        }
+                else{
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                        Text("ComingSoon...", fontSize = 30.sp, fontWeight = FontWeight(700))
                     }
+                }
                 }
             }
         }
-    }
+    }}

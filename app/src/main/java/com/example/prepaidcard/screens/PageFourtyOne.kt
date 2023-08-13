@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,170 +39,175 @@ import com.example.prepaidcard.utils.Destination
 @Composable
 fun PageFourtyOne(rootNavController: NavHostController) {
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
-    Column(
-        modifier = Modifier
-            .padding(10.dp)
-            .fillMaxSize()
-    ) {
-        CustomTopBar {rootNavController.navigate(Destination.PAGE_FOURTY)}
-        Column(Modifier.padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text(
-                text = "Generate Pin",
-                fontSize = 22.sp,
-                fontFamily = FontFamily(Font(R.font.lato_bold))
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "Enter Generate PIN",
-                fontSize = 14.sp,
-                fontFamily = FontFamily(Font(R.font.lato_regular))
-            )
-            Row {
-                OutlinedTextField(
-                    value = "", enabled = false, readOnly = true, onValueChange = {},
-                    modifier = Modifier
-                        .width(70.dp)
-                        .padding(5.dp)
-                        .onGloballyPositioned { coordinates ->
-                            textFieldSize = coordinates.size.toSize()
-                        },
-                    placeholder = { Text(text = "") },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Cultured,
-                        focusedBorderColor = Cultured,
-                        unfocusedBorderColor = Color.Transparent,
-                        disabledBorderColor = Cultured
-                    )
+    Scaffold(topBar = { CustomTopBar {
+        rootNavController.popBackStack()
+    }}) {
+        Column(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
+        ) {
+//            /CustomTopBar {rootNavController.navigate(Destination.VIEW_CARDS_1)}
+            Column(Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(
+                    text = "Generate Pin",
+                    fontSize = 22.sp,
+                    fontFamily = FontFamily(Font(R.font.lato_bold))
                 )
-                OutlinedTextField(
-                    value = "", enabled = false, readOnly = true, onValueChange = {},
-                    modifier = Modifier
-                        .width(70.dp)
-                        .padding(5.dp)
-                        .onGloballyPositioned { coordinates ->
-                            textFieldSize = coordinates.size.toSize()
-                        },
-                    placeholder = { Text(text = "") },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Cultured,
-                        focusedBorderColor = Cultured,
-                        unfocusedBorderColor = Color.Transparent,
-                        disabledBorderColor = Cultured
-                    )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "Enter Generate PIN",
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily(Font(R.font.lato_regular))
                 )
-                OutlinedTextField(
-                    value = "", enabled = false, readOnly = true, onValueChange = {},
-                    modifier = Modifier
-                        .width(70.dp)
-                        .padding(5.dp)
-                        .onGloballyPositioned { coordinates ->
-                            textFieldSize = coordinates.size.toSize()
-                        },
-                    placeholder = { Text(text = "") },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Cultured,
-                        focusedBorderColor = Cultured,
-                        unfocusedBorderColor = Color.Transparent,
-                        disabledBorderColor = Cultured
+                Row {
+                    OutlinedTextField(
+                        value = "", enabled = false, readOnly = true, onValueChange = {},
+                        modifier = Modifier
+                            .width(70.dp)
+                            .padding(5.dp)
+                            .onGloballyPositioned { coordinates ->
+                                textFieldSize = coordinates.size.toSize()
+                            },
+                        placeholder = { Text(text = "") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            backgroundColor = Cultured,
+                            focusedBorderColor = Cultured,
+                            unfocusedBorderColor = Color.Transparent,
+                            disabledBorderColor = Cultured
+                        )
                     )
-                )
-                OutlinedTextField(
-                    value = "", enabled = false, readOnly = true, onValueChange = {},
-                    modifier = Modifier
-                        .width(70.dp)
-                        .padding(5.dp)
-                        .onGloballyPositioned { coordinates ->
-                            textFieldSize = coordinates.size.toSize()
-                        },
-                    placeholder = { Text(text = "") },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Cultured,
-                        focusedBorderColor = Cultured,
-                        unfocusedBorderColor = Color.Transparent,
-                        disabledBorderColor = Cultured
+                    OutlinedTextField(
+                        value = "", enabled = false, readOnly = true, onValueChange = {},
+                        modifier = Modifier
+                            .width(70.dp)
+                            .padding(5.dp)
+                            .onGloballyPositioned { coordinates ->
+                                textFieldSize = coordinates.size.toSize()
+                            },
+                        placeholder = { Text(text = "") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            backgroundColor = Cultured,
+                            focusedBorderColor = Cultured,
+                            unfocusedBorderColor = Color.Transparent,
+                            disabledBorderColor = Cultured
+                        )
                     )
+                    OutlinedTextField(
+                        value = "", enabled = false, readOnly = true, onValueChange = {},
+                        modifier = Modifier
+                            .width(70.dp)
+                            .padding(5.dp)
+                            .onGloballyPositioned { coordinates ->
+                                textFieldSize = coordinates.size.toSize()
+                            },
+                        placeholder = { Text(text = "") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            backgroundColor = Cultured,
+                            focusedBorderColor = Cultured,
+                            unfocusedBorderColor = Color.Transparent,
+                            disabledBorderColor = Cultured
+                        )
+                    )
+                    OutlinedTextField(
+                        value = "", enabled = false, readOnly = true, onValueChange = {},
+                        modifier = Modifier
+                            .width(70.dp)
+                            .padding(5.dp)
+                            .onGloballyPositioned { coordinates ->
+                                textFieldSize = coordinates.size.toSize()
+                            },
+                        placeholder = { Text(text = "") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            backgroundColor = Cultured,
+                            focusedBorderColor = Cultured,
+                            unfocusedBorderColor = Color.Transparent,
+                            disabledBorderColor = Cultured
+                        )
+                    )
+                }
+                Text(
+                    text = "Renter Generate PIN",
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily(Font(R.font.lato_regular))
                 )
+                Row {
+                    OutlinedTextField(
+                        value = "", enabled = false, readOnly = true, onValueChange = {},
+                        modifier = Modifier
+                            .width(70.dp)
+                            .padding(5.dp)
+                            .onGloballyPositioned { coordinates ->
+                                textFieldSize = coordinates.size.toSize()
+                            },
+                        placeholder = { Text(text = "") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            backgroundColor = Cultured,
+                            focusedBorderColor = Cultured,
+                            unfocusedBorderColor = Color.Transparent,
+                            disabledBorderColor = Cultured
+                        )
+                    )
+                    OutlinedTextField(
+                        value = "", enabled = false, readOnly = true, onValueChange = {},
+                        modifier = Modifier
+                            .width(70.dp)
+                            .padding(5.dp)
+                            .onGloballyPositioned { coordinates ->
+                                textFieldSize = coordinates.size.toSize()
+                            },
+                        placeholder = { Text(text = "") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            backgroundColor = Cultured,
+                            focusedBorderColor = Cultured,
+                            unfocusedBorderColor = Color.Transparent,
+                            disabledBorderColor = Cultured
+                        )
+                    )
+                    OutlinedTextField(
+                        value = "", enabled = false, readOnly = true, onValueChange = {},
+                        modifier = Modifier
+                            .width(70.dp)
+                            .padding(5.dp)
+                            .onGloballyPositioned { coordinates ->
+                                textFieldSize = coordinates.size.toSize()
+                            },
+                        placeholder = { Text(text = "") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            backgroundColor = Cultured,
+                            focusedBorderColor = Cultured,
+                            unfocusedBorderColor = Color.Transparent,
+                            disabledBorderColor = Cultured
+                        )
+                    )
+                    OutlinedTextField(
+                        value = "", enabled = false, readOnly = true, onValueChange = {},
+                        modifier = Modifier
+                            .width(70.dp)
+                            .padding(5.dp)
+                            .onGloballyPositioned { coordinates ->
+                                textFieldSize = coordinates.size.toSize()
+                            },
+                        placeholder = { Text(text = "") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            backgroundColor = Cultured,
+                            focusedBorderColor = Cultured,
+                            unfocusedBorderColor = Color.Transparent,
+                            disabledBorderColor = Cultured
+                        )
+                    )
+                }
             }
-            Text(
-                text = "Renter Generate PIN",
-                fontSize = 14.sp,
-                fontFamily = FontFamily(Font(R.font.lato_regular))
-            )
-            Row {
-                OutlinedTextField(
-                    value = "", enabled = false, readOnly = true, onValueChange = {},
-                    modifier = Modifier
-                        .width(70.dp)
-                        .padding(5.dp)
-                        .onGloballyPositioned { coordinates ->
-                            textFieldSize = coordinates.size.toSize()
-                        },
-                    placeholder = { Text(text = "") },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Cultured,
-                        focusedBorderColor = Cultured,
-                        unfocusedBorderColor = Color.Transparent,
-                        disabledBorderColor = Cultured
-                    )
-                )
-                OutlinedTextField(
-                    value = "", enabled = false, readOnly = true, onValueChange = {},
-                    modifier = Modifier
-                        .width(70.dp)
-                        .padding(5.dp)
-                        .onGloballyPositioned { coordinates ->
-                            textFieldSize = coordinates.size.toSize()
-                        },
-                    placeholder = { Text(text = "") },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Cultured,
-                        focusedBorderColor = Cultured,
-                        unfocusedBorderColor = Color.Transparent,
-                        disabledBorderColor = Cultured
-                    )
-                )
-                OutlinedTextField(
-                    value = "", enabled = false, readOnly = true, onValueChange = {},
-                    modifier = Modifier
-                        .width(70.dp)
-                        .padding(5.dp)
-                        .onGloballyPositioned { coordinates ->
-                            textFieldSize = coordinates.size.toSize()
-                        },
-                    placeholder = { Text(text = "") },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Cultured,
-                        focusedBorderColor = Cultured,
-                        unfocusedBorderColor = Color.Transparent,
-                        disabledBorderColor = Cultured
-                    )
-                )
-                OutlinedTextField(
-                    value = "", enabled = false, readOnly = true, onValueChange = {},
-                    modifier = Modifier
-                        .width(70.dp)
-                        .padding(5.dp)
-                        .onGloballyPositioned { coordinates ->
-                            textFieldSize = coordinates.size.toSize()
-                        },
-                    placeholder = { Text(text = "") },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Cultured,
-                        focusedBorderColor = Cultured,
-                        unfocusedBorderColor = Color.Transparent,
-                        disabledBorderColor = Cultured
-                    )
-                )
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)){
+                CustomButton(text = "SUBMIT",
+                    buttonColor = lighttealGreen
+                ) {rootNavController.navigate(Destination.PAGE_FOURTY_TWO)}
+                CustomButton(text = "CANCEL", buttonColor = cancelGray ) {}
             }
-        }
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)){
-            CustomButton(text = "SUBMIT",
-                buttonColor = lighttealGreen
-            ) {rootNavController.navigate(Destination.PAGE_FOURTY_TWO)}
-            CustomButton(text = "CANCEL", buttonColor = cancelGray ) {}
         }
     }
+
 }
