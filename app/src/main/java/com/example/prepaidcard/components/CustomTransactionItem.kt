@@ -1,6 +1,6 @@
 package com.example.prepaidcard.components
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,19 +19,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.prepaidcard.R
 
 
 @Composable
-fun CustomTransactionItem() {
+fun CustomTransactionItem(onClick: () -> Unit, icon: Int,color:Color) {
     Card(
         colors = CardDefaults.cardColors(Color.White),
         elevation = CardDefaults.cardElevation(10.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(2.dp),
+            .padding(2.dp).clickable {
+                onClick()
+            },
         shape = RoundedCornerShape(2.dp)
     ) {
         Column(Modifier.padding(horizontal = 25.dp, vertical = 15.dp)){
@@ -45,14 +50,16 @@ fun CustomTransactionItem() {
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(15.dp)){
                     Icon(
-                        painter = painterResource(id = R.drawable.transaction_rec), contentDescription = ""
+                        painter = painterResource(id = icon), contentDescription = "", tint = color
                     )
                     Column {
-                        Text("Recieved from")
-                        Text("Deepak Kumar Behera")
+                        Text("Recieved from", fontSize = 16.sp, color = Color.Gray, fontFamily = FontFamily(
+                            listOf( Font(R.font.lato_regular))))
+                        Text("Deepak Kumar Behera", fontSize = 14.sp, fontFamily = FontFamily(
+                            listOf( Font(R.font.lato_bold))))
                     }
                 }
-                Text("Rs 500", fontWeight = FontWeight(600))
+                Text("Rs 500", fontWeight = FontWeight(600), )
 
             }
             Spacer(modifier = Modifier.height(15.dp))

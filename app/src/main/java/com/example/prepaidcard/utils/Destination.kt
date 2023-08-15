@@ -12,4 +12,5 @@ const val PAGE_FOURTEEN = "PageFourteen"
     const val PAGE_FOURTY_TWO = "PageFourtyTwo"
     const val PAGE_FIFTEEN = "PageFifteen"
     const val SCREEN_TWENTY_SIX="TwentSix"
+    const val TRANSACTION_INFO="TransactionInfo"
 }

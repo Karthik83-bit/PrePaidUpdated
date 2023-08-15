@@ -16,6 +16,7 @@ import com.example.prepaidcard.screens.PageFourtyTwo
 import com.example.prepaidcard.screens.PageSix
 import com.example.prepaidcard.screens.PageTen
 import com.example.prepaidcard.screens.Screen26
+import com.example.prepaidcard.screens.TransactionInfo
 import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.utils.Destination
 
@@ -63,6 +64,10 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
         }
         composable(Destination.PAGE_FIFTEEN){
             PageFifteen(rootNavController)
+        }
+
+        composable(Destination.TRANSACTION_INFO){
+            TransactionInfo(rootNavController)
         }
     }
 }

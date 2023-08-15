@@ -56,7 +56,7 @@ fun PageFourteen(
             (context as Activity).finish()
         }
         DropDownMenu(Modifier, expanded, listOfAction, selectedAction)
-        Image(painter = painterResource(id = R.drawable.card), contentDescription = "Gift Card")
+        Image(painter = painterResource(id = R.drawable.prepaid_card), contentDescription = "Gift Card")
         Row {
 
         }

@@ -51,6 +51,7 @@ import androidx.navigation.NavHostController
 import com.example.prepaidcard.R
 import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.components.CustomTransactionItem
+import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcard.utils.FilterOption
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -124,6 +125,7 @@ Scaffold(topBar = { CustomTopBar {
 
                     DropdownMenu(
                         expanded = showFilterState.value,
+                        modifier = Modifier.background(Color.White),
                         onDismissRequest = { showFilterState.value = !showFilterState.value },
                     ) {
                         listOf<String>(
@@ -268,11 +270,36 @@ Scaffold(topBar = { CustomTopBar {
 
                 }
             }
+            if(filterState.value==FilterOption.SUCCESS){
+                items(10) {
+                    CustomTransactionItem({rootNavController.navigate(Destination.TRANSACTION_INFO)},icon=R.drawable.transactionpaid, color = Color(0xff32ddb5))
+                }}
+                else if(filterState.value==FilterOption.Failed){
+                items(10) {
+                    CustomTransactionItem({rootNavController.navigate(Destination.TRANSACTION_INFO)},icon=R.drawable.transaction_failed, color = Color(0xfffd6b6b))
+                }
 
+                }
+            else{
+                items(2) {
+                    CustomTransactionItem({rootNavController.navigate(Destination.TRANSACTION_INFO)},icon=R.drawable.transactionpaid, color = Color(0xff32ddb5))
+                }
+                items(1) {
+                    CustomTransactionItem({rootNavController.navigate(Destination.TRANSACTION_INFO)},icon=R.drawable.transaction_failed, color = Color(0xfffd6b6b))
+                }
+                items(3) {
+                    CustomTransactionItem({rootNavController.navigate(Destination.TRANSACTION_INFO)},icon=R.drawable.transaction_rec, color = Color(0xfff04141))
+                }
+                items(10) {
+                    CustomTransactionItem({rootNavController.navigate(Destination.TRANSACTION_INFO)},icon=R.drawable.transactionpaid, color = Color(0xff32ddb5))
+                }
 
-            items(10) {
-                CustomTransactionItem()
             }
+
+
+
+
+
         }
 
     }
