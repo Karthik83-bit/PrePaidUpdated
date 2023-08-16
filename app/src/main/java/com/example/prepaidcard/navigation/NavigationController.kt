@@ -34,11 +34,6 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
         composable(Destination.PAGE_FOURTEEN){
             PageFourteen(rootNavController,viewModel)
         }
-
-        /*composable(Destination.SCREEN_23){
-            Screen23(rootNavController )
-        }*/
-
         composable(Destination.PAGE_SIX){
             PageSix(rootNavController)
         }
@@ -48,13 +43,6 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
         composable(Destination.MPIN_SCREEN){
             VerifyOTP(rootNavController = rootNavController)
         }
-       /* composable(Destination.PAGE_ELEVEN){
-            PageEleven(rootNavController)
-        }
-        composable(Destination.PAGE_EIGHTEEN){
-            PageEighteen(rootNavController)
-        }*/
-
         composable(Destination.VIEW_CARDS_1){
             PageFourty(rootNavController)
 //            VerifyOTP(rootNavController)

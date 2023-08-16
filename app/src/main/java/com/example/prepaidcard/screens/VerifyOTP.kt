@@ -63,11 +63,7 @@ fun VerifyOTP(rootNavController: NavHostController) {
         db!!.intrinsicWidth, db.intrinsicHeight, Bitmap.Config.ARGB_8888
     )
 
- 
-    
-    
     Column(
-
         Modifier
             .fillMaxSize()
             .padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally){
@@ -144,7 +140,7 @@ val cont= LocalContext.current
                 }}
             ElevatedButton(onClick = {
                                      Toast.makeText(context,otpValue.value,Toast.LENGTH_SHORT).show()
-                rootNavController.navigate(Destination.VIEW_CARDS_1)
+                rootNavController.navigate(Destination.PAGE_SIX)
                                      }, shape = RoundedCornerShape(5.dp), elevation = ButtonDefaults.buttonElevation(20.dp), modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp), colors = ButtonDefaults.buttonColors(Color(0xff32DBDE))) {
