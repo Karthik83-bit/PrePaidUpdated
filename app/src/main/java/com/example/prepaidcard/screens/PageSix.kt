@@ -4,6 +4,7 @@ import android.graphics.Paint.Align
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,11 +18,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsStartWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -53,6 +56,7 @@ import com.example.prepaidcard.utils.Destination
 
 @Composable
 fun PageSix(rootNavController: NavHostController) {
+    val scrollState = rememberScrollState()
 
     Column(
         Modifier
@@ -92,7 +96,7 @@ fun PageSix(rootNavController: NavHostController) {
                 fontSize = 16.sp
             )
         }
-        Row() {
+       Row(modifier = Modifier.horizontalScroll(scrollState)) {
             OutlinedCard(
                 shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.outlinedCardElevation(4.dp),
@@ -143,6 +147,55 @@ fun PageSix(rootNavController: NavHostController) {
                     }
                 }
             }
+           OutlinedCard(
+               shape = RoundedCornerShape(10.dp),
+               elevation = CardDefaults.outlinedCardElevation(4.dp),
+               colors = CardDefaults.cardColors(
+                   Color.White
+               ),
+               modifier = Modifier.padding(10.dp)
+           ) {
+               Box(
+                   modifier = Modifier
+                       .height(140.dp)
+                       .width(250.dp)
+               ) {
+                   Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.SpaceEvenly) {
+                       Text(
+                           text = "Gift Card",
+                           fontFamily = FontFamily(Font(R.font.robot_medium)),
+                           fontSize = 18.sp
+                       )
+                       Text(text = "7009 XXXX XXXX", color = gray_color)
+                       Spacer(modifier = Modifier.height(30.dp))
+                       Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
+                           ClickableText(
+                               text = AnnotatedString("Apply Now"),
+                               onClick = { rootNavController.navigate(Destination.PAGE_FOURTEEN) },
+                               style = TextStyle(
+                                   color = isuOrrange,
+                                   fontSize = 18.sp,
+                                   fontFamily = FontFamily(
+                                       Font(R.font.roboto_regular)
+                                   ),
+                                   textDecoration = TextDecoration.Underline
+                               )
+                           )
+                           Text(
+                               text = "iServeU",
+                               color = isuOrrange,
+                               fontSize = 18.sp,
+                               fontFamily = FontFamily(
+                                   Font(R.font.inter_extra_bold)
+                               ),
+                               fontStyle = FontStyle.Italic,
+                               fontWeight = FontWeight.ExtraBold
+                           )
+                       }
+
+                   }
+               }
+           }
         }
         OutlinedCard(
             shape = RoundedCornerShape(10.dp),
