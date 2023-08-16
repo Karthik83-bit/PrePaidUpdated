@@ -61,6 +61,7 @@ import com.example.prepaidcard.ui.theme.HitextColor
 import com.example.prepaidcard.ui.theme.cancelGray
 import com.example.prepaidcard.ui.theme.lighttealGreen
 import com.example.prepaidcard.utils.Destination
+import com.example.prepaidcard.utils.FilterOption
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -141,7 +142,7 @@ fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Un
         rootNavController.popBackStack()
     }})
     {
-    CustomScaffoldScreen(sheet =  ResetPinToggleState, enterOtp = EnterOTPToggleState, hotlist = HotListToggleState, pauseCard =  PauseCardToggleState)
+    CustomScaffoldScreen(sheet =  ResetPinToggleState, enterOtp = EnterOTPToggleState, hotlist = HotListToggleState, pauseCard =  PauseCardToggleState, cvv = CvvToggleState)
     {
 
 
@@ -250,10 +251,10 @@ fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Un
                                     buttonColor = lighttealGreen
                                 ) {
                                     if(checkBoxState.value=="Last 10 Transaction"){
-                                        rootNavController.navigate(Destination.SCREEN_TWENTY_SIX)
+                                        rootNavController.navigate(Destination.SCREEN_TWENTY_SIX+"/none")
                                     }
                                     else{
-                                        rootNavController.navigate(Destination.SCREEN_TWENTY_SIX)
+                                        rootNavController.navigate(Destination.SCREEN_TWENTY_SIX+"/${FilterOption.SelectDate}")
                                     }
                                 }
                                 CustomButton(text = "CANCEL", buttonColor = cancelGray) {
@@ -309,7 +310,8 @@ fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Un
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
                         Text("ComingSoon...", fontSize = 30.sp, fontWeight = FontWeight(700), fontFamily = FontFamily(
                             listOf(Font(R.font.lato_bold))
-                        ))
+                        ), color = Color.Gray,
+                        )
                     }
                 }
                 }

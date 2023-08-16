@@ -65,6 +65,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -83,14 +84,15 @@ fun CustomScaffoldScreen(
     enterOtp: MutableState<Boolean>,
     pauseCard: MutableState<Boolean>,
     hotlist: MutableState<Boolean>,
+    cvv:MutableState<Boolean>,
     mainContent: @Composable () -> Unit,
 ) {
     val otpInp = remember {
-        mutableStateOf("000000")
+        mutableStateOf("")
     }
     Box(
         Modifier.blur(
-            if (sheet.value || enterOtp.value || pauseCard.value || hotlist.value) {
+            if (sheet.value || enterOtp.value || pauseCard.value || hotlist.value||cvv.value) {
                 10.dp
             } else {
                 0.dp
@@ -99,7 +101,7 @@ fun CustomScaffoldScreen(
     ) {
 
         mainContent()
-        if (sheet.value || enterOtp.value || pauseCard.value || hotlist.value) {
+        if (sheet.value || enterOtp.value || pauseCard.value || hotlist.value||cvv.value) {
             Box(
                 Modifier
                     .fillMaxSize()
@@ -352,18 +354,24 @@ fun CustomScaffoldScreen(
                 )
                 BasicTextField(value = otpInp.value, onValueChange = {
 
-                if(it.length<=12){
-                    otpInp.value=it
-                }
+if (it.length<=6){
+    otpInp.value=it
+}
 
 
 
 
-                }, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done) )
-                { Row{
+                }, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.NumberPassword) )
+
+                {
+
+                    Row{
                         repeat(6) {
 
-
+                            val char=when{
+it>=otpInp.value.length->"0"
+                                else->otpInp.value[it]
+                            }
 
 
                                 Card(
@@ -375,10 +383,11 @@ fun CustomScaffoldScreen(
 
                                     elevation = CardDefaults.cardElevation(10.dp)
                                 ) {
+
                                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
 
                                         Text(
-                                            otpInp.value[it].toString(), textAlign = TextAlign.Center,color= Gray)
+                                            char.toString(), textAlign = TextAlign.Center,color= Gray)
 
                                     }
                                     }
@@ -502,6 +511,9 @@ fun CustomScaffoldScreen(
 
     CustomSheetWrap(state = enterOtp, 800) {
         EnterOTPPinSheet(hotlist = enterOtp)
+    }
+    CustomSheetWrap(state = cvv,800) {
+        EnterOTPPinSheet(hotlist = cvv)
     }
 
     CustomSheetWrap(state = pauseCard) {

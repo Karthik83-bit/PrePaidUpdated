@@ -34,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -60,7 +61,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Screen26(rootNavController: NavHostController) {
+fun Screen26(rootNavController: NavHostController, string: String?) {
     val showFromDateState = remember {
         mutableStateOf(false)
     }
@@ -69,6 +70,11 @@ fun Screen26(rootNavController: NavHostController) {
     }
     val filterState = remember {
         mutableStateOf("")
+    }
+    LaunchedEffect(key1 = true){
+        if (string != null) {
+            filterState.value=string
+        }
     }
     val fromDateState = rememberDatePickerState()
     val todateState = rememberDatePickerState()

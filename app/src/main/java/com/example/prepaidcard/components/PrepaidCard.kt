@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -112,6 +113,9 @@ AnimatedVisibility(visible = cardfaceState.value.angle<90f) {
 
 @Composable
 fun PrepaidCard(clickable: Modifier) {
+    val mask= remember {
+        mutableStateOf(10.dp)
+    }
     Card(
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(ColorReset),
@@ -158,18 +162,24 @@ fun PrepaidCard(clickable: Modifier) {
                     .fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly) {
                 Spacer(modifier = Modifier.height(20.dp))
                 Column() {
-                    Text("DEEPAK Kumar Behera", color = Color.White,style = TextStyle(letterSpacing = 5.sp, fontWeight = FontWeight(500)))
-                    Text("0123 4567 8910 1234", color = Color.White, style = TextStyle(letterSpacing = 5.sp),fontWeight = FontWeight(500))
+                    Text("DEEPAK Kumar Behera", color = Color.White,style = TextStyle(letterSpacing = 5.sp, fontWeight = FontWeight(500)), modifier = Modifier.blur(mask.value))
+                    Text("0123 4567 8910 1234", color = Color.White, style = TextStyle(letterSpacing = 5.sp),fontWeight = FontWeight(500), modifier = Modifier.blur(mask.value))
 
                 }
                 OutlinedButton(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        mask.value=if(mask.value==0.dp){
+                            10.dp
+                        }else{
+                            0.dp
+                        }
+                    },
                     border = BorderStroke(1.dp, Color.White),
                     colors = ButtonDefaults.outlinedButtonColors(
                         containerColor = tealGreen
                     )
                 ) {
-                    Text("ViewBalance", color = Color.White)
+                    Text("ViewDetails", color = Color.White)
 
                 }
                 Row(horizontalArrangement = Arrangement.SpaceEvenly,
