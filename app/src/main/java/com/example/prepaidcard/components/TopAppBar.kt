@@ -18,6 +18,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Cyan
 import androidx.compose.ui.graphics.Color.Companion.Red
@@ -68,7 +69,7 @@ fun CustomTopBar(onBackPress: () -> Unit) {
                 contentDescription = "message",
                 modifier = Modifier
                     .background(
-                        Red, RoundedCornerShape(50)
+                        Color(0xffDB8726), RoundedCornerShape(50)
                     )
                     .padding(7.dp)
             )

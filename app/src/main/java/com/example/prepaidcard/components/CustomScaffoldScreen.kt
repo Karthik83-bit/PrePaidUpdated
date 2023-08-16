@@ -328,7 +328,7 @@ fun CustomScaffoldScreen(
         }
 
     }
-    if(enterOtp.value)timer.start()
+    if(enterOtp.value)timer.start() else timer.cancel()
 
     @Composable
     fun EnterOTPPinSheet(hotlist: MutableState<Boolean>) {
@@ -371,14 +371,14 @@ fun CustomScaffoldScreen(
                                         .padding(2.dp)
                                         .size(50.dp),
                                     colors = CardDefaults.cardColors(LightGray),
-                                    shape = RoundedCornerShape(1.dp),
+                                    shape = RoundedCornerShape(5.dp),
 
                                     elevation = CardDefaults.cardElevation(10.dp)
                                 ) {
                                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
 
                                         Text(
-                                            otpInp.value[it].toString(), textAlign = TextAlign.Center)
+                                            otpInp.value[it].toString(), textAlign = TextAlign.Center,color= Gray)
 
                                     }
                                     }
@@ -463,7 +463,7 @@ fun CustomScaffoldScreen(
                     Modifier
                         .fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = White),
-                    shape = RoundedCornerShape(10.dp, topEnd = 10.dp, 0.dp, 0.dp)
+                    shape = RoundedCornerShape(50.dp, topEnd = 50.dp, 0.dp, 0.dp)
 
                 ) {
                     Box(

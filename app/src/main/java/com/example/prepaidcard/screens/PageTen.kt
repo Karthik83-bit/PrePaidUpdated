@@ -307,7 +307,9 @@ fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Un
 
                 else{
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-                        Text("ComingSoon...", fontSize = 30.sp, fontWeight = FontWeight(700))
+                        Text("ComingSoon...", fontSize = 30.sp, fontWeight = FontWeight(700), fontFamily = FontFamily(
+                            listOf(Font(R.font.lato_bold))
+                        ))
                     }
                 }
                 }

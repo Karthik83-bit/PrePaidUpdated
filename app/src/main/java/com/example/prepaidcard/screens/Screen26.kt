@@ -129,10 +129,11 @@ Scaffold(topBar = { CustomTopBar {
                         onDismissRequest = { showFilterState.value = !showFilterState.value },
                     ) {
                         listOf<String>(
+                            FilterOption.SelectDate,
                             FilterOption.SUCCESS,
                             FilterOption.Pending,
                             FilterOption.Failed,
-                            FilterOption.SelectDate
+
                         ).forEach {
                             val icon = mutableStateOf(R.drawable.baseline_calendar_month_24)
                             val color = mutableStateOf(Color.Green)
