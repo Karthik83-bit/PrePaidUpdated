@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -31,6 +32,7 @@ import com.example.prepaidcard.screens.ViewModel
 //import com.example.prepaidcard.screens.VerifyOTP
 //import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.utils.Destination
+import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.screens.PageSix
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -75,7 +77,10 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
             Screen26(rootNavController,it.arguments?.getString("filter"))
         }
         composable(Destination.GENERATE_PIN_SCREEN){
-            PageFourtyOne(rootNavController)
+
+
+            val viewModel= hiltViewModel<GeneratePinViewModel>()
+            PageFourtyOne(rootNavController,viewModel)
         }
         composable(Destination.ENTER_OTP_SCREEN){
             PageFourtyTwo(rootNavController)

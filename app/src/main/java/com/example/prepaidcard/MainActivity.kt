@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.AnimRes
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,8 +25,10 @@ import com.example.prepaidcard.navigation.NavigationController
 //import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.ui.theme.PrepaidCardTheme
 import com.example.prepaidcardsdk.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 
 @RequiresApi(Build.VERSION_CODES.S)
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

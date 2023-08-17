@@ -28,7 +28,7 @@ import com.example.prepaidcard.components.DropDownMenu
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 
-class ViewModel : ViewModel() {
+open class ViewModel : ViewModel() {
     var selectedAction: MutableState<String> = mutableStateOf("Gift Card"); private set
 }
 

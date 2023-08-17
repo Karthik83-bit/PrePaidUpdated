@@ -1,4 +1,7 @@
 package com.example.prepaidcard.screens
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material.OutlinedTextField
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
@@ -11,9 +14,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextFieldDefaults
+//import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -74,7 +79,7 @@ fun PageFourtyTwo(rootNavController: NavHostController) {
                                 textFieldSize = coordinates.size.toSize()
                             },
                         placeholder = { Text(text = "****") },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                        colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
                             backgroundColor = Cultured,
                             focusedBorderColor = Cultured,
                             unfocusedBorderColor = Color.Transparent,

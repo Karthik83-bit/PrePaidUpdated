@@ -1,15 +1,17 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
     namespace = "com.example.prepaidcardsdk"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 34
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -28,11 +30,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -51,7 +53,7 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.compose.material:material:1.4.3")
+    implementation("androidx.compose.material:material:1.5.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     implementation("androidx.activity:activity-compose:1.5.1")
     implementation(platform("androidx.compose:compose-bom:2022.10.00"))
@@ -78,5 +80,16 @@ dependencies {
     implementation ("androidx.compose.material3:material3:1.2.0-alpha02")
 
     implementation ("com.airbnb.android:lottie-compose:6.1.0")
+
+    implementation("com.google.dagger:hilt-android:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
+
+    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+
 
 }
