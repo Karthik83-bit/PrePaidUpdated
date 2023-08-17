@@ -2,6 +2,7 @@ package com.example.prepaidcard.screens
 
 import android.graphics.Paint.Align
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.windowInsetsStartWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
@@ -63,40 +65,44 @@ fun PageSix(rootNavController: NavHostController) {
             .padding(16.dp)
             .fillMaxSize()
             .clickable(onClick = { rootNavController.navigate(Destination.VIEW_CARDS_1) })
+            .verticalScroll(enabled = true, state = ScrollState(0))
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
+                .padding(10.dp), horizontalArrangement = Arrangement.SpaceBetween
         )
         {
-            Text(
-                text = "Hi,",
-                color = HitextColor,
-                fontFamily = FontFamily(Font(R.font.roboto_medium_italic)),
-                fontSize = 22.sp
-            )
-            Text(
-                text = " John!",
-                color = HitextColor,
-                fontFamily = FontFamily(Font(R.font.robot_medium)),
-                fontSize = 22.sp
-            )
-            Spacer(modifier = Modifier.width(140.dp))
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_add_circle_outline_24),
-                contentDescription = "add",
-                tint = lighttealGreen,
-                modifier = Modifier.size(20.dp)
-            )
-            Text(
-                text = "Featured",
-                color = lighttealGreen,
-                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                fontSize = 16.sp
-            )
+            Row {
+                Text(
+                    text = "Hi,",
+                    color = HitextColor,
+                    fontFamily = FontFamily(Font(R.font.roboto_medium_italic)),
+                    fontSize = 22.sp
+                )
+                Text(
+                    text = " John!",
+                    color = HitextColor,
+                    fontFamily = FontFamily(Font(R.font.robot_medium)),
+                    fontSize = 22.sp
+                )
+            }
+            Row {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_add_circle_outline_24),
+                    contentDescription = "add",
+                    tint = lighttealGreen,
+                    modifier = Modifier.size(20.dp)
+                )
+                Text(
+                    text = "Featured",
+                    color = lighttealGreen,
+                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                    fontSize = 16.sp
+                )
+            }
         }
-       Row(modifier = Modifier.horizontalScroll(scrollState)) {
+        Row(modifier = Modifier.horizontalScroll(scrollState)) {
             OutlinedCard(
                 shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.outlinedCardElevation(4.dp),
@@ -147,55 +153,153 @@ fun PageSix(rootNavController: NavHostController) {
                     }
                 }
             }
-           OutlinedCard(
-               shape = RoundedCornerShape(10.dp),
-               elevation = CardDefaults.outlinedCardElevation(4.dp),
-               colors = CardDefaults.cardColors(
-                   Color.White
-               ),
-               modifier = Modifier.padding(10.dp)
-           ) {
-               Box(
-                   modifier = Modifier
-                       .height(140.dp)
-                       .width(250.dp)
-               ) {
-                   Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.SpaceEvenly) {
-                       Text(
-                           text = "Gift Card",
-                           fontFamily = FontFamily(Font(R.font.robot_medium)),
-                           fontSize = 18.sp
-                       )
-                       Text(text = "7009 XXXX XXXX", color = gray_color)
-                       Spacer(modifier = Modifier.height(30.dp))
-                       Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
-                           ClickableText(
-                               text = AnnotatedString("Apply Now"),
-                               onClick = { rootNavController.navigate(Destination.PAGE_FOURTEEN) },
-                               style = TextStyle(
-                                   color = isuOrrange,
-                                   fontSize = 18.sp,
-                                   fontFamily = FontFamily(
-                                       Font(R.font.roboto_regular)
-                                   ),
-                                   textDecoration = TextDecoration.Underline
-                               )
-                           )
-                           Text(
-                               text = "iServeU",
-                               color = isuOrrange,
-                               fontSize = 18.sp,
-                               fontFamily = FontFamily(
-                                   Font(R.font.inter_extra_bold)
-                               ),
-                               fontStyle = FontStyle.Italic,
-                               fontWeight = FontWeight.ExtraBold
-                           )
-                       }
+            OutlinedCard(
+                shape = RoundedCornerShape(10.dp),
+                elevation = CardDefaults.outlinedCardElevation(4.dp),
+                colors = CardDefaults.cardColors(
+                    Color.White
+                ),
+                modifier = Modifier.padding(10.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .height(140.dp)
+                        .width(250.dp)
+                ) {
+                    Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.SpaceEvenly) {
+                        Text(
+                            text = "Gift Card",
+                            fontFamily = FontFamily(Font(R.font.robot_medium)),
+                            fontSize = 18.sp
+                        )
+                        Text(text = "7009 XXXX XXXX", color = gray_color)
+                        Spacer(modifier = Modifier.height(30.dp))
+                        Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
+                            ClickableText(
+                                text = AnnotatedString("Apply Now"),
+                                onClick = { rootNavController.navigate(Destination.PAGE_FOURTEEN) },
+                                style = TextStyle(
+                                    color = isuOrrange,
+                                    fontSize = 18.sp,
+                                    fontFamily = FontFamily(
+                                        Font(R.font.roboto_regular)
+                                    ),
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            )
+                            Text(
+                                text = "iServeU",
+                                color = isuOrrange,
+                                fontSize = 18.sp,
+                                fontFamily = FontFamily(
+                                    Font(R.font.inter_extra_bold)
+                                ),
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                        }
 
-                   }
-               }
-           }
+                    }
+                }
+            }
+            OutlinedCard(
+                shape = RoundedCornerShape(10.dp),
+                elevation = CardDefaults.outlinedCardElevation(4.dp),
+                colors = CardDefaults.cardColors(
+                    Color.White
+                ),
+                modifier = Modifier.padding(10.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .height(140.dp)
+                        .width(250.dp)
+                ) {
+                    Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.SpaceEvenly) {
+                        Text(
+                            text = "Gift Card",
+                            fontFamily = FontFamily(Font(R.font.robot_medium)),
+                            fontSize = 18.sp
+                        )
+                        Text(text = "7009 XXXX XXXX", color = gray_color)
+                        Spacer(modifier = Modifier.height(30.dp))
+                        Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
+                            ClickableText(
+                                text = AnnotatedString("Apply Now"),
+                                onClick = { rootNavController.navigate(Destination.PAGE_FOURTEEN) },
+                                style = TextStyle(
+                                    color = isuOrrange,
+                                    fontSize = 18.sp,
+                                    fontFamily = FontFamily(
+                                        Font(R.font.roboto_regular)
+                                    ),
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            )
+                            Text(
+                                text = "iServeU",
+                                color = isuOrrange,
+                                fontSize = 18.sp,
+                                fontFamily = FontFamily(
+                                    Font(R.font.inter_extra_bold)
+                                ),
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                        }
+
+                    }
+                }
+            }
+            OutlinedCard(
+                shape = RoundedCornerShape(10.dp),
+                elevation = CardDefaults.outlinedCardElevation(4.dp),
+                colors = CardDefaults.cardColors(
+                    Color.White
+                ),
+                modifier = Modifier.padding(10.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .height(140.dp)
+                        .width(250.dp)
+                ) {
+                    Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.SpaceEvenly) {
+                        Text(
+                            text = "Gift Card",
+                            fontFamily = FontFamily(Font(R.font.robot_medium)),
+                            fontSize = 18.sp
+                        )
+                        Text(text = "7009 XXXX XXXX", color = gray_color)
+                        Spacer(modifier = Modifier.height(30.dp))
+                        Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
+                            ClickableText(
+                                text = AnnotatedString("Apply Now"),
+                                onClick = { rootNavController.navigate(Destination.PAGE_FOURTEEN) },
+                                style = TextStyle(
+                                    color = isuOrrange,
+                                    fontSize = 18.sp,
+                                    fontFamily = FontFamily(
+                                        Font(R.font.roboto_regular)
+                                    ),
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            )
+                            Text(
+                                text = "iServeU",
+                                color = isuOrrange,
+                                fontSize = 18.sp,
+                                fontFamily = FontFamily(
+                                    Font(R.font.inter_extra_bold)
+                                ),
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                        }
+
+                    }
+                }
+            }
         }
         OutlinedCard(
             shape = RoundedCornerShape(10.dp),
@@ -247,7 +351,12 @@ fun PageSix(rootNavController: NavHostController) {
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
-        Row(Modifier.padding(5.dp), horizontalArrangement = Arrangement.spacedBy(180.dp)) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(5.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Text(
                 text = "My Payments",
                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -259,7 +368,12 @@ fun PageSix(rootNavController: NavHostController) {
                 contentDescription = "Back"
             )
         }
-        Row(Modifier.padding(5.dp), horizontalArrangement = Arrangement.spacedBy(85.dp)) {
+        Row(
+            Modifier
+                .padding(5.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Text(
                 text = "Recent",
                 fontFamily = FontFamily(Font(R.font.robot_medium)),
@@ -277,20 +391,20 @@ fun PageSix(rootNavController: NavHostController) {
                 fontSize = 14.sp
             )
         }
-        Image(
-            painter = painterResource(id = R.drawable.girl_doing_online_payment),
-            contentDescription = "Girl doing online payment",
-            Modifier.padding(start = 80.dp),
-            colorFilter = ColorFilter.tint(
-                gray_color
+        Column(Modifier.fillMaxWidth(),horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(
+                painter = painterResource(id = R.drawable.girl_doing_online_payment),
+                contentDescription = "Girl doing online payment",
+                colorFilter = ColorFilter.tint(
+                    gray_color
+                )
             )
-        )
-        Text(
-            text = "Last 5 Transaction you should view",
-            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-            fontSize = 14.sp,
-            modifier = Modifier.absolutePadding(left = 50.dp),
-            color = gray_color
-        )
+            Text(
+                text = "Last 5 Transaction you should view",
+                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                fontSize = 14.sp,
+                color = gray_color
+            )
+        }
     }
 }

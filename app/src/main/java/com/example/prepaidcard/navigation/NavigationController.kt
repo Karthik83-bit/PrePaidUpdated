@@ -29,7 +29,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
     NavHost(
         modifier = Modifier
             .fillMaxSize(),
-        navController = rootNavController, startDestination = Destination.MPIN_SCREEN){
+        navController = rootNavController, startDestination = Destination.PAGE_TEN){
 
         composable(Destination.PAGE_FOURTEEN){
             PageFourteen(rootNavController,viewModel)

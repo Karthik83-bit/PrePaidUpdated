@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
@@ -52,10 +54,10 @@ import com.example.prepaidcard.utils.Destination
 @Composable
 fun VerifyOTP(rootNavController: NavHostController) {
 
-    val otpValue= remember {
+    val otpValue = remember {
         mutableStateOf("")
     }
-    val context= LocalContext.current
+    val context = LocalContext.current
     val db = ContextCompat.getDrawable(context, R.drawable.enterotp)
 
     // in below line we are creating our bitmap and initializing it.
@@ -66,54 +68,76 @@ fun VerifyOTP(rootNavController: NavHostController) {
     Column(
         Modifier
             .fillMaxSize()
-            .padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally){
+            .padding(20.dp)
+            .verticalScroll(enabled = true, state = ScrollState(0)),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Spacer(modifier = Modifier.height(30.dp))
-        Column(verticalArrangement = Arrangement.spacedBy(50.dp), horizontalAlignment = Alignment.CenterHorizontally){
-            Box(contentAlignment = Alignment.Center){
-                Image(painter = painterResource(id = R.drawable.enterotp) , contentDescription ="", modifier = Modifier
-                    .size(200.dp)
-                    .rotate(25f) )
-                Image(painter = painterResource(id = R.drawable.key), contentDescription = "", modifier = Modifier
+        Column(
+            verticalArrangement = Arrangement.spacedBy(50.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Image(
+                    painter = painterResource(id = R.drawable.enterotp),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(200.dp)
+                        .rotate(25f)
+                )
+                Image(painter = painterResource(id = R.drawable.key),
+                    contentDescription = "",
+                    modifier = Modifier
 
-                    .size(100.dp)
-                    .drawBehind {
+                        .size(100.dp)
+                        .drawBehind {
 
 
-                    })
+                        })
 
             }
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                Text("Verify OTP", fontSize = (18.dp).value.sp, fontFamily = FontFamily(listOf(Font(R.font.roboto_bold))))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                Text(
+                    "Verify OTP",
+                    fontSize = (18.dp).value.sp,
+                    fontFamily = FontFamily(listOf(Font(R.font.roboto_bold)))
+                )
                 Text("MPIN sent to your registered mobile number.", fontSize = 14.sp)
             }
 
-val cont= LocalContext.current
-            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally){
-                BasicTextField(value = otpValue.value, onValueChange = {
-                    if(it.length<=6) {
-                        otpValue.value=it
+            val cont = LocalContext.current
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                BasicTextField(
+                    value = otpValue.value, onValueChange = {
+                        if (it.length <= 6) {
+                            otpValue.value = it
 
 
+                        }
 
-                    }
 
-
-                                                                       }, keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.NumberPassword,
-                    imeAction = ImeAction.Done
-                )
-                ){
-                    Row(){
-                        repeat(6){
-                            val char=when{
-                                it>=otpValue.value.length->"0"
-                                else->otpValue.value[it]
+                    }, keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.NumberPassword,
+                        imeAction = ImeAction.Done
+                    )
+                ) {
+                    Row {
+                        repeat(6) {
+                            val char = when {
+                                it >= otpValue.value.length -> "0"
+                                else -> otpValue.value[it]
                             }
                             Column(
                                 Modifier
                                     .width(60.dp)
 
-                                    .padding(horizontal = 10.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                    .padding(horizontal = 10.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
 
                                 Text(char.toString(), color = Color.Gray)
 
@@ -122,7 +146,8 @@ val cont= LocalContext.current
                                     Modifier
                                         .height(2.dp)
                                         .fillMaxWidth()
-                                        .background(Color.Gray)){}
+                                        .background(Color.Gray)
+                                ) {}
 
 
                             }
@@ -134,20 +159,36 @@ val cont= LocalContext.current
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween){
-                    Text("Generate New OTP", fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))), fontSize = 14.sp)
-                    Text("Remaining time : 0:36s",fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))), fontSize = 14.sp, color = Color.Gray)
-                }}
-            ElevatedButton(onClick = {
-                                     Toast.makeText(context,otpValue.value,Toast.LENGTH_SHORT).show()
-                rootNavController.navigate(Destination.PAGE_SIX)
-                                     }, shape = RoundedCornerShape(5.dp), elevation = ButtonDefaults.buttonElevation(20.dp), modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp), colors = ButtonDefaults.buttonColors(Color(0xff32DBDE))) {
+                        .padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        "Generate New OTP",
+                        fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                        fontSize = 14.sp
+                    )
+                    Text(
+                        "Remaining time : 0:36s",
+                        fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                        fontSize = 14.sp,
+                        color = Color.Gray
+                    )
+                }
+            }
+            ElevatedButton(
+                onClick = {
+                    Toast.makeText(context, otpValue.value, Toast.LENGTH_SHORT).show()
+                    rootNavController.navigate(Destination.PAGE_SIX)
+                },
+                shape = RoundedCornerShape(5.dp),
+                elevation = ButtonDefaults.buttonElevation(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(Color(0xff32DBDE))
+            ) {
                 Text("VERIFY OTP", fontFamily = FontFamily(listOf(Font(R.font.poppins_regular))))
             }
         }
-
 
 
     }

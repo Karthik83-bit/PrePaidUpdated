@@ -1,5 +1,6 @@
 package com.example.prepaidcard.screens
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -46,6 +48,7 @@ fun PageFourtyOne(rootNavController: NavHostController) {
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
+                .verticalScroll(enabled = true, state = ScrollState(0))
         ) {
 //            /CustomTopBar {rootNavController.navigate(Destination.VIEW_CARDS_1)}
             Column(Modifier.padding(20.dp),

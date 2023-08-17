@@ -1,14 +1,19 @@
 package com.example.prepaidcard.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -36,48 +41,52 @@ fun PageFifteen(rootNavController: NavHostController) {
     val latoBold = FontFamily(
         Font(R.font.lato_bold, FontWeight.Bold)
     )
-    val scope= rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
     LaunchedEffect(key1 = true,){
         scope.launch {
             delay(2000)
             rootNavController.navigate(Destination.PAGE_TEN)
         }
     }
-    Scaffold(topBar = { CustomTopBar {
-        rootNavController.popBackStack()
-    }}) {
-        Box(modifier = Modifier.padding(it)) {
-            Column(modifier = Modifier
-                .padding(20.dp),
-                verticalArrangement = Arrangement.SpaceEvenly,
-                horizontalAlignment = Alignment.CenterHorizontally)
+    Scaffold(topBar = {
+        CustomTopBar {
+            rootNavController.popBackStack()
+        }
+    }) {
+        Box(modifier = Modifier.padding(it), contentAlignment = Alignment.CenterStart) {
+            Column(
+                modifier = Modifier
+                    .padding(20.dp)
+                    .verticalScroll(enabled = true, state = ScrollState(0))
+            )
             {
 //                CustomTopBar {rootNavController.navigate(Destination.PAGE_FOURTY_TWO)}
-                Spacer(modifier = Modifier.height(150.dp))
                 Column(
+                    Modifier.fillMaxWidth()
+                        .padding(top = 150.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceEvenly
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
                 )
                 {
                     Image(
                         painter = painterResource(id = R.drawable.loadingone),
                         contentDescription = "loading"
                     )
-                    Spacer(modifier = Modifier.height(50.dp))
+
                     Text(
                         text = "Card activation is in process !!",
                         color = tealGreen,
                         fontSize = 18.sp,
                         fontFamily = latoBold
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
+
                     Text(
                         text = "A URL has been triggered on your Registered mobile number please click the url to complete the KYC Process.",
                         color = CustomBlack,
                         fontSize = 14.sp,
                         fontFamily = latoBold
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
+
                 }
             }
         }
