@@ -1,6 +1,8 @@
 package com.example.prepaidcardsdk.presentation.viewmodels
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcardsdk.domain.usecases.SetPinUseCase
@@ -18,6 +20,8 @@ class GeneratePinViewModel @Inject constructor(val setPinUseCase: SetPinUseCase)
     val errorState= mutableStateOf(
         CustomError()
     )
+
+    val mask= mutableStateOf(10.dp)
 
     fun setPin(){
         viewModelScope.launch {

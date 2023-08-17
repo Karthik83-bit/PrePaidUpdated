@@ -55,6 +55,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -69,15 +70,18 @@ fun CustomScaffoldScreen(
     enterOtp: MutableState<Boolean>,
     pauseCard: MutableState<Boolean>,
     hotlist: MutableState<Boolean>,
-    cvv:MutableState<Boolean>,
-    mainContent: @Composable () -> Unit,
+    cvv: MutableState<Boolean>,
+    maskState: MutableState<Dp>,
+    details: MutableState<Boolean>,
+    mainContent: @Composable () -> Unit
+
 ) {
     val otpInp = remember {
         mutableStateOf("")
     }
     Box(
         Modifier.blur(
-            if (sheet.value || enterOtp.value || pauseCard.value || hotlist.value||cvv.value) {
+            if (sheet.value || enterOtp.value || pauseCard.value || hotlist.value || cvv.value) {
                 10.dp
             } else {
                 0.dp
@@ -86,7 +90,7 @@ fun CustomScaffoldScreen(
     ) {
 
         mainContent()
-        if (sheet.value || enterOtp.value || pauseCard.value || hotlist.value||cvv.value) {
+        if (sheet.value || enterOtp.value || pauseCard.value || hotlist.value || cvv.value) {
             Box(
                 Modifier
                     .fillMaxSize()
@@ -230,7 +234,8 @@ fun CustomScaffoldScreen(
 //
 //                    )
 //                }
-                TextField(value = genPin.value,
+                TextField(
+                    value = genPin.value,
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text("Enetr PIN") },
                     onValueChange = { genPin.value = it },
@@ -248,7 +253,8 @@ fun CustomScaffoldScreen(
                     fontSize = 14.sp,
                     fontFamily = FontFamily(Font(R.font.lato_regular))
                 )
-                TextField(value = rePin.value,
+                TextField(
+                    value = rePin.value,
 
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text("Enter PIN", modifier = Modifier.padding(0.dp)) },
@@ -302,23 +308,24 @@ fun CustomScaffoldScreen(
 
         }
     }
-    val txt= remember {
+
+    val txt = remember {
         mutableStateOf("")
     }
-    val timer=object :CountDownTimer(30000,1000){
+    val timer = object : CountDownTimer(30000, 1000) {
         override fun onTick(p0: Long) {
-            txt.value=(p0/1000).toString()
+            txt.value = (p0 / 1000).toString()
         }
 
         override fun onFinish() {
-            txt.value="Time finished"
+            txt.value = "Time finished"
         }
 
     }
-    if(enterOtp.value)timer.start() else timer.cancel()
+    if (enterOtp.value) timer.start() else timer.cancel()
 
     @Composable
-    fun EnterOTPPinSheet(hotlist: MutableState<Boolean>) {
+    fun EnterOTPPinSheet(hotlist: MutableState<Boolean>, maskState: MutableState<Dp>) {
 
         var textFieldSize by remember { mutableStateOf(Size.Zero) }
         Column(
@@ -331,69 +338,85 @@ fun CustomScaffoldScreen(
             Column(
                 Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                val comt=LocalContext.current
+                val comt = LocalContext.current
                 Text(
                     text = "Enter OTP",
                     fontSize = 14.sp,
                     fontFamily = FontFamily(Font(R.font.lato_regular))
                 )
-                BasicTextField(value = otpInp.value, onValueChange = {
+                BasicTextField(
+                    value = otpInp.value,
+                    onValueChange = {
 
-if (it.length<=6){
-    otpInp.value=it
-}
+                        if (it.length <= 6) {
+                            otpInp.value = it
+                        }
 
 
-
-
-                }, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.NumberPassword) )
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        keyboardType = KeyboardType.NumberPassword
+                    )
+                )
 
                 {
 
-                    Row{
+                    Row {
                         repeat(6) {
 
-                            val char=when{
-it>=otpInp.value.length->"0"
-                                else->otpInp.value[it]
+                            val char = when {
+                                it >= otpInp.value.length -> "0"
+                                else -> otpInp.value[it]
                             }
 
 
-                                Card(
-                                    Modifier
-                                        .padding(2.dp)
-                                        .size(50.dp),
-                                    colors = CardDefaults.cardColors(LightGray),
-                                    shape = RoundedCornerShape(5.dp),
+                            Card(
+                                Modifier
+                                    .padding(2.dp)
+                                    .size(50.dp),
+                                colors = CardDefaults.cardColors(LightGray),
+                                shape = RoundedCornerShape(5.dp),
 
-                                    elevation = CardDefaults.cardElevation(10.dp)
-                                ) {
+                                elevation = CardDefaults.cardElevation(10.dp)
+                            ) {
 
-                                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 
-                                        Text(
-                                            char.toString(), textAlign = TextAlign.Center,color= Gray)
+                                    Text(
+                                        char.toString(), textAlign = TextAlign.Center, color = Gray
+                                    )
 
-                                    }
-                                    }
+                                }
+                            }
 
                         }
                     }
 
                 }
-                Text("Enter otp sent to your mobile", textAlign = TextAlign.Start, modifier = Modifier.fillMaxWidth(), fontSize = 14.sp,
-                    fontFamily = FontFamily(Font(R.font.lato_regular)))
+                Text(
+                    "Enter otp sent to your mobile",
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.fillMaxWidth(),
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily(Font(R.font.lato_regular))
+                )
 
             }
-           Row(
-               Modifier
-                   .fillMaxWidth()
-                   .padding(20.dp),
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
                 horizontalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 Button(
                     onClick = {
                         hotlist.value = !hotlist.value
+                        maskState.value = if (maskState.value == 0.dp) {
+                            10.dp
+                        } else {
+                            0.dp
+                        }
                     },
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier
@@ -495,10 +518,13 @@ it>=otpInp.value.length->"0"
     }
 
     CustomSheetWrap(state = enterOtp, 800) {
-        EnterOTPPinSheet(hotlist = enterOtp)
+        EnterOTPPinSheet(hotlist = enterOtp, maskState)
     }
-    CustomSheetWrap(state = cvv,800) {
-        EnterOTPPinSheet(hotlist = cvv)
+    CustomSheetWrap(state = cvv, 800) {
+        EnterOTPPinSheet(hotlist = cvv, maskState)
+    }
+    CustomSheetWrap(state = details, 800) {
+        EnterOTPPinSheet(hotlist = details, maskState)
     }
 
     CustomSheetWrap(state = pauseCard) {

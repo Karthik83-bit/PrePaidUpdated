@@ -55,7 +55,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
             PageSix(rootNavController)
         }
         composable(Destination.CARD_MANAGEMENT_SCREEN){
-            PageTen(rootNavController)
+            PageTen(rootNavController, viewModel= hiltViewModel<GeneratePinViewModel>() )
         }
         composable(Destination.MPIN_SCREEN){
             VerifyOTP(rootNavController = rootNavController)
