@@ -5,5 +5,5 @@ import com.example.prepaidcardsdk.utils.NetworkResponse
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
-    fun setPin(): Flow<NetworkResponse<SetPinResponse>>
+    fun setPin(encPin: String): Flow<NetworkResponse<SetPinResponse>>
 }

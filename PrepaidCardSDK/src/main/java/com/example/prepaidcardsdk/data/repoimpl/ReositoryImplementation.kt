@@ -1,5 +1,6 @@
 package com.example.prepaidcardsdk.data.repoimpl
 
+import com.example.prepaidcardsdk.data.model.SetPinRequestModel
 import com.example.prepaidcardsdk.data.model.SetPinResponse
 import com.example.prepaidcardsdk.data.src.APIService
 import com.example.prepaidcardsdk.domain.repo.Repository
@@ -10,11 +11,14 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 class RepositoryImplementation @Inject constructor(val apiService: APIService):Repository {
-    override fun setPin(): Flow<NetworkResponse<SetPinResponse>> =flow{
+    override fun setPin(encPin: String): Flow<NetworkResponse<SetPinResponse>> =flow{
+        emit(NetworkResponse.Loading())
         try{
-            val resp=apiService.setPin()
+            val reqBody=SetPinRequestModel(encryptPin = encPin, cardRefId = "168")
+            val resp=apiService.setPin(reqBody = reqBody)
             if(resp.isSuccessful){
                 if(resp.body()!=null){
+                    val statusDescription=
                     emit(
                         NetworkResponse.Success(resp.body()!!))
                 }

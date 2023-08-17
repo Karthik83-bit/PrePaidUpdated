@@ -126,9 +126,18 @@ fun Screen23(rootNavController: NavHostController,onClick: (state:Boolean) -> Un
                         Row(modifier = Modifier
                             .fillMaxWidth()
                             .padding(20.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)){
-                            CustomButton(text = "SUBMIT",
-                                        buttonColor = lighttealGreen) {}
-                            CustomButton(text = "CANCEL", buttonColor = cancelGray ) {}
+                            CustomButton(
+                                text = "SUBMIT",
+                                buttonColor = lighttealGreen,
+                                onClick = {},
+
+                            )
+                            CustomButton(
+                                text = "CANCEL",
+                                buttonColor = cancelGray,
+                                onClick = {},
+
+                            )
                         }
 
                     }

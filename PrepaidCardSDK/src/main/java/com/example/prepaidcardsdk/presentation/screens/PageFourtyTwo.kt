@@ -13,12 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.OutlinedTextField
 //import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +41,8 @@ import com.example.prepaidcardsdk.ui.theme.remainingTimeColor
 @Composable
 fun PageFourtyTwo(rootNavController: NavHostController) {
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
+
+
     Scaffold(topBar = { CustomTopBar {
         rootNavController.popBackStack()
     }}) {
@@ -103,10 +100,18 @@ fun PageFourtyTwo(rootNavController: NavHostController) {
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)){
-                CustomButton(text = "SUBMIT",
-                    buttonColor = lighttealGreen
-                ) {rootNavController.navigate(Destination.CARD_ACTIVATION_CONFIRM)}
-                CustomButton(text = "CANCEL", buttonColor = cancelGray ) {}
+                CustomButton(
+                    text = "SUBMIT",
+                    buttonColor = lighttealGreen,
+                    onClick = {rootNavController.navigate(Destination.CARD_ACTIVATION_CONFIRM)},
+
+                )
+                CustomButton(
+                    text = "CANCEL",
+                    buttonColor = cancelGray,
+                    onClick = {},
+
+                )
             }
         }
     }

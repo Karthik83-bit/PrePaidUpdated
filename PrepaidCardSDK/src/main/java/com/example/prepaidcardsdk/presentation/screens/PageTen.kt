@@ -236,18 +236,19 @@ fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Un
                             ) {
                                 CustomButton(
                                     text = "SUBMIT",
-                                    buttonColor = lighttealGreen
-                                ) {
-                                    if(checkBoxState.value=="Last 10 Transaction"){
-                                        rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY+"/none")
-                                    }
-                                    else{
-                                        rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY+"/${FilterOption.SelectDate}")
-                                    }
-                                }
-                                CustomButton(text = "CANCEL", buttonColor = cancelGray) {
+                                    buttonColor = lighttealGreen,
+                                    onClick = {
+                                        if(checkBoxState.value=="Last 10 Transaction"){
+                                            rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY+"/none")
+                                        } else{
+                                            rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY+"/${FilterOption.SelectDate}")
+                                        }
+                                    },
+
+                                )
+                                CustomButton(text = "CANCEL", buttonColor = cancelGray, onClick = {
                                     rootNavController.popBackStack()
-                                }
+                                },)
                             }
 
                         }

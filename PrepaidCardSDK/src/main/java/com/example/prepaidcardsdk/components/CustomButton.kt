@@ -18,9 +18,12 @@ fun CustomButton(
     textSize: TextUnit = 14.sp,
     textColor: Color = Color.White,
     buttonColor: Color,
-    onClick: () -> Unit
+
+    enable: Boolean=true,
+            onClick: () -> Unit,
 ) {
     androidx.compose.material3.Button(
+        enabled = enable,
         onClick = { onClick() },
         modifier = modifier
             .width(140.dp)
