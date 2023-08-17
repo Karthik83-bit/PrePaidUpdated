@@ -15,7 +15,6 @@ import com.example.prepaidcard.screens.PageFourteen
 import com.example.prepaidcard.screens.PageFourty
 import com.example.prepaidcard.screens.PageFourtyOne
 import com.example.prepaidcard.screens.PageFourtyTwo
-import com.example.prepaidcard.screens.PageSix
 import com.example.prepaidcard.screens.PageTen
 import com.example.prepaidcard.screens.Screen26
 import com.example.prepaidcard.screens.TransactionInfo
@@ -32,6 +31,7 @@ import com.example.prepaidcard.screens.ViewModel
 //import com.example.prepaidcard.screens.VerifyOTP
 //import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.utils.Destination
+import com.example.prepaidcardsdk.screens.PageSix
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable

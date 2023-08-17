@@ -3,7 +3,7 @@ package com.example.prepaidcardsdk.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val Cultured = Color(0xFFF4F4F4)
-val ColorReset = Color(0xFF213348)
+val Resetcolor = Color(0xFF213348)
 val lighttealGreen = Color(0xFF25CCCE)
 val HitextColor = Color(0xFF213348)
 
@@ -20,3 +20,4 @@ val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)
 val tealGreen = Color(0xFF0A8990)
+val cdback = Color(0xFFF7F7F7)

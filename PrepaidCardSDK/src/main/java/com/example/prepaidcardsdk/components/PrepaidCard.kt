@@ -41,7 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.R
-import com.example.prepaidcardsdk.ui.theme.ColorReset
+import com.example.prepaidcardsdk.ui.theme.Resetcolor
 import com.example.prepaidcardsdk.ui.theme.tealGreen
 
 
@@ -118,7 +118,7 @@ fun PrepaidCard(clickable: Modifier) {
     }
     Card(
         shape = RoundedCornerShape(5.dp),
-        colors = CardDefaults.cardColors(ColorReset),
+        colors = CardDefaults.cardColors(Resetcolor),
         modifier = clickable
 
 
@@ -138,7 +138,7 @@ fun PrepaidCard(clickable: Modifier) {
                 .height(250.dp)) {
 
                 drawCircle(
-                    brush = Brush.horizontalGradient(listOf(  ColorReset, tealGreen), startX = 0f, endX = 700f),
+                    brush = Brush.horizontalGradient(listOf(  Resetcolor, tealGreen), startX = 0f, endX = 700f),
 
                     radius = 900f,
                     center = Offset(x = 500f, y = 1150f)
@@ -206,7 +206,7 @@ fun PrepaidCardBack(clickable: Modifier) {
 
     Card(
         shape = RoundedCornerShape(5.dp),
-        colors = CardDefaults.cardColors(ColorReset),
+        colors = CardDefaults.cardColors(Resetcolor),
         modifier = clickable
 
             .width(380.dp)
@@ -224,7 +224,7 @@ fun PrepaidCardBack(clickable: Modifier) {
                 .fillMaxWidth()
                 .height(250.dp)) {
                 drawCircle(
-                    brush = Brush.horizontalGradient(listOf(  ColorReset, tealGreen), startX = 0f, endX = 700f),
+                    brush = Brush.horizontalGradient(listOf(  Resetcolor, tealGreen), startX = 0f, endX = 700f),
 
                     radius = 900f,
                     center = Offset(x = 500f, y = 1150f)

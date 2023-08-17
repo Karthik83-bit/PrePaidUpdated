@@ -27,7 +27,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.example.prepaidcardsdk.R
-import com.example.prepaidcardsdk.ui.theme.ColorReset
+import com.example.prepaidcardsdk.ui.theme.Resetcolor
 
 import com.example.prepaidcardsdk.ui.theme.Cultured
 import com.example.prepaidcardsdk.ui.theme.HitextColor
@@ -88,10 +88,10 @@ fun CustomCheckField( state:MutableState<Boolean>,text:String,res:Int,onSwitch:(
 
                 },
                 colors = SwitchDefaults.colors(
-                    checkedTrackColor = ColorReset,
-                    uncheckedIconColor = ColorReset,
-                    uncheckedBorderColor = ColorReset,
-                    disabledUncheckedIconColor = ColorReset
+                    checkedTrackColor = Resetcolor,
+                    uncheckedIconColor = Resetcolor,
+                    uncheckedBorderColor = Resetcolor,
+                    disabledUncheckedIconColor = Resetcolor
                 ),
             )
         }

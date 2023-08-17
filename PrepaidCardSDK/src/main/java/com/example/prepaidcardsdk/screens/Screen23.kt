@@ -1,8 +1,5 @@
 package com.example.prepaidcard.screens
 
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,12 +30,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.newui.components.CardFace
 import com.example.newui.components.FlipCard
 import com.example.prepaidcard.components.CustomButton
 import com.example.prepaidcard.components.CustomCheckBox
 
-import com.example.prepaidcardsdk.ui.theme.ColorReset
+import com.example.prepaidcardsdk.ui.theme.Resetcolor
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 
@@ -78,10 +74,10 @@ fun Screen23(rootNavController: NavHostController,onClick: (state:Boolean) -> Un
                     toggleState.value=!toggleState.value
                     onClick(toggleState.value)
                 }, colors = SwitchDefaults.colors(
-                    checkedTrackColor = ColorReset,
-                    uncheckedIconColor = ColorReset,
-                    uncheckedBorderColor = ColorReset,
-                    disabledUncheckedIconColor = ColorReset
+                    checkedTrackColor = Resetcolor,
+                    uncheckedIconColor = Resetcolor,
+                    uncheckedBorderColor = Resetcolor,
+                    disabledUncheckedIconColor = Resetcolor
                 ),
                 )
 
@@ -95,7 +91,7 @@ fun Screen23(rootNavController: NavHostController,onClick: (state:Boolean) -> Un
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp, vertical = 10.dp), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically){
                 list.forEachIndexed { index, s ->
-                    Text(s,Modifier.clickable { clickedState.value=s }, color = if(s!=clickedState.value)ColorReset else{
+                    Text(s,Modifier.clickable { clickedState.value=s }, color = if(s!=clickedState.value)Resetcolor else{
                         Color(0xFFDB8726)
                     },
                         fontWeight = FontWeight(600)
@@ -104,7 +100,7 @@ fun Screen23(rootNavController: NavHostController,onClick: (state:Boolean) -> Un
                         Spacer(modifier = Modifier
                             .height(20.dp)
                             .width(1.dp)
-                            .background(color = ColorReset))
+                            .background(color = Resetcolor))
                     }
                 }
             }

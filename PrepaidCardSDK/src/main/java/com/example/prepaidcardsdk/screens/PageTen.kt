@@ -50,8 +50,9 @@ import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcard.utils.FilterOption
 import com.example.prepaidcardsdk.R
-import com.example.prepaidcardsdk.ui.theme.ColorReset
+import com.example.prepaidcardsdk.ui.theme.Resetcolor
 import com.example.prepaidcardsdk.ui.theme.cancelGray
+import com.example.prepaidcardsdk.ui.theme.cdback
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -161,10 +162,10 @@ fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Un
                             onClick(CvvToggleState.value)
                         },
                         colors = SwitchDefaults.colors(
-                            checkedTrackColor = ColorReset,
-                            uncheckedIconColor = ColorReset,
-                            uncheckedBorderColor = ColorReset,
-                            disabledUncheckedIconColor = ColorReset
+                            checkedTrackColor = Resetcolor,
+                            uncheckedIconColor = Resetcolor,
+                            uncheckedBorderColor = Resetcolor,
+                            disabledUncheckedIconColor = Resetcolor
                         ),
                     )
 
@@ -184,7 +185,7 @@ fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Un
                         Text(
                             s,
                             Modifier.clickable { clickedState.value = s },
-                            color = if (s != clickedState.value) ColorReset else {
+                            color = if (s != clickedState.value) Resetcolor else {
                                 Color(0xFFDB8726)
                             },
                             fontWeight = FontWeight(600)
@@ -194,7 +195,7 @@ fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Un
                                 modifier = Modifier
                                     .height(20.dp)
                                     .width(1.dp)
-                                    .background(color = ColorReset)
+                                    .background(color = Resetcolor)
                             )
                         }
                     }
@@ -292,7 +293,38 @@ fun PageTen(rootNavController: NavHostController, onClick: (state:Boolean) -> Un
                         }
                     }
                 }
+                else if (clickedState.value == "Details") {
+                    Box(
+                        Modifier
+                            .padding(
+                                vertical = 10.dp,
+                                horizontal = 10.dp
+                            )
+                            .fillMaxSize()
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Text(
+                                "Card Details",
+                                fontWeight = FontWeight(600),
+                                fontSize = 20.sp,
+                                modifier = Modifier.padding(10.dp),
+                                fontFamily = FontFamily(Font(R.font.lato_bold))
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .background(cdback)
+                                    .height(300.dp)
+                                    .width(300.dp)
+                                    .padding(vertical = 50.dp, horizontal = 50.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
 
+                            }
+                        }
+                    }
+                }
                 else{
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
                         Text("ComingSoon...", fontSize = 30.sp, fontWeight = FontWeight(700), fontFamily = FontFamily(
