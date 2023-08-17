@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class SetPinUseCase@Inject constructor(val repository: Repository) {
-    fun invoke(): Flow<NetworkResponse<SetPinResponse>> {
-        return repository.setPin()
+    fun invoke(encPin: String): Flow<NetworkResponse<SetPinResponse>> {
+        return repository.setPin(encPin)
     }
 }

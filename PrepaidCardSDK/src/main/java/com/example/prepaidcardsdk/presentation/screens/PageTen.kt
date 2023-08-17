@@ -262,6 +262,46 @@ fun PageTen(rootNavController: NavHostController, viewModel: GeneratePinViewMode
                                         rootNavController.popBackStack()
                                     }
                                 }
+                if (clickedState.value == "Statement") {
+                    Box(
+                        Modifier
+                            .padding(vertical = 10.dp, horizontal = 10.dp)
+                            .fillMaxSize()
+                    ) {
+                        Column(horizontalAlignment = Alignment.Start) {
+                            Text(
+                                "Card Statement", fontWeight = FontWeight(600),
+                                fontSize = 20.sp,
+                                modifier = Modifier.padding(10.dp),
+                                fontFamily = FontFamily(Font(R.font.lato_bold))
+                            )
+                            val checkList =
+                                listOf<String>("Last 10 Transaction", "Transaction History")
+                            checkList.forEach {
+                                CustomCheckBox(checkBoxState, it)
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(20.dp),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                CustomButton(
+                                    text = "SUBMIT",
+                                    buttonColor = lighttealGreen,
+                                    onClick = {
+                                        if(checkBoxState.value=="Last 10 Transaction"){
+                                            rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY+"/none")
+                                        } else{
+                                            rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY+"/${FilterOption.SelectDate}")
+                                        }
+                                    },
+
+                                )
+                                CustomButton(text = "CANCEL", buttonColor = cancelGray, onClick = {
+                                    rootNavController.popBackStack()
+                                },)
+                            }
 
                             }
                         }
