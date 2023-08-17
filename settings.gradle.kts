@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "PrepaidCard"
 include(":app")
- 
+include(":PrepaidCardSDK")
