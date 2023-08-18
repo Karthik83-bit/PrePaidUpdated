@@ -27,8 +27,8 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
         return handleFlowResponse(call = {apiService.changeStatus(reqBody)},{it})
     }
 
-    override fun cardDataStatus(url: String): Flow<NetworkResponse<CardDataResponse>> {
-        val reqBody = CardDataRequestModel("1287208", "167")
+    override fun cardDataStatus(): Flow<NetworkResponse<CardDataResponse>> {
+        val reqBody = CardDataRequestModel(cardRefId = "1287208", customerId = "167")
         return handleFlowResponse(call = {
             apiService.cardData(reqBody)
         },{it})

@@ -9,7 +9,7 @@ import javax.inject.Inject
 class CardDataUseCase @Inject constructor(
     private val repository: Repository
 ){
-    fun invoke(url:String): Flow<NetworkResponse<CardDataResponse>>{
-        return repository.cardDataStatus(url)
+    fun invoke(): Flow<NetworkResponse<CardDataResponse>>{
+        return repository.cardDataStatus()
     }
 }

@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
+import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
 import com.example.prepaidcardsdk.domain.usecases.CardDataUseCase
 import com.example.prepaidcardsdk.utils.handleFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,12 +23,13 @@ class CardDataViewModel @Inject constructor(
     val isLoading= mutableStateOf(false)
     var isError: MutableState<Boolean> = mutableStateOf(false)
     var errorMessage: MutableState<String> = mutableStateOf("")
+    var response:MutableState<ChangeStatusResponseModel?> = mutableStateOf(null)
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun cardData(onComplete: (CardDataResponse?) -> Unit){
 
         viewModelScope.launch {
-            handleFlow(response = cardDataUseCase.invoke(url = "http://35.200.225.250:8080/cardissuer/cms/viewCarddataByCustomer"), onLoading = {
+            handleFlow<CardDataResponse>(response = cardDataUseCase.invoke(), onLoading = {
                 isLoading.value = it
             }, onFailure = {
                 isError.value = true

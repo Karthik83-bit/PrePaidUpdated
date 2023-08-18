@@ -1,6 +1,7 @@
 package com.example.prepaidcardsdk.screens
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
@@ -21,7 +22,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -30,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -50,27 +57,56 @@ import com.example.prepaidcardsdk.ui.theme.isuGreen
 import com.example.prepaidcardsdk.ui.theme.isuOrrange
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) {
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     Column(
         Modifier
             .padding(16.dp)
             .fillMaxSize()
-            .clickable(onClick = {
-                viewModel.cardData {
-                if (it != null) {
-                    if(it.status=="0"){
-                        rootNavController.navigate(Destination.VIEW_CARDS_1)
-                    } else{
-                        rootNavController.popBackStack()
-                    }
-                }
-            } })
+            .clickable(onClick = { })
             .verticalScroll(enabled = true, state = ScrollState(0))
     ) {
+        if (viewModel.isError.value) {
+            AlertDialog(onDismissRequest = { }) {
+                Card(Modifier.size(300.dp)) {
+                    Box(Modifier.fillMaxSize()) {
+                        Column(
+                            Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(viewModel.errorMessage.value!!)
+                            Button(onClick = {
+                                viewModel.isError.value = false
+                                rootNavController.popBackStack()
+                            }) {
+                                Text("ok")
+
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+        } else if (viewModel.isLoading.value) {
+            AlertDialog(onDismissRequest = { }) {
+                Card(Modifier.size(300.dp)) {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+
+                    }
+
+                }
+
+            }
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -356,60 +392,72 @@ fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) 
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(5.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "My Payments",
-                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Icon(
-                painter = painterResource(id = R.drawable.forwardspace),
-                contentDescription = "Back"
-            )
-        }
-        Row(
-            Modifier
-                .padding(5.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Recent",
-                fontFamily = FontFamily(Font(R.font.robot_medium)),
-                fontSize = 14.sp
-            )
-            Text(
-                text = "Received",
-                fontFamily = FontFamily(Font(R.font.robot_medium)),
-                fontSize = 14.sp,
-                color = gray_color
-            )
-            Text(
-                text = "Pay",
-                fontFamily = FontFamily(Font(R.font.robot_medium)),
-                fontSize = 14.sp
-            )
-        }
-        Column(Modifier.fillMaxWidth(),horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(
-                painter = painterResource(id = R.drawable.girl_doing_online_payment),
-                contentDescription = "Girl doing online payment",
-                colorFilter = ColorFilter.tint(
-                    gray_color
+        Column(modifier = Modifier.clickable(onClick = {
+            viewModel.cardData() {
+                if (it != null) {
+                    if (it.status == "0") {
+                        rootNavController.navigate(Destination.VIEW_CARDS_1)
+                    } else{
+                        rootNavController.navigate(Destination.VIEW_CARDS_1)
+                    }
+                }
+            }
+        })) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "My Payments",
+                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
                 )
-            )
-            Text(
-                text = "Last 5 Transaction you should view",
-                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                fontSize = 14.sp,
-                color = gray_color
-            )
+                Icon(
+                    painter = painterResource(id = R.drawable.forwardspace),
+                    contentDescription = "Back"
+                )
+            }
+            Row(
+                Modifier
+                    .padding(5.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Recent",
+                    fontFamily = FontFamily(Font(R.font.robot_medium)),
+                    fontSize = 14.sp
+                )
+                Text(
+                    text = "Received",
+                    fontFamily = FontFamily(Font(R.font.robot_medium)),
+                    fontSize = 14.sp,
+                    color = gray_color
+                )
+                Text(
+                    text = "Pay",
+                    fontFamily = FontFamily(Font(R.font.robot_medium)),
+                    fontSize = 14.sp
+                )
+            }
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Image(
+                    painter = painterResource(id = R.drawable.girl_doing_online_payment),
+                    contentDescription = "Girl doing online payment",
+                    colorFilter = ColorFilter.tint(
+                        gray_color
+                    )
+                )
+                Text(
+                    text = "Last 5 Transaction you should view",
+                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                    fontSize = 14.sp,
+                    color = gray_color
+                )
+            }
         }
     }
 }

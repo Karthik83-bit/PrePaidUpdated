@@ -10,5 +10,5 @@ import kotlinx.coroutines.flow.Flow
 interface Repository {
     fun setPin(encPin: String): Flow<NetworkResponse<SetPinResponse>>
     fun changeCardStatus():Flow<NetworkResponse<ChangeStatusResponseModel>>
-    fun cardDataStatus(url: String): Flow<NetworkResponse<CardDataResponse>>
+    fun cardDataStatus(): Flow<NetworkResponse<CardDataResponse>>
 }
