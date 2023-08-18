@@ -52,6 +52,7 @@ import com.example.prepaidcard.components.CustomButton
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
+import com.example.prepaidcardsdk.utils.GeneralUiState
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,7 +73,7 @@ val pindontMatch=remember{
                 .verticalScroll(enabled = true, state = ScrollState(0)),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            if (viewModel.errorState.value.isError == true) {
+            if (viewModel.isError.value) {
                 AlertDialog(onDismissRequest = { }) {
                     Card(Modifier.size(300.dp)) {
                         Box(Modifier.fillMaxSize()) {
@@ -81,9 +82,9 @@ val pindontMatch=remember{
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text(viewModel.errorState.value.errStr!!)
+                                Text(viewModel.errorMessage.value!!)
                                 Button(onClick = {
-                                    viewModel.errorState.value = GeneratePinViewModel.CustomError()
+                                    viewModel.isError.value=false
                                     rootNavController.popBackStack()
                                 }) {
                                     Text("ok")
@@ -112,7 +113,9 @@ val pindontMatch=remember{
             }
 //            /CustomTopBar {rootNavController.navigate(Destination.VIEW_CARDS_1)}
             Column(
-                Modifier.padding(20.dp).fillMaxSize(),
+                Modifier
+                    .padding(20.dp)
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 if(pindontMatch.value){
@@ -145,7 +148,8 @@ val pindontMatch=remember{
                             }
                             Box(
                                 Modifier
-                                     .width(70.dp).height(50.dp)
+                                    .width(70.dp)
+                                    .height(50.dp)
                                     .background(Color.LightGray, shape = RoundedCornerShape(5.dp)), contentAlignment = Alignment.Center) {
                                 Text(char.toString())
                             }
@@ -181,7 +185,8 @@ val pindontMatch=remember{
                             }
                             Box(
                                 Modifier
-                                    .width(70.dp).height(50.dp)
+                                    .width(70.dp)
+                                    .height(50.dp)
                                     .background(Color.LightGray, shape = RoundedCornerShape(5.dp)), contentAlignment = Alignment.Center) {
                                 Text(char.toString())
                             }
@@ -270,7 +275,15 @@ val pindontMatch=remember{
                     buttonColor = lighttealGreen,
                     enable=!pindontMatch.value
                 ) {
-                    viewModel.setPin(rootNavController)
+                    viewModel.setPin {
+                        if (it != null) {
+                            if(it.status=="0"){
+                                rootNavController.navigate(Destination.ENTER_OTP_SCREEN)
+                            } else{
+                                rootNavController.popBackStack()
+                            }
+                        }
+                    }
                 }
                 CustomButton(
                     text = "CANCEL",
