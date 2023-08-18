@@ -1,6 +1,8 @@
 package com.example.prepaidcardsdk.data.repoimpl
 
+import com.example.prepaidcardsdk.data.model.req.CardDataRequestModel
 import com.example.prepaidcardsdk.data.model.req.SetPinRequestModel
+import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
 import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
 import com.example.prepaidcardsdk.data.src.APIService
 import com.example.prepaidcardsdk.domain.repo.Repository
@@ -36,5 +38,29 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
             emit(NetworkResponse.Erroe(e.message?:e.localizedMessage))
         }
 
+    }
+
+    override fun cardData(url: String): Flow<NetworkResponse<CardDataResponse>> = flow{
+        emit(NetworkResponse.Loading())
+        try{
+            val reqBody= CardDataRequestModel(cardRefId = "167", customerId = "1287208")
+            val resp=apiService.cardData(requestModel = reqBody)
+            if(resp.isSuccessful){
+                if(resp.body()!=null){
+
+                }
+                else{
+                    emit(NetworkResponse.Erroe("EMPTY RESPONSE RETURNED"))
+                }
+
+            }
+            else{
+                val errJson=JSONObject(resp.errorBody().toString())
+                val errStr=errJson.getString("error")
+                emit(NetworkResponse.Erroe(errStr?:"Something Went Wrong"))
+            }
+        }catch(e:Exception){
+            emit(NetworkResponse.Erroe(e.message?:e.localizedMessage))
+        }
     }
 }
