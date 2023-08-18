@@ -10,16 +10,19 @@ import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.Url
 
 
 interface APIService {
     @POST("cms/setPin")
-    suspend fun setPin(@Body reqBody :SetPinRequestModel):Response<SetPinResponse>
+    suspend fun setPin(@Body reqBody: SetPinRequestModel): Response<SetPinResponse>
 
     @POST("cms/changeCardStatus")
-    suspend fun changeStatus(@Body reqBody: ChangeStatusRequestModel):Response<ChangeStatusResponseModel>
+    suspend fun changeStatus(@Body reqBody: ChangeStatusRequestModel): Response<ChangeStatusResponseModel>
 
-
-    @POST("cms/viewCarddataByCustomer")
-    suspend fun cardData(@Body requestModel: CardDataRequestModel = CardDataRequestModel()): Response<CardDataResponse>
+    @POST()
+    suspend fun cardDataByCustomer(
+        @Url url: String,
+        @Body requestModel: CardDataRequestModel = CardDataRequestModel()
+    ): Response<CardDataResponse>
 }

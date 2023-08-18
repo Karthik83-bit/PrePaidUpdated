@@ -1,7 +1,6 @@
 package com.example.prepaidcardsdk.screens
 
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
@@ -32,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,6 +56,7 @@ import com.example.prepaidcardsdk.ui.theme.gray_color
 import com.example.prepaidcardsdk.ui.theme.isuGreen
 import com.example.prepaidcardsdk.ui.theme.isuOrrange
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -63,12 +64,13 @@ import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
-
+   /* LaunchedEffect(key1 = true) {
+        viewModel.cardData() {}
+    }*/
     Column(
         Modifier
             .padding(16.dp)
             .fillMaxSize()
-            .clickable(onClick = { })
             .verticalScroll(enabled = true, state = ScrollState(0))
     ) {
         if (viewModel.isError.value) {
@@ -155,6 +157,17 @@ fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) 
                     modifier = Modifier
                         .height(140.dp)
                         .width(250.dp)
+                        .clickable(onClick = {
+                            viewModel.viewCardData {
+                                if (it != null) {
+                                    if (it.status == "0") {
+                                        rootNavController.navigate(Destination.VIEW_CARDS_1)
+                                    } else {
+                                        rootNavController.navigate(Destination.VIEW_CARDS_1)
+                                    }
+                                }
+                            }
+                        })
                 ) {
                     Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.SpaceEvenly) {
                         Text(
@@ -392,17 +405,7 @@ fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) 
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
-        Column(modifier = Modifier.clickable(onClick = {
-            viewModel.cardData() {
-                if (it != null) {
-                    if (it.status == "0") {
-                        rootNavController.navigate(Destination.VIEW_CARDS_1)
-                    } else{
-                        rootNavController.navigate(Destination.VIEW_CARDS_1)
-                    }
-                }
-            }
-        })) {
+        Column(modifier = Modifier.clickable(onClick = {})) {
             Row(
                 Modifier
                     .fillMaxWidth()
