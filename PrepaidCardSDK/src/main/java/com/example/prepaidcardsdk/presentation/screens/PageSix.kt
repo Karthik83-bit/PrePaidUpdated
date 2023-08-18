@@ -1,5 +1,7 @@
 package com.example.prepaidcardsdk.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
@@ -41,21 +43,32 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.ui.theme.HitextColor
 import com.example.prepaidcardsdk.ui.theme.gray_color
 import com.example.prepaidcardsdk.ui.theme.isuGreen
 import com.example.prepaidcardsdk.ui.theme.isuOrrange
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PageSix(rootNavController: NavHostController) {
+fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) {
     val scrollState = rememberScrollState()
 
     Column(
         Modifier
             .padding(16.dp)
             .fillMaxSize()
-            .clickable(onClick = { rootNavController.navigate(Destination.VIEW_CARDS_1) })
+            .clickable(onClick = {
+                viewModel.cardData {
+                if (it != null) {
+                    if(it.status=="0"){
+                        rootNavController.navigate(Destination.VIEW_CARDS_1)
+                    } else{
+                        rootNavController.popBackStack()
+                    }
+                }
+            } })
             .verticalScroll(enabled = true, state = ScrollState(0))
     ) {
         Row(

@@ -10,6 +10,6 @@ class CardDataUseCase @Inject constructor(
     private val repository: Repository
 ){
     fun invoke(url:String): Flow<NetworkResponse<CardDataResponse>>{
-        return repository.cardData(url)
+        return repository.cardDataStatus(url)
     }
 }

@@ -33,6 +33,7 @@ import com.example.prepaidcard.screens.ViewModel
 //import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.screens.PageSix
 
@@ -53,7 +54,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
         }*/
 
         composable(Destination.PAGE_SIX){
-            PageSix(rootNavController)
+            PageSix(rootNavController, viewModel = hiltViewModel<CardDataViewModel>())
         }
         composable(Destination.CARD_MANAGEMENT_SCREEN){
             PageTen(rootNavController, viewModel= hiltViewModel<GeneratePinViewModel>() )

@@ -1,5 +1,6 @@
 package com.example.prepaidcardsdk.domain.repo
 
+import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
 import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
 
 import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
@@ -9,4 +10,5 @@ import kotlinx.coroutines.flow.Flow
 interface Repository {
     fun setPin(encPin: String): Flow<NetworkResponse<SetPinResponse>>
     fun changeCardStatus():Flow<NetworkResponse<ChangeStatusResponseModel>>
+    fun cardDataStatus(url: String): Flow<NetworkResponse<CardDataResponse>>
 }

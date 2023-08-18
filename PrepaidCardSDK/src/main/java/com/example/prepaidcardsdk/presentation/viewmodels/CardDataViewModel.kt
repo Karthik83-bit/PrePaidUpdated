@@ -2,45 +2,40 @@ package com.example.prepaidcardsdk.presentation.viewmodels
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
-import com.example.prepaidcard.utils.Destination
+import com.example.prepaidcard.screens.ViewModel
+import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
 import com.example.prepaidcardsdk.domain.usecases.CardDataUseCase
-import com.example.prepaidcardsdk.utils.NetworkResponse
-import kotlinx.coroutines.flow.collectLatest
+import com.example.prepaidcardsdk.utils.handleFlow
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class CardDataViewModel @Inject constructor(val cardDataUseCase: CardDataUseCase):
-    com.example.prepaidcard.screens.ViewModel() {
+@HiltViewModel
+class CardDataViewModel @Inject constructor(
+    val cardDataUseCase: CardDataUseCase):
 
-    val errorState= mutableStateOf(
-        GeneratePinViewModel.CustomError()
-    )
+    ViewModel() {
+
     val isLoading= mutableStateOf(false)
-    val pinset= mutableStateOf(false)
+    var isError: MutableState<Boolean> = mutableStateOf(false)
+    var errorMessage: MutableState<String> = mutableStateOf("")
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun cardData(rootNavController: NavHostController){
+    fun cardData(onComplete: (CardDataResponse?) -> Unit){
 
         viewModelScope.launch {
-            cardDataUseCase.invoke("http://35.200.225.250:8080/cardissuer/cms/viewCarddataByCustomer").collectLatest {
-                when(it){
-                    is NetworkResponse.Erroe -> {
-                        errorState.value= GeneratePinViewModel.CustomError(true, it.msg)
-                    }
-                    is NetworkResponse.Loading -> {
-                        isLoading.value=true
-                    }
-                    is NetworkResponse.Success -> {
-                        isLoading.value=false
-                        pinset.value=true
-                        rootNavController.navigate(Destination.VIEW_CARDS_1)
-                    }
-                }
-            }
+            handleFlow(response = cardDataUseCase.invoke(url = "http://35.200.225.250:8080/cardissuer/cms/viewCarddataByCustomer"), onLoading = {
+                isLoading.value = it
+            }, onFailure = {
+                isError.value = true
+                errorMessage.value = it
+            }, onSuccess = {
+
+                onComplete(it)
+            })
 
         }
     }

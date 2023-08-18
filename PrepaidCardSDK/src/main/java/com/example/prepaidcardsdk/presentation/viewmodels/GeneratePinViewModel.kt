@@ -8,7 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.example.prepaidcard.screens.ViewModel
-import com.example.prepaidcardsdk.data.model.SetPinResponse
+import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
 import com.example.prepaidcardsdk.domain.usecases.SetPinUseCase
 import com.example.prepaidcardsdk.utils.handleFlow
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -1,9 +1,11 @@
 package com.example.prepaidcardsdk.data.repoimpl
 
+import com.example.prepaidcardsdk.data.model.req.CardDataRequestModel
 import com.example.prepaidcardsdk.data.model.req.ChangeStatusRequestModel
 import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
 
 import com.example.prepaidcardsdk.data.model.req.SetPinRequestModel
+import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
 import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
 import com.example.prepaidcardsdk.data.src.APIService
 import com.example.prepaidcardsdk.domain.repo.Repository
@@ -25,6 +27,12 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
         return handleFlowResponse(call = {apiService.changeStatus(reqBody)},{it})
     }
 
+    override fun cardDataStatus(url: String): Flow<NetworkResponse<CardDataResponse>> {
+        val reqBody = CardDataRequestModel("1287208", "167")
+        return handleFlowResponse(call = {
+            apiService.cardData(reqBody)
+        },{it})
+    }
 
 
 }
