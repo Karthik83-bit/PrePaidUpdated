@@ -344,7 +344,6 @@ fun PageTen(
                                     horizontal = 10.dp
                                 )
                                 .fillMaxSize()
-                                .blur(viewModel.mask.value)
                         ) {
                             Column(
                                 horizontalAlignment = Alignment.Start
@@ -379,7 +378,8 @@ fun PageTen(
                                             Text(
                                                 text = "dbehera56@gmail.com",
                                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 14.sp
+                                                fontSize = 14.sp,
+                                                modifier = Modifier.blur(viewModel.mask.value)
                                             )
                                         }
                                         Row(
@@ -394,7 +394,8 @@ fun PageTen(
                                             Text(
                                                 text = "7978730692",
                                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 14.sp
+                                                fontSize = 14.sp,
+                                                modifier = Modifier.blur(viewModel.mask.value)
                                             )
                                         }
                                         Row(
@@ -409,7 +410,8 @@ fun PageTen(
                                             Text(
                                                 text = "₹ 5,00,000.00",
                                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 14.sp
+                                                fontSize = 14.sp,
+                                                modifier = Modifier.blur(viewModel.mask.value)
                                             )
                                         }
                                         Row(
@@ -424,7 +426,8 @@ fun PageTen(
                                             Text(
                                                 text = "₹ 2,00,000.00",
                                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 14.sp
+                                                fontSize = 14.sp,
+                                                modifier = Modifier.blur(viewModel.mask.value)
                                             )
                                         }
                                         Row(
@@ -439,7 +442,8 @@ fun PageTen(
                                             Text(
                                                 text = "Completed",
                                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 14.sp
+                                                fontSize = 14.sp,
+                                                modifier = Modifier.blur(viewModel.mask.value)
                                             )
                                         }
                                         Row(
@@ -454,7 +458,8 @@ fun PageTen(
                                             Text(
                                                 text = "Active",
                                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 14.sp
+                                                fontSize = 14.sp,
+                                                modifier = Modifier.blur(viewModel.mask.value)
                                             )
                                         }
                                     }
