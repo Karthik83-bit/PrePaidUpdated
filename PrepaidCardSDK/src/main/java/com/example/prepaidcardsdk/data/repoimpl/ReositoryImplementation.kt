@@ -1,7 +1,7 @@
 package com.example.prepaidcardsdk.data.repoimpl
 
-import com.example.prepaidcardsdk.data.model.SetPinRequestModel
-import com.example.prepaidcardsdk.data.model.SetPinResponse
+import com.example.prepaidcardsdk.data.model.req.SetPinRequestModel
+import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
 import com.example.prepaidcardsdk.data.src.APIService
 import com.example.prepaidcardsdk.domain.repo.Repository
 import com.example.prepaidcardsdk.utils.NetworkResponse
@@ -14,7 +14,7 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
     override fun setPin(encPin: String): Flow<NetworkResponse<SetPinResponse>> =flow{
         emit(NetworkResponse.Loading())
         try{
-            val reqBody=SetPinRequestModel(encryptPin = encPin, cardRefId = "168")
+            val reqBody= SetPinRequestModel(encryptPin = encPin, cardRefId = "168")
             val resp=apiService.setPin(reqBody = reqBody)
             if(resp.isSuccessful){
                 if(resp.body()!=null){
