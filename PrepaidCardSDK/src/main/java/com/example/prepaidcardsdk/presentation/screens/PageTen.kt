@@ -61,7 +61,11 @@ import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PageTen(rootNavController: NavHostController, viewModel: GeneratePinViewModel, onClick: (state:Boolean) -> Unit = {}) {
+fun PageTen(
+    rootNavController: NavHostController,
+    viewModel: GeneratePinViewModel,
+    onClick: (state: Boolean) -> Unit = {}
+) {
     val ReplaceToggleState = remember {
         mutableStateOf(false)
     }
@@ -80,10 +84,11 @@ fun PageTen(rootNavController: NavHostController, viewModel: GeneratePinViewMode
     val EnterOTPToggleState = remember {
         mutableStateOf(false)
     }
-    val DetailsState = remember{
+    val DetailsState = remember {
         mutableStateOf(false)
     }
-   @Composable
+
+    @Composable
     fun Sheet() {
         Column(
             modifier = Modifier
@@ -104,7 +109,7 @@ fun PageTen(rootNavController: NavHostController, viewModel: GeneratePinViewMode
             ) {
                 Button(
                     onClick = {
-                        ResetPinToggleState.value=!ResetPinToggleState.value
+                        ResetPinToggleState.value = !ResetPinToggleState.value
                     },
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier
@@ -133,397 +138,350 @@ fun PageTen(rootNavController: NavHostController, viewModel: GeneratePinViewMode
 
         }
     }
-    Scaffold(topBar = {  CustomTopBar {
-        rootNavController.popBackStack()
-    }})
+    Scaffold(topBar = {
+        CustomTopBar {
+            rootNavController.popBackStack()
+        }
+    })
     {
-    CustomScaffoldScreen(
-        sheet =  ResetPinToggleState,
-        enterOtp = EnterOTPToggleState,
-        pauseCard =  PauseCardToggleState,
-        hotlist = HotListToggleState,
-        cvv = CvvToggleState,
-        details = DetailsState,
-        maskState = viewModel.mask
-    )
+        CustomScaffoldScreen(
+            sheet = ResetPinToggleState,
+            enterOtp = EnterOTPToggleState,
+            pauseCard = PauseCardToggleState,
+            hotlist = HotListToggleState,
+            cvv = CvvToggleState,
+            details = DetailsState,
+            maskState = viewModel.mask
+        )
 
-    {
-        var textFieldSize by remember { mutableStateOf(Size.Zero) }
+        {
+            var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
-        Box(
-            Modifier
-                .padding(it)
-                .fillMaxSize()
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .verticalScroll(enabled = true, state = ScrollState(0))
-                    .background(Color.White),
-                horizontalAlignment = Alignment.CenterHorizontally
-
+            Box(
+                Modifier
+                    .padding(it)
+                    .fillMaxSize()
             ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(1f)
+                        .verticalScroll(enabled = true, state = ScrollState(0))
+                        .background(Color.White),
+                    horizontalAlignment = Alignment.CenterHorizontally
 
-                FlipCard()
-                Row(verticalAlignment = Alignment.CenterVertically) {
-
-                    Text("CVV:", fontWeight = FontWeight(700))
-                    Text(
-                        "123",
-                        fontWeight = FontWeight(700),
-                        modifier = Modifier.blur(viewModel.mask.value)
-                    )
-                    Switch(
-                        checked = CvvToggleState.value,
-                        onCheckedChange = {
-                            CvvToggleState.value = !CvvToggleState.value
-                            onClick(CvvToggleState.value)
-                        },
-                        colors = SwitchDefaults.colors(
-                            checkedTrackColor = Resetcolor,
-                            uncheckedIconColor = Resetcolor,
-                            uncheckedBorderColor = Resetcolor,
-                            disabledUncheckedIconColor = Resetcolor
-                        ),
-                    )
-
-                }
-                val list = listOf<String>("LoadCard", "Managecard", "Statement", "Details")
-                val clickedState = remember {
-                    mutableStateOf("")
-                }
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    list.forEachIndexed { index, s ->
+
+                    FlipCard()
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+
+                        Text("CVV:", fontWeight = FontWeight(700))
                         Text(
-                            s,
-                            Modifier.clickable { clickedState.value = s },
-                            color = if (s != clickedState.value) Resetcolor else {
-                                Color(0xFFDB8726)
-                            },
-                            fontWeight = FontWeight(600)
+                            "123",
+                            fontWeight = FontWeight(700),
+                            modifier = Modifier.blur(viewModel.mask.value)
                         )
-                        if (index != list.size - 1) {
-                            Spacer(
-                                modifier = Modifier
-                                    .height(20.dp)
-                                    .width(1.dp)
-                                    .background(color = Resetcolor)
+                        Switch(
+                            checked = CvvToggleState.value,
+                            onCheckedChange = {
+                                CvvToggleState.value = !CvvToggleState.value
+                                onClick(CvvToggleState.value)
+                            },
+                            colors = SwitchDefaults.colors(
+                                checkedTrackColor = Resetcolor,
+                                uncheckedIconColor = Resetcolor,
+                                uncheckedBorderColor = Resetcolor,
+                                disabledUncheckedIconColor = Resetcolor
+                            ),
+                        )
+
+                    }
+                    val list = listOf<String>("LoadCard", "Managecard", "Statement", "Details")
+                    val clickedState = remember {
+                        mutableStateOf("")
+                    }
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp, vertical = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        list.forEachIndexed { index, s ->
+                            Text(
+                                s,
+                                Modifier.clickable { clickedState.value = s },
+                                color = if (s != clickedState.value) Resetcolor else {
+                                    Color(0xFFDB8726)
+                                },
+                                fontWeight = FontWeight(600)
                             )
+                            if (index != list.size - 1) {
+                                Spacer(
+                                    modifier = Modifier
+                                        .height(20.dp)
+                                        .width(1.dp)
+                                        .background(color = Resetcolor)
+                                )
+                            }
                         }
                     }
-                }
-                val checkBoxState = remember {
-                    mutableStateOf("")
-                }
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(5.dp)
-                        .background(Color.LightGray)
-                )
+                    val checkBoxState = remember {
+                        mutableStateOf("")
+                    }
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(5.dp)
+                            .background(Color.LightGray)
+                    )
 
-                if (clickedState.value == "Statement") {
-                    Box(
-                        Modifier
-                            .padding(vertical = 10.dp, horizontal = 10.dp)
-                            .fillMaxSize()
-                    ) {
-                        Column(horizontalAlignment = Alignment.Start) {
-                            Text(
-                                "Card Statement", fontWeight = FontWeight(600),
-                                fontSize = 20.sp,
-                                modifier = Modifier.padding(10.dp),
-                                fontFamily = FontFamily(Font(R.font.lato_bold))
-                            )
-                            val checkList =
-                                listOf<String>("Last 10 Transaction", "Transaction History")
-                            checkList.forEach {
-                                CustomCheckBox(checkBoxState, it)
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(20.dp),
-                                horizontalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-                                CustomButton(
-                                    text = "SUBMIT",
-                                    buttonColor = lighttealGreen
+                    if (clickedState.value == "Statement") {
+                        Box(
+                            Modifier
+                                .padding(vertical = 10.dp, horizontal = 10.dp)
+                                .fillMaxSize()
+                        ) {
+                            Column(horizontalAlignment = Alignment.Start) {
+                                Text(
+                                    "Card Statement", fontWeight = FontWeight(600),
+                                    fontSize = 20.sp,
+                                    modifier = Modifier.padding(10.dp),
+                                    fontFamily = FontFamily(Font(R.font.lato_bold))
+                                )
+                                val checkList =
+                                    listOf<String>("Last 10 Transaction", "Transaction History")
+                                checkList.forEach {
+                                    CustomCheckBox(checkBoxState, it)
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(20.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                                 ) {
-                                    if (checkBoxState.value == "Last 10 Transaction") {
-                                        rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/none")
-                                    } else {
-                                        rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/${FilterOption.SelectDate}")
+                                    CustomButton(
+                                        text = "SUBMIT",
+                                        buttonColor = lighttealGreen
+                                    ) {
+                                        if (checkBoxState.value == "Last 10 Transaction") {
+                                            rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/none")
+                                        } else {
+                                            rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/${FilterOption.SelectDate}")
+                                        }
                                     }
-                                }
-                                CustomButton(text = "CANCEL", buttonColor = cancelGray) {
-                                    rootNavController.popBackStack()
+                                    CustomButton(text = "CANCEL", buttonColor = cancelGray) {
+                                        rootNavController.popBackStack()
+                                    }
+
                                 }
                             }
-                            if (clickedState.value == "Statement") {
-                                Box(
-                                    Modifier
-                                        .padding(vertical = 10.dp, horizontal = 10.dp)
-                                        .fillMaxSize()
+                        }
+                    }
+                    else if (clickedState.value == "Managecard") {
+                        Box(
+                            Modifier
+                                .padding(vertical = 10.dp)
+                                .fillMaxSize()
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.Start
+                            ) {
+                                Text(
+                                    "Manage Card",
+                                    fontWeight = FontWeight(600),
+                                    fontSize = 20.sp,
+                                    modifier = Modifier.padding(10.dp),
+                                    fontFamily = FontFamily(Font(R.font.lato_bold))
+                                )
+                                CustomCheckField(
+                                    state = ResetPinToggleState,
+                                    text = "Reset Pin",
+                                    res = R.drawable.group_one
                                 ) {
-                                    Column(horizontalAlignment = Alignment.Start) {
-                                        Text(
-                                            "Card Statement", fontWeight = FontWeight(600),
-                                            fontSize = 20.sp,
-                                            modifier = Modifier.padding(10.dp),
-                                            fontFamily = FontFamily(Font(R.font.lato_bold))
-                                        )
-                                        val checkList =
-                                            listOf<String>(
-                                                "Last 10 Transaction",
-                                                "Transaction History"
+                                    ResetPinToggleState.value =
+                                        !ResetPinToggleState.value
+                                    onClick(ResetPinToggleState.value)
+                                }
+
+                                CustomCheckField(
+                                    state = PauseCardToggleState,
+                                    text = "Pause card",
+                                    res = R.drawable.group_two
+                                ) {
+                                    PauseCardToggleState.value =
+                                        !PauseCardToggleState.value
+                                    onClick(PauseCardToggleState.value)
+                                }
+
+                                CustomCheckField(
+                                    state = HotListToggleState,
+                                    text = "Hotlist card",
+                                    res = R.drawable.group_three
+                                ) {
+                                    HotListToggleState.value = !HotListToggleState.value
+                                    onClick(HotListToggleState.value)
+
+                                }
+
+                                CustomCheckField(
+                                    state = ReplaceToggleState,
+                                    text = "Replace card",
+                                    res = R.drawable.group_four
+                                ) {
+                                    ReplaceToggleState.value = !ReplaceToggleState.value
+                                    onClick(ReplaceToggleState.value)
+                                }
+
+                            }
+                        }
+                    }
+                    else if (clickedState.value == "Details") {
+                        DetailsState.value
+                        Box(
+                            Modifier
+                                .padding(
+                                    vertical = 10.dp,
+                                    horizontal = 10.dp
+                                )
+                                .fillMaxSize()
+                                .blur(viewModel.mask.value)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.Start
+                            ) {
+                                Text(
+                                    "Card Details",
+                                    fontWeight = FontWeight(600),
+                                    fontSize = 20.sp,
+                                    modifier = Modifier.padding(10.dp),
+                                    fontFamily = FontFamily(Font(R.font.lato_bold))
+                                )
+                                ElevatedCard(
+                                    modifier = Modifier.padding(
+                                        horizontal = 20.dp,
+                                        vertical = 10.dp
+                                    ), colors = CardDefaults.elevatedCardColors(cdback),
+                                    elevation = CardDefaults.elevatedCardElevation(2.dp)
+                                ) {
+                                    Column(
+                                        Modifier.padding(10.dp),
+                                        verticalArrangement = Arrangement.spacedBy(15.dp)
+                                    ) {
+                                        Row(
+                                            Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text(
+                                                text = "Email:",
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 12.sp
                                             )
-                                        checkList.forEach {
-                                            CustomCheckBox(checkBoxState, it)
+                                            Text(
+                                                text = "dbehera56@gmail.com",
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 14.sp
+                                            )
                                         }
                                         Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(20.dp),
-                                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                            Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
-                                            CustomButton(
-                                                text = "SUBMIT",
-                                                buttonColor = lighttealGreen,
-                                                onClick = {
-                                                    if (checkBoxState.value == "Last 10 Transaction") {
-                                                        rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/none")
-                                                    } else {
-                                                        rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/${FilterOption.SelectDate}")
-                                                    }
-                                                },
-
-                                                )
-                                            CustomButton(
-                                                text = "CANCEL", buttonColor = cancelGray,
-                                                onClick = {
-                                                    rootNavController.popBackStack()
-                                                },
+                                            Text(
+                                                text = "Mobile:",
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 12.sp
+                                            )
+                                            Text(
+                                                text = "7978730692",
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 14.sp
                                             )
                                         }
-
-                                    }
-                                }
-                            }
-                            else if (clickedState.value == "Managecard") {
-                                Box(
-                                    Modifier
-                                        .padding(vertical = 10.dp)
-                                        .fillMaxSize()
-                                ) {
-                                    Column(
-                                        horizontalAlignment = Alignment.Start
-                                    ) {
-                                        Text(
-                                            "Manage Card",
-                                            fontWeight = FontWeight(600),
-                                            fontSize = 20.sp,
-                                            modifier = Modifier.padding(10.dp),
-                                            fontFamily = FontFamily(Font(R.font.lato_bold))
-                                        )
-                                        CustomCheckField(
-                                            state = ResetPinToggleState,
-                                            text = "Reset Pin",
-                                            res = R.drawable.group_one
+                                        Row(
+                                            Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
-                                            ResetPinToggleState.value =
-                                                !ResetPinToggleState.value
-                                            onClick(ResetPinToggleState.value)
+                                            Text(
+                                                text = "Monthly Limit:",
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 12.sp
+                                            )
+                                            Text(
+                                                text = "₹ 5,00,000.00",
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 14.sp
+                                            )
                                         }
-
-                                        CustomCheckField(
-                                            state = PauseCardToggleState,
-                                            text = "Pause card",
-                                            res = R.drawable.group_two
+                                        Row(
+                                            Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
-                                            PauseCardToggleState.value =
-                                                !PauseCardToggleState.value
-                                            onClick(PauseCardToggleState.value)
+                                            Text(
+                                                text = "Card Limit:",
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 12.sp
+                                            )
+                                            Text(
+                                                text = "₹ 2,00,000.00",
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 14.sp
+                                            )
                                         }
-
-                                        CustomCheckField(
-                                            state = HotListToggleState,
-                                            text = "Hotlist card",
-                                            res = R.drawable.group_three
+                                        Row(
+                                            Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
-                                            HotListToggleState.value = !HotListToggleState.value
-                                            onClick(HotListToggleState.value)
-
+                                            Text(
+                                                text = "KYC Status:",
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 12.sp
+                                            )
+                                            Text(
+                                                text = "Completed",
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 14.sp
+                                            )
                                         }
-
-                                        CustomCheckField(
-                                            state = ReplaceToggleState,
-                                            text = "Replace card",
-                                            res = R.drawable.group_four
+                                        Row(
+                                            Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
-                                            ReplaceToggleState.value = !ReplaceToggleState.value
-                                            onClick(ReplaceToggleState.value)
-                                        }
-
-                                    }
-                                }
-                            }
-                            else if (clickedState.value == "Details") {
-                                DetailsState.value
-                                Box(
-                                    Modifier
-                                        .padding(
-                                            vertical = 10.dp,
-                                            horizontal = 10.dp
-                                        )
-                                        .fillMaxSize()
-                                        .blur(viewModel.mask.value)
-                                ) {
-                                    Column(
-                                        horizontalAlignment = Alignment.Start
-                                    ) {
-                                        Text(
-                                            "Card Details",
-                                            fontWeight = FontWeight(600),
-                                            fontSize = 20.sp,
-                                            modifier = Modifier.padding(10.dp),
-                                            fontFamily = FontFamily(Font(R.font.lato_bold))
-                                        )
-                                        ElevatedCard(
-                                            modifier = Modifier.padding(
-                                                horizontal = 20.dp,
-                                                vertical = 10.dp
-                                            ), colors = CardDefaults.elevatedCardColors(cdback),
-                                            elevation = CardDefaults.elevatedCardElevation(2.dp)
-                                        ) {
-                                            Column(
-                                                Modifier.padding(10.dp),
-                                                verticalArrangement = Arrangement.spacedBy(15.dp)
-                                            ) {
-                                                Row(
-                                                    Modifier.fillMaxWidth(),
-                                                    horizontalArrangement = Arrangement.SpaceBetween
-                                                ) {
-                                                    Text(
-                                                        text = "Email:",
-                                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                        fontSize = 12.sp
-                                                    )
-                                                    Text(
-                                                        text = "dbehera56@gmail.com",
-                                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                        fontSize = 14.sp
-                                                    )
-                                                }
-                                                Row(
-                                                    Modifier.fillMaxWidth(),
-                                                    horizontalArrangement = Arrangement.SpaceBetween
-                                                ) {
-                                                    Text(
-                                                        text = "Mobile:",
-                                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                        fontSize = 12.sp
-                                                    )
-                                                    Text(
-                                                        text = "7978730692",
-                                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                        fontSize = 14.sp
-                                                    )
-                                                }
-                                                Row(
-                                                    Modifier.fillMaxWidth(),
-                                                    horizontalArrangement = Arrangement.SpaceBetween
-                                                ) {
-                                                    Text(
-                                                        text = "Monthly Limit:",
-                                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                        fontSize = 12.sp
-                                                    )
-                                                    Text(
-                                                        text = "₹ 5,00,000.00",
-                                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                        fontSize = 14.sp
-                                                    )
-                                                }
-                                                Row(
-                                                    Modifier.fillMaxWidth(),
-                                                    horizontalArrangement = Arrangement.SpaceBetween
-                                                ) {
-                                                    Text(
-                                                        text = "Card Limit:",
-                                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                        fontSize = 12.sp
-                                                    )
-                                                    Text(
-                                                        text = "₹ 2,00,000.00",
-                                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                        fontSize = 14.sp
-                                                    )
-                                                }
-                                                Row(
-                                                    Modifier.fillMaxWidth(),
-                                                    horizontalArrangement = Arrangement.SpaceBetween
-                                                ) {
-                                                    Text(
-                                                        text = "KYC Status:",
-                                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                        fontSize = 12.sp
-                                                    )
-                                                    Text(
-                                                        text = "Completed",
-                                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                        fontSize = 14.sp
-                                                    )
-                                                }
-                                                Row(
-                                                    Modifier.fillMaxWidth(),
-                                                    horizontalArrangement = Arrangement.SpaceBetween
-                                                ) {
-                                                    Text(
-                                                        text = "Card Status:",
-                                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                        fontSize = 12.sp
-                                                    )
-                                                    Text(
-                                                        text = "Active",
-                                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                        fontSize = 14.sp
-                                                    )
-                                                }
-                                            }
-
+                                            Text(
+                                                text = "Card Status:",
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 12.sp
+                                            )
+                                            Text(
+                                                text = "Active",
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 14.sp
+                                            )
                                         }
                                     }
-                                }
-                            }
-                            else {
-                                Box(
-                                    Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        "ComingSoon...",
-                                        fontSize = 30.sp,
-                                        fontWeight = FontWeight(700),
-                                        fontFamily = FontFamily(
-                                            listOf(Font(R.font.lato_bold))
-                                        ),
-                                        color = Color.Gray,
-                                    )
+
                                 }
                             }
                         }
                     }
+                    else {
+                        Box(
+                            Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                "ComingSoon...",
+                                fontSize = 30.sp,
+                                fontWeight = FontWeight(700),
+                                fontFamily = FontFamily(
+                                    listOf(Font(R.font.lato_bold))
+                                ),
+                                color = Color.Gray,
+                            )
+                        }
+                    }
                 }
-
             }
         }
-    }
+
     }
 }
