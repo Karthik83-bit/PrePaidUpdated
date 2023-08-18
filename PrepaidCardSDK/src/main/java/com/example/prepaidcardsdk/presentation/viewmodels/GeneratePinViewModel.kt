@@ -23,9 +23,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GeneratePinViewModel @Inject constructor(val setPinUseCase: SetPinUseCase):ViewModel() {
+    data class CustomError(val isError: Boolean?=false, val errStr: String?="")
     val enterPin= mutableStateOf("")
     val reenterPin= mutableStateOf("")
     val pinset= mutableStateOf(false)
+    val mask= mutableStateOf(10.dp)
     val errorState= mutableStateOf(
         CustomError()
     )
@@ -37,9 +39,9 @@ class GeneratePinViewModel @Inject constructor(val setPinUseCase: SetPinUseCase)
         val key = "ASDFGHJASHJKLQWEASDFGHJASHJKLQWE".toByteArray(StandardCharsets.UTF_8)
         val enc=encryptData(enterPin.value,key)
 
-    val mask= mutableStateOf(10.dp)
 
-    fun setPin(){
+
+
         viewModelScope.launch {
             setPinUseCase.invoke(encPin=enc).collectLatest {
 
@@ -57,11 +59,15 @@ class GeneratePinViewModel @Inject constructor(val setPinUseCase: SetPinUseCase)
                     }
                 }
             }
-        }
+        
 
     }
+
+
+
+}
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun encryptData(data: String, key: ByteArray): String
+    fun encryptData(data: String, key: ByteArray): String
     {
         println("Before Encrypt")
         println(data)
@@ -83,8 +89,4 @@ class GeneratePinViewModel @Inject constructor(val setPinUseCase: SetPinUseCase)
         val encryptedByteValue = Base64.getEncoder().encode(encryptedData)
         return String(encryptedByteValue)
     }
-
-
-
-data class CustomError(val isError: Boolean?=false, val errStr: String?="")
 }

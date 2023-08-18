@@ -271,9 +271,6 @@ val pindontMatch=remember{
                     enable=!pindontMatch.value
                 ) {
                     viewModel.setPin(rootNavController)
-                    if (viewModel.pinset.value) {
-                        rootNavController.navigate(Destination.ENTER_OTP_SCREEN)
-                    }
                 }
                 CustomButton(
                     text = "CANCEL",
