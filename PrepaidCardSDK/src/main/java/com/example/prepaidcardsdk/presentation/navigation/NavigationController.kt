@@ -13,7 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.prepaidcard.screens.PageFifteen
 import com.example.prepaidcard.screens.PageFourteen
-import com.example.prepaidcard.screens.PageFourty
+import com.example.prepaidcard.screens.CardActivationScreen
 import com.example.prepaidcard.screens.PageFourtyOne
 import com.example.prepaidcard.screens.PageFourtyTwo
 import com.example.prepaidcard.screens.PageTen
@@ -32,6 +32,7 @@ import com.example.prepaidcard.screens.ViewModel
 //import com.example.prepaidcard.screens.VerifyOTP
 //import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.utils.Destination
+import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.screens.PageSix
 
@@ -68,7 +69,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
         }*/
 
         composable(Destination.VIEW_CARDS_1){
-            PageFourty(rootNavController)
+            CardActivationScreen(rootNavController,viewModel= hiltViewModel<CardActivationViewModel>())
 //            VerifyOTP(rootNavController)
         }
         composable(Destination.TRANSACTION_STATEMENTS_HISTORY+"/{filter}", arguments = listOf(navArgument("filter"){type=
