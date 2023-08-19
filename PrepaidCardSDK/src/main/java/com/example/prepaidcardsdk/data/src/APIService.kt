@@ -5,6 +5,7 @@ import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
 
 import com.example.prepaidcardsdk.data.model.req.CardDataRequestModel
 import com.example.prepaidcardsdk.data.model.req.SetPinRequestModel
+import com.example.prepaidcardsdk.data.model.resp.CardDataByCustomerResp
 import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
 import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
 import retrofit2.Response
@@ -21,8 +22,14 @@ interface APIService {
     suspend fun changeStatus(@Body reqBody: ChangeStatusRequestModel): Response<ChangeStatusResponseModel>
 
     @POST()
-    suspend fun cardDataByCustomer(
+    suspend fun cardData(
         @Url url: String,
         @Body requestModel: CardDataRequestModel = CardDataRequestModel()
     ): Response<CardDataResponse>
+
+    @POST()
+    suspend fun cardDataByCustomer(
+        @Url url: String,
+        @Body requestModel: CardDataRequestModel = CardDataRequestModel()
+    ): Response<CardDataByCustomerResp>
 }

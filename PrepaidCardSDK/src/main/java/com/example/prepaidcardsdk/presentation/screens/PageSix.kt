@@ -64,14 +64,27 @@ import kotlinx.coroutines.delay
 fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
-   /* LaunchedEffect(key1 = true) {
-        viewModel.cardData() {}
-    }*/
+    LaunchedEffect(key1 = true) {
+        viewModel.cardDataByCustomer() {}
+    }
     Column(
         Modifier
             .padding(16.dp)
             .fillMaxSize()
             .verticalScroll(enabled = true, state = ScrollState(0))
+            .clickable(onClick = {
+                viewModel.viewCardData {
+                    if (it != null) {
+                        if (it.status == "0") {
+                            rootNavController.navigate(Destination.VIEW_CARDS_1)
+                        } else {
+                            viewModel.isError.value = true
+                            viewModel.errorMessage.value = it.statusDesc
+                        }
+                    }
+                }
+            })
+
     ) {
         if (viewModel.isError.value) {
             AlertDialog(onDismissRequest = { }) {
@@ -163,7 +176,8 @@ fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) 
                                     if (it.status == "0") {
                                         rootNavController.navigate(Destination.VIEW_CARDS_1)
                                     } else {
-                                        rootNavController.navigate(Destination.VIEW_CARDS_1)
+                                        viewModel.isError.value = true
+                                        viewModel.errorMessage.value = it.statusDesc
                                     }
                                 }
                             }
@@ -405,7 +419,7 @@ fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) 
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
-        Column(modifier = Modifier.clickable(onClick = {})) {
+        Column() {
             Row(
                 Modifier
                     .fillMaxWidth()

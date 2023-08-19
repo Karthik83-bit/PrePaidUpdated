@@ -426,7 +426,7 @@ fun PageTen(
                                             )
 
                                             BasicTextField(
-                                                value = "₹ "+viewModel.monthlyLimit.value,
+                                                value = viewModel.monthlyLimit.value,
                                                 keyboardOptions = KeyboardOptions(
                                                     keyboardType = KeyboardType.Number,
                                                     imeAction = ImeAction.Done
@@ -451,7 +451,7 @@ fun PageTen(
                                             )
 
                                             BasicTextField(
-                                                value = "₹ "+viewModel.cardLimit.value,
+                                                value = viewModel.cardLimit.value,
                                                 keyboardOptions = KeyboardOptions(
                                                     keyboardType = KeyboardType.Number,
                                                     imeAction = ImeAction.Done

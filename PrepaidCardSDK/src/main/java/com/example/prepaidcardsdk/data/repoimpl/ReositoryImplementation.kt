@@ -5,6 +5,7 @@ import com.example.prepaidcardsdk.data.model.req.ChangeStatusRequestModel
 import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
 
 import com.example.prepaidcardsdk.data.model.req.SetPinRequestModel
+import com.example.prepaidcardsdk.data.model.resp.CardDataByCustomerResp
 import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
 import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
 import com.example.prepaidcardsdk.data.src.APIService
@@ -27,10 +28,20 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
         return handleFlowResponse(call = {apiService.changeStatus(reqBody)},{it})
     }
 
-    override fun cardDataByCustomerStatus(
+    override fun cardDataStatus(
         url: String,
         requestModel: CardDataRequestModel
     ): Flow<NetworkResponse<CardDataResponse>> {
+        val reqBody = CardDataRequestModel(cardRefId = "1287208", customerId = "181")
+        return handleFlowResponse(call = {
+            apiService.cardData(url, reqBody)
+        },{it})
+    }
+
+    override fun cardDataByCustomerStatus(
+        url: String,
+        requestModel: CardDataRequestModel
+    ): Flow<NetworkResponse<CardDataByCustomerResp>> {
         val reqBody = CardDataRequestModel(cardRefId = "1287208", customerId = "181")
         return handleFlowResponse(call = {
             apiService.cardDataByCustomer(url, reqBody)
