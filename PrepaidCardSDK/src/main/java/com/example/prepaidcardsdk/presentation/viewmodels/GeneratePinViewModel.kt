@@ -26,7 +26,9 @@ class GeneratePinViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-
+    var username = mutableStateOf("dbehera56@gmail.com")
+    var monthlyLimit = mutableStateOf("5,00,000.00")
+    var cardLimit = mutableStateOf("2,00,000.00")
 
     val enterPin = mutableStateOf("")
     val reenterPin = mutableStateOf("")

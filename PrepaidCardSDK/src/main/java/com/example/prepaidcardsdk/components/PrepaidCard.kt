@@ -24,8 +24,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -116,6 +118,11 @@ fun PrepaidCard(clickable: Modifier) {
     val mask= remember {
         mutableStateOf(10.dp)
     }
+
+    var buttonText by remember {
+        mutableStateOf("View Details")
+    }
+
     Card(
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(Resetcolor),
@@ -169,6 +176,11 @@ fun PrepaidCard(clickable: Modifier) {
                 }
                 OutlinedButton(
                     onClick = {
+                        if (buttonText == "View Details") {
+                            buttonText = "Available Balance\n ₹ 2,35,000.00"
+                        }else{
+                            buttonText = "View Details"
+                        }
                         mask.value=if(mask.value==0.dp){
                             10.dp
                         }else{
@@ -180,7 +192,7 @@ fun PrepaidCard(clickable: Modifier) {
                         containerColor = tealGreen
                     )
                 ) {
-                    Text("ViewDetails", color = Color.White)
+                    Text(buttonText, color = Color.White)
 
                 }
                 Row(horizontalArrangement = Arrangement.SpaceEvenly,

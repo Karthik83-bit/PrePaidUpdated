@@ -1,5 +1,6 @@
 package com.example.prepaidcard.screens
 
+import android.graphics.Paint.Style
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,12 +15,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -35,9 +39,13 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Cyan
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -155,7 +163,8 @@ fun PageTen(
         )
 
         {
-            var textFieldSize by remember { mutableStateOf(Size.Zero) }
+            var editTextValue by remember { mutableStateOf("") }
+            var textFieldValue by remember { mutableStateOf("dbehera56@gmail.com") }
 
             Box(
                 Modifier
@@ -375,12 +384,20 @@ fun PageTen(
                                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                                 fontSize = 12.sp
                                             )
-                                            Text(
-                                                text = "dbehera56@gmail.com",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 14.sp,
+                                            BasicTextField(
+                                                value = viewModel.username.value,
+                                                keyboardOptions = KeyboardOptions(
+                                                    keyboardType = KeyboardType.Email,
+                                                    imeAction = ImeAction.Done
+                                                ),
+                                                textStyle = TextStyle(
+                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                    fontSize = 14.sp),
+                                                onValueChange = {
+                                                                viewModel.username.value = it
+                                                },
                                                 modifier = Modifier.blur(viewModel.mask.value)
-                                            )
+                                                    )
                                         }
                                         Row(
                                             Modifier.fillMaxWidth(),
@@ -407,10 +424,19 @@ fun PageTen(
                                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                                 fontSize = 12.sp
                                             )
-                                            Text(
-                                                text = "₹ 5,00,000.00",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 14.sp,
+
+                                            BasicTextField(
+                                                value = "₹ "+viewModel.monthlyLimit.value,
+                                                keyboardOptions = KeyboardOptions(
+                                                    keyboardType = KeyboardType.Number,
+                                                    imeAction = ImeAction.Done
+                                                ),
+                                                textStyle = TextStyle(
+                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                    fontSize = 14.sp),
+                                                onValueChange = {
+                                                    viewModel.monthlyLimit.value = it
+                                                },
                                                 modifier = Modifier.blur(viewModel.mask.value)
                                             )
                                         }
@@ -423,10 +449,19 @@ fun PageTen(
                                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                                 fontSize = 12.sp
                                             )
-                                            Text(
-                                                text = "₹ 2,00,000.00",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 14.sp,
+
+                                            BasicTextField(
+                                                value = "₹ "+viewModel.cardLimit.value,
+                                                keyboardOptions = KeyboardOptions(
+                                                    keyboardType = KeyboardType.Number,
+                                                    imeAction = ImeAction.Done
+                                                ),
+                                                textStyle = TextStyle(
+                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                    fontSize = 14.sp),
+                                                onValueChange = {
+                                                    viewModel.cardLimit.value = it
+                                                },
                                                 modifier = Modifier.blur(viewModel.mask.value)
                                             )
                                         }
