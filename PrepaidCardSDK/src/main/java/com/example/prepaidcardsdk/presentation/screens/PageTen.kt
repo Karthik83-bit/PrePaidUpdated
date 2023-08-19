@@ -46,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -386,6 +387,7 @@ fun PageTen(
                                             )
                                             BasicTextField(
                                                 value = viewModel.username.value,
+                                                enabled = viewModel.mask.value != 10.dp,
                                                 keyboardOptions = KeyboardOptions(
                                                     keyboardType = KeyboardType.Email,
                                                     imeAction = ImeAction.Done
@@ -427,6 +429,7 @@ fun PageTen(
 
                                             BasicTextField(
                                                 value = viewModel.monthlyLimit.value,
+                                                enabled = viewModel.mask.value != 10.dp,
                                                 keyboardOptions = KeyboardOptions(
                                                     keyboardType = KeyboardType.Number,
                                                     imeAction = ImeAction.Done
@@ -452,6 +455,7 @@ fun PageTen(
 
                                             BasicTextField(
                                                 value = viewModel.cardLimit.value,
+                                                enabled = viewModel.mask.value != 10.dp,
                                                 keyboardOptions = KeyboardOptions(
                                                     keyboardType = KeyboardType.Number,
                                                     imeAction = ImeAction.Done

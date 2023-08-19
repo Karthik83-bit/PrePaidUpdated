@@ -144,7 +144,6 @@ val cont= LocalContext.current
                     Text("Remaining time : 0:36s",fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))), fontSize = 14.sp, color = Color.Gray)
                 }}
             ElevatedButton(onClick = {
-                                     Toast.makeText(context,otpValue.value,Toast.LENGTH_SHORT).show()
                 rootNavController.navigate(Destination.PAGE_SIX)
                                      }, shape = RoundedCornerShape(5.dp), elevation = ButtonDefaults.buttonElevation(20.dp), modifier = Modifier
                 .fillMaxWidth()
