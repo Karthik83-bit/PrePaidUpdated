@@ -277,7 +277,7 @@ val pindontMatch=remember{
                 ) {
                     viewModel.setPin {
                         if (it != null) {
-                            if(it.status=="0"){
+                            if(it.status=="0"||it.status=="-1"){
                                 rootNavController.navigate(Destination.ENTER_OTP_SCREEN)
                             } else{
                                 rootNavController.popBackStack()

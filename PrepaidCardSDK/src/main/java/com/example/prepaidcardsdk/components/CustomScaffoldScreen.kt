@@ -4,6 +4,7 @@ package com.example.prepaidcard.components
 //import androidx.compose.foundation.layout.ColumnScopeInstance.align
 //import androidx.compose.foundation.layout.ColumnScopeInstance.align
 import android.os.CountDownTimer
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.tween
@@ -45,22 +46,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.Color.Companion.LightGray
+import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.example.prepaidcard.utils.STRING
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,12 +79,15 @@ fun CustomScaffoldScreen(
     cvv: MutableState<Boolean>,
     maskState: MutableState<Dp>,
     details: MutableState<Boolean>,
-    mainContent: @Composable () -> Unit
+    manageViewModel: ManageCardViewModel,
+    mainContent: @Composable () -> Unit,
+
 
 ) {
     val otpInp = remember {
         mutableStateOf("")
     }
+    val context= LocalContext.current
     Box(
         Modifier.blur(
             if (sheet.value || enterOtp.value || pauseCard.value || hotlist.value || cvv.value) {
@@ -186,11 +195,10 @@ fun CustomScaffoldScreen(
 
     @Composable
     fun ResetPinSheet(hotlist: MutableState<Boolean>) {
-        var textFieldSize by remember { mutableStateOf(Size.Zero) }
-        val genPin = remember {
-            mutableStateOf("")
-        }
-        val rePin = remember {
+    var isError= remember {
+        mutableStateOf(false)
+    }
+        var errStr= remember {
             mutableStateOf("")
         }
         Column(
@@ -203,6 +211,9 @@ fun CustomScaffoldScreen(
             Column(
                 Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+                if(isError.value){
+                    Text(errStr.value,color=Red, fontWeight = FontWeight(700))
+                }
                 Text(
                     text = "Generate Pin",
                     fontSize = 22.sp,
@@ -235,11 +246,12 @@ fun CustomScaffoldScreen(
 //                    )
 //                }
                 TextField(
-                    value = genPin.value,
+                    value = manageViewModel.enterPin.value,
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text("Enetr PIN") },
-                    onValueChange = { genPin.value = it },
+                    onValueChange = { manageViewModel.enterPin.value = it },
                     shape = RoundedCornerShape(2.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done),
                     colors = TextFieldDefaults.textFieldColors(
 
                         disabledIndicatorColor = Color.Transparent,
@@ -254,12 +266,22 @@ fun CustomScaffoldScreen(
                     fontFamily = FontFamily(Font(R.font.lato_regular))
                 )
                 TextField(
-                    value = rePin.value,
+                    value = manageViewModel.reenterPin.value,
 
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text("Enter PIN", modifier = Modifier.padding(0.dp)) },
-                    onValueChange = { rePin.value = it },
+                    onValueChange = { manageViewModel.reenterPin.value = it
+                        if(it.length==4&&!it.matches(manageViewModel.enterPin.value.toRegex())){
+                            isError.value=true
+                            errStr.value="PINS DONT MATCH"
+                        }
+                        else{
+                            isError.value=false
+                        }
+
+                                    },
                     shape = RoundedCornerShape(2.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done),
                     colors = TextFieldDefaults.textFieldColors(
 
                         disabledIndicatorColor = Color.Transparent,
@@ -269,6 +291,8 @@ fun CustomScaffoldScreen(
                     )
                 )
             }
+
+
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -277,6 +301,16 @@ fun CustomScaffoldScreen(
             ) {
                 Button(
                     onClick = {
+                        if(manageViewModel.enterPin.value.isEmpty()||manageViewModel.reenterPin.value.isEmpty()){
+                            isError.value=true
+                            errStr.value="FIELDS CANT BE EMPTY"
+                        }
+                        else{
+                            isError.value=false
+                        }
+
+
+
                         hotlist.value = !hotlist.value
                         enterOtp.value = !enterOtp.value
                     },
@@ -345,11 +379,11 @@ fun CustomScaffoldScreen(
                     fontFamily = FontFamily(Font(R.font.lato_regular))
                 )
                 BasicTextField(
-                    value = otpInp.value,
+                    value = manageViewModel.resetPinOtp.value,
                     onValueChange = {
 
-                        if (it.length <= 6) {
-                            otpInp.value = it
+                        if (it.length <= 4) {
+                           manageViewModel.resetPinOtp.value= it
                         }
 
 
@@ -362,12 +396,12 @@ fun CustomScaffoldScreen(
 
                 {
 
-                    Row {
-                        repeat(6) {
+                    Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+                        repeat(4) {
 
                             val char = when {
-                                it >= otpInp.value.length -> "0"
-                                else -> otpInp.value[it]
+                                it >= manageViewModel.resetPinOtp .value.length -> ""
+                                else -> manageViewModel.resetPinOtp .value[it]
                             }
 
 
@@ -384,7 +418,7 @@ fun CustomScaffoldScreen(
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 
                                     Text(
-                                        char.toString(), textAlign = TextAlign.Center, color = Gray
+                                        char.toString(), textAlign = TextAlign.Center, color = Black, fontWeight = FontWeight(600)
                                     )
 
                                 }
@@ -411,6 +445,9 @@ fun CustomScaffoldScreen(
             ) {
                 Button(
                     onClick = {
+                        manageViewModel.resetPin(){
+                                Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+                        }
                         hotlist.value = !hotlist.value
                         maskState.value = if (maskState.value == 0.dp) {
                             10.dp

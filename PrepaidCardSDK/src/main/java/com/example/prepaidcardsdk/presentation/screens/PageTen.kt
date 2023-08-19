@@ -1,6 +1,5 @@
 package com.example.prepaidcard.screens
 
-import android.graphics.Paint.Style
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,7 +22,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -36,7 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Cyan
 import androidx.compose.ui.text.TextStyle
@@ -45,8 +42,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,6 +58,7 @@ import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcard.utils.FilterOption
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.ui.theme.Resetcolor
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.cdback
@@ -73,7 +69,8 @@ import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 fun PageTen(
     rootNavController: NavHostController,
     viewModel: GeneratePinViewModel,
-    onClick: (state: Boolean) -> Unit = {}
+    onClick: (state: Boolean) -> Unit = {},
+    manageViewModel: ManageCardViewModel
 ) {
     val ReplaceToggleState = remember {
         mutableStateOf(false)
@@ -160,6 +157,7 @@ fun PageTen(
             hotlist = HotListToggleState,
             cvv = CvvToggleState,
             details = DetailsState,
+            manageViewModel=manageViewModel,
             maskState = viewModel.mask
         )
 

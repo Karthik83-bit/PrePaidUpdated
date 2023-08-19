@@ -118,7 +118,7 @@ fun CardActivationScreen(
                     viewModel.changeCardStatus() {response->
                         if (response != null) {
                             viewModel.response.value = response
-                            if (response.status == "0") {
+                            if (response.status == "0"||response.status =="-1") {
 
                                 rootNavController.navigate(Destination.GENERATE_PIN_SCREEN)
 

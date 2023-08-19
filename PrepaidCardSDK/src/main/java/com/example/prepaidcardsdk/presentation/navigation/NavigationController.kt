@@ -35,6 +35,7 @@ import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.screens.PageSix
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -57,7 +58,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
             PageSix(rootNavController, viewModel = hiltViewModel<CardDataViewModel>())
         }
         composable(Destination.CARD_MANAGEMENT_SCREEN){
-            PageTen(rootNavController, viewModel= hiltViewModel<GeneratePinViewModel>() )
+            PageTen(rootNavController, viewModel= hiltViewModel<GeneratePinViewModel>(),manageViewModel= hiltViewModel<ManageCardViewModel>() )
         }
         composable(Destination.MPIN_SCREEN){
             VerifyOTP(rootNavController = rootNavController)

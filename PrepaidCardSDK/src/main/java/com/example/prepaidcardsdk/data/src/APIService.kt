@@ -4,9 +4,11 @@ import com.example.prepaidcardsdk.data.model.req.ChangeStatusRequestModel
 import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
 
 import com.example.prepaidcardsdk.data.model.req.CardDataRequestModel
+import com.example.prepaidcardsdk.data.model.req.ResetPinRequestModel
 import com.example.prepaidcardsdk.data.model.req.SetPinRequestModel
 import com.example.prepaidcardsdk.data.model.resp.CardDataByCustomerResp
 import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
+import com.example.prepaidcardsdk.data.model.resp.ResetPinResponseModel
 import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -32,4 +34,9 @@ interface APIService {
         @Url url: String,
         @Body requestModel: CardDataRequestModel = CardDataRequestModel()
     ): Response<CardDataByCustomerResp>
+
+    @POST("cms/resetPin")
+    suspend fun resetPin(
+        @Body req:ResetPinRequestModel
+    ):Response<ResetPinResponseModel>
 }
