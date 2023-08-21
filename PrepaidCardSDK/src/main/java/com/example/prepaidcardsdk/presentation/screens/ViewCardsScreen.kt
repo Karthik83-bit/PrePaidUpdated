@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.data.model.resp.toViewcardresponseWrapperDomain
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.ui.theme.HitextColor
 import com.example.prepaidcardsdk.ui.theme.gray_color
@@ -167,19 +168,20 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                         .height(140.dp)
                                         .width(250.dp)
                                         .clickable(onClick = {
-                                            viewModel.viewCardData(cardRefId = it.cardRefId, customerId = "181") {
-                                                if (it != null) {
-                                                    if (it.status == "0") {
-                                                        if (!it.viewcardresponseWrapper.isActive) {
-                                                            rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN)
-                                                        }
-                                                        else{
-                                                            rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN)
-                                                        }
+                                            it.cardRefId?.let { it1 ->
+                                                viewModel.viewCardData(cardRefId = it1, customerId = "181") {
+                                                    if (it != null) {
+                                                        if (it.status == "0") {
+                                                            if (!it.viewcardresponseWrapper.isActive) {
+                                                                rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN)
+                                                            } else{
+                                                                rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN)
+                                                            }
 
-                                                    }else {
-                                                        viewModel.isError.value = true
-                                                        viewModel.errorMessage.value = it.statusDesc
+                                                        }else {
+                                                            viewModel.isError.value = true
+                                                            viewModel.errorMessage.value = it.statusDesc
+                                                        }
                                                     }
                                                 }
                                             }
@@ -195,7 +197,7 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                             fontFamily = FontFamily(Font(R.font.robot_medium)),
                                             fontSize = 18.sp
                                         )
-                                        Text(text = it.cardRefId, color = gray_color)
+                                        Text(text = formatString(it.toViewcardresponseWrapperDomain().decryptedCard.toString()),color = gray_color)
                                         Spacer(modifier = Modifier.height(30.dp))
                                         Row(
                                             horizontalArrangement = Arrangement.spacedBy(80.dp)
@@ -239,19 +241,20 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                     Color.White
                                 ),
                                 modifier = Modifier.padding(10.dp).clickable(onClick = {
-                                    viewModel.viewCardData(cardRefId = it.cardRefId, customerId = "181") {
-                                        if (it != null) {
-                                            if (it.status == "0") {
-                                                if (!it.viewcardresponseWrapper.isActive) {
-                                                    rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN)
-                                                }
-                                                else{
-                                                    rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN)
-                                                }
+                                    it.cardRefId?.let { it1 ->
+                                        viewModel.viewCardData(cardRefId = it1, customerId = "181") {
+                                            if (it != null) {
+                                                if (it.status == "0") {
+                                                    if (!it.viewcardresponseWrapper.isActive) {
+                                                        rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN)
+                                                    } else{
+                                                        rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN)
+                                                    }
 
-                                            }else {
-                                                viewModel.isError.value = true
-                                                viewModel.errorMessage.value = it.statusDesc
+                                                }else {
+                                                    viewModel.isError.value = true
+                                                    viewModel.errorMessage.value = it.statusDesc
+                                                }
                                             }
                                         }
                                     }
@@ -271,7 +274,7 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                             fontFamily = FontFamily(Font(R.font.robot_medium)),
                                             fontSize = 18.sp
                                         )
-                                        Text(text = it.cardRefId, color = gray_color)
+                                        Text(text = formatString( it.toViewcardresponseWrapperDomain().decryptedCard?:"00000000000000"), color = gray_color)
                                         Spacer(modifier = Modifier.height(30.dp))
                                         Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
                                             ClickableText(
@@ -367,4 +370,10 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
             }
         }
     }
+}
+
+fun formatString(toString: String): String {
+
+    return toString.replaceRange(12,13," "+toString[12]).replaceRange(8,9," "+toString[8]).replaceRange(4,5," "+toString[4])
+
 }

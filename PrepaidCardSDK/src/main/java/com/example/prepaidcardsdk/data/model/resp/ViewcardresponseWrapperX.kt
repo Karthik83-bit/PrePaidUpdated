@@ -9,25 +9,25 @@ import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 
 data class ViewcardresponseWrapperX(
-    val cardRefId: String,
-    val cardType: String,
-    val encryptedCard: String,
-    val encryptedCvv: Any,
-    val expiryDate: String,
+    val cardRefId: String?,
+    val cardType: String?,
+    val encryptedCard: String?,
+    val encryptedCvv: String?,
+    val expiryDate: String?,
     val isActive: Boolean,
     val isBlock: Boolean,
     val isHotlist: Boolean,
     val isVirtual: Boolean,
-    val lastfourDigit: String,
-    val nameonCard: String,
-    val productName: String
+    val lastfourDigit: String?,
+    val nameonCard: String?,
+    val productName: String?
 )
 @RequiresApi(Build.VERSION_CODES.O)
-fun ViewcardresponseWrapper.toViewcardresponseWrapperDomain(){
+fun ViewcardresponseWrapperX.toViewcardresponseWrapperDomain(): ViewcardresponseWrapperDomain {
     val key = "ASDFGHJASHJKLQWEASDFGHJASHJKLQWE".toByteArray(StandardCharsets.UTF_8)
-    val decryptedData= decryptData(encryptedCard.toByteArray(), key =key )
-    ViewcardresponseWrapperDomain(
-        cardRefId, cardType, encryptedCard, encryptedCvv, expiryDate, isActive, isBlock, isHotlist, lastfourDigit, nameonCard, productName
+    val decryptedData= encryptedCard?.let { decryptData(it.toByteArray(StandardCharsets.UTF_8), key =key ) }
+   return  ViewcardresponseWrapperDomain(
+        cardRefId?:"", cardType?:"", decryptedCard = decryptedData?:"", encryptedCvv?:"", expiryDate?:"", isActive, isBlock, isHotlist, lastfourDigit?:"", nameonCard?:"", productName?:""
     )
 }
 

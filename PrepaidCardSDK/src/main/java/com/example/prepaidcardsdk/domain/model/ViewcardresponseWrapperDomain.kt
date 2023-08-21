@@ -3,7 +3,7 @@ package com.example.prepaidcardsdk.domain.model
 data class ViewcardresponseWrapperDomain(
     val cardRefId: String,
     val cardType: String,
-    val encryptedCard: String,
+    val decryptedCard: String?,
     val encryptedCvv: Any,
     val expiryDate: String,
     val isActive: Boolean,
