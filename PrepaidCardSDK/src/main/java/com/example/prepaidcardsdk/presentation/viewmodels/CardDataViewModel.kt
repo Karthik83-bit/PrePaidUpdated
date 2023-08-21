@@ -13,6 +13,7 @@ import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
 import com.example.prepaidcardsdk.data.model.resp.ViewcardresponseWrapperX
 import com.example.prepaidcardsdk.domain.usecases.CardDataByCustomerUseCase
 import com.example.prepaidcardsdk.domain.usecases.CardDataUseCase
+import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import com.example.prepaidcardsdk.utils.handleFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -30,6 +31,7 @@ class CardDataViewModel @Inject constructor(
     var isError: MutableState<Boolean> = mutableStateOf(false)
     var errorMessage: MutableState<String> = mutableStateOf("")
     var cardList: MutableState<List<ViewcardresponseWrapperX>?> = mutableStateOf(emptyList())
+    var destination:MutableState<String> =mutableStateOf("")
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun cardDataByCustomer() {
@@ -58,7 +60,7 @@ class CardDataViewModel @Inject constructor(
             handleFlow<CardDataResponse>(
                 response = cardDataUseCase.invoke(
                     "http://35.200.225.250:8080/cardissuer/cms/viewCarddata",
-                    requestModel = ViewCardDataReqModel(cardRefId = cardRefId, customerId = customerId)
+                    requestModel = ViewCardDataReqModel(cardRefId = SDK_CONSTANTS.cardRefId?:"", customerId = customerId)
                 ),
                 onSuccess = { onComplete(it) },
                 onLoading = { isLoading.value = it },
