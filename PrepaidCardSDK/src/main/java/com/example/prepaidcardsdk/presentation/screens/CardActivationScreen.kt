@@ -1,5 +1,6 @@
 package com.example.prepaidcard.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +19,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.newui.components.FlipCard
@@ -36,7 +37,6 @@ import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewModel
-import com.example.prepaidcardsdk.utils.GeneralUiState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +46,7 @@ fun CardActivationScreen(
     onClick: (state: Boolean) -> Unit = {},
     viewModel: CardActivationViewModel,
 ) {
-
+val context= LocalContext.current
 
 
     Scaffold(topBar = {
@@ -118,7 +118,8 @@ fun CardActivationScreen(
                     viewModel.changeCardStatus() {response->
                         if (response != null) {
                             viewModel.response.value = response
-                            if (response.status == "0"||response.status =="-1") {
+                            Toast.makeText(context, response.statusDesc,Toast.LENGTH_LONG).show()
+                            if (response.status == "0") {
 
                                 rootNavController.navigate(Destination.GENERATE_PIN_SCREEN)
 

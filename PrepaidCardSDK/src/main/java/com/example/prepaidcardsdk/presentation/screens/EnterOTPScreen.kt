@@ -39,7 +39,7 @@ import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 import com.example.prepaidcardsdk.ui.theme.remainingTimeColor
 
 @Composable
-fun PageFourtyTwo(rootNavController: NavHostController) {
+fun EnterOTPScreen(rootNavController: NavHostController) {
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
 

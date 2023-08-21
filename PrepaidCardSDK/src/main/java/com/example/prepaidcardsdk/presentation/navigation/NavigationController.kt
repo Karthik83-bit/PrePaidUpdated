@@ -11,15 +11,15 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.prepaidcard.screens.PageFifteen
-import com.example.prepaidcard.screens.PageFourteen
+import com.example.prepaidcard.screens.CardACtivationConfirmationScreen
+import com.example.prepaidcard.screens.ApplyCardScreen
 import com.example.prepaidcard.screens.CardActivationScreen
-import com.example.prepaidcard.screens.PageFourtyOne
-import com.example.prepaidcard.screens.PageFourtyTwo
-import com.example.prepaidcard.screens.PageTen
+import com.example.prepaidcard.screens.SetPinScreen
+import com.example.prepaidcard.screens.EnterOTPScreen
+import com.example.prepaidcard.screens.CardManagementScreen
 import com.example.prepaidcard.screens.Screen26
 import com.example.prepaidcard.screens.TransactionInfo
-import com.example.prepaidcard.screens.VerifyOTP
+import com.example.prepaidcard.screens.MpinScreen
 import com.example.prepaidcard.screens.ViewModel
 //import com.example.prepaidcard.screens.PageFourteen
 //import com.example.prepaidcard.screens.PageFourty
@@ -36,7 +36,7 @@ import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewMode
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
-import com.example.prepaidcardsdk.screens.PageSix
+import com.example.prepaidcardsdk.screens.ViewCardsScreen
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -46,22 +46,22 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
             .fillMaxSize(),
         navController = rootNavController, startDestination = Destination.MPIN_SCREEN){
 
-        composable(Destination.PAGE_FOURTEEN){
-            PageFourteen(rootNavController,viewModel)
+        composable(Destination.APPLY_CARD_SCREEN){
+            ApplyCardScreen(rootNavController,viewModel)
         }
 
         /*composable(Destination.SCREEN_23){
             Screen23(rootNavController )
         }*/
 
-        composable(Destination.PAGE_SIX){
-            PageSix(rootNavController, viewModel = hiltViewModel<CardDataViewModel>())
+        composable(Destination.VIEW_CARDS_SCREEN){
+            ViewCardsScreen(rootNavController, viewModel = hiltViewModel<CardDataViewModel>())
         }
         composable(Destination.CARD_MANAGEMENT_SCREEN){
-            PageTen(rootNavController, viewModel= hiltViewModel<GeneratePinViewModel>(),manageViewModel= hiltViewModel<ManageCardViewModel>() )
+            CardManagementScreen(rootNavController, viewModel= hiltViewModel<GeneratePinViewModel>(),manageViewModel= hiltViewModel<ManageCardViewModel>() )
         }
         composable(Destination.MPIN_SCREEN){
-            VerifyOTP(rootNavController = rootNavController)
+            MpinScreen(rootNavController = rootNavController)
         }
        /* composable(Destination.PAGE_ELEVEN){
             PageEleven(rootNavController)
@@ -70,7 +70,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
             PageEighteen(rootNavController)
         }*/
 
-        composable(Destination.VIEW_CARDS_1){
+        composable(Destination.CARD_ACTIVATION_SCREEN){
             CardActivationScreen(rootNavController,viewModel= hiltViewModel<CardActivationViewModel>())
 //            VerifyOTP(rootNavController)
         }
@@ -83,13 +83,13 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
 
 
             val viewModel= hiltViewModel<GeneratePinViewModel>()
-            PageFourtyOne(rootNavController,viewModel)
+            SetPinScreen(rootNavController,viewModel)
         }
         composable(Destination.ENTER_OTP_SCREEN){
-            PageFourtyTwo(rootNavController)
+            EnterOTPScreen(rootNavController)
         }
         composable(Destination.CARD_ACTIVATION_CONFIRM){
-            PageFifteen(rootNavController)
+            CardACtivationConfirmationScreen(rootNavController)
         }
 
         composable(Destination.TRANSACTION_INFO){

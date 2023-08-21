@@ -446,14 +446,21 @@ fun CustomScaffoldScreen(
                 Button(
                     onClick = {
                         manageViewModel.resetPin(){
-                                Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+                            manageViewModel.enterPin.value=""
+                            manageViewModel.reenterPin.value=""
+                            Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+                        }
+                        if(hotlist==cvv){
+                            maskState.value = if (maskState.value == 0.dp) {
+                                10.dp
+                            } else {
+                                0.dp
+                            }
                         }
                         hotlist.value = !hotlist.value
-                        maskState.value = if (maskState.value == 0.dp) {
-                            10.dp
-                        } else {
-                            0.dp
-                        }
+
+                        manageViewModel.resetPinOtp.value=""
+
                     },
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier

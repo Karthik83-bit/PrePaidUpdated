@@ -66,7 +66,7 @@ import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PageTen(
+fun CardManagementScreen(
     rootNavController: NavHostController,
     viewModel: GeneratePinViewModel,
     onClick: (state: Boolean) -> Unit = {},

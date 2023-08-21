@@ -2,6 +2,7 @@ package com.example.prepaidcard.screens
 
 //import androidx.compose.material.TextFieldDefaults
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,6 +43,7 @@ import com.example.prepaidcardsdk.R
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -52,15 +54,15 @@ import com.example.prepaidcard.components.CustomButton
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
-import com.example.prepaidcardsdk.utils.GeneralUiState
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PageFourtyOne(rootNavController: NavHostController, viewModel: GeneratePinViewModel) {
+fun SetPinScreen(rootNavController: NavHostController, viewModel: GeneratePinViewModel) {
 val pindontMatch=remember{
     mutableStateOf(false)
 }
+    val context= LocalContext.current
     Scaffold(topBar = {
         CustomTopBar {
             rootNavController.popBackStack()
@@ -277,7 +279,9 @@ val pindontMatch=remember{
                 ) {
                     viewModel.setPin {
                         if (it != null) {
-                            if(it.status=="0"||it.status=="-1"){
+                            Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+                            if(it.status=="0"){
+
                                 rootNavController.navigate(Destination.ENTER_OTP_SCREEN)
                             } else{
                                 rootNavController.popBackStack()

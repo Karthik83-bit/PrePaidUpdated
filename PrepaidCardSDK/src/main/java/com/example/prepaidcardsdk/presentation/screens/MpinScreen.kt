@@ -1,8 +1,6 @@
 package com.example.prepaidcard.screens
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -21,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
@@ -32,11 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 
@@ -54,7 +47,7 @@ import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
 
 @Composable
-fun VerifyOTP(rootNavController: NavHostController) {
+fun MpinScreen(rootNavController: NavHostController) {
 
     val otpValue= remember {
         mutableStateOf("")
@@ -144,7 +137,7 @@ val cont= LocalContext.current
                     Text("Remaining time : 0:36s",fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))), fontSize = 14.sp, color = Color.Gray)
                 }}
             ElevatedButton(onClick = {
-                rootNavController.navigate(Destination.PAGE_SIX)
+                rootNavController.navigate(Destination.VIEW_CARDS_SCREEN)
                                      }, shape = RoundedCornerShape(5.dp), elevation = ButtonDefaults.buttonElevation(20.dp), modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp), colors = ButtonDefaults.buttonColors(Color(0xff32DBDE))) {

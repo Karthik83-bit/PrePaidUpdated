@@ -1,11 +1,11 @@
 package com.example.prepaidcard.utils
 
 object Destination{
-const val PAGE_FOURTEEN = "PageFourteen"
-    const val SCREEN_23 = "Screen23"
-    const val PAGE_SIX = "PageSix"
+const val APPLY_CARD_SCREEN = "PageFourteen"
+
+    const val VIEW_CARDS_SCREEN = "PageSix"
     const val CARD_MANAGEMENT_SCREEN = "PageTen"
-    const val VIEW_CARDS_1 = "PageFourty"
+    const val CARD_ACTIVATION_SCREEN = "PageFourty"
     const val GENERATE_PIN_SCREEN = "PageFourtyOne"
     const val ENTER_OTP_SCREEN = "PageFourtyTwo"
     const val CARD_ACTIVATION_CONFIRM = "PageFifteen"

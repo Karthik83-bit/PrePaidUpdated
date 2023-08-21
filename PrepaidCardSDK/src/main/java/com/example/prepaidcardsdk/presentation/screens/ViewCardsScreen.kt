@@ -56,16 +56,17 @@ import com.example.prepaidcardsdk.ui.theme.gray_color
 import com.example.prepaidcardsdk.ui.theme.isuGreen
 import com.example.prepaidcardsdk.ui.theme.isuOrrange
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) {
+fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataViewModel) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     LaunchedEffect(key1 = true) {
-        viewModel.cardDataByCustomer() {}
+        viewModel.cardDataByCustomer() {
+
+        }
     }
     Column(
         Modifier
@@ -76,7 +77,7 @@ fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) 
                 viewModel.viewCardData {
                     if (it != null) {
                         if (it.status == "0") {
-                            rootNavController.navigate(Destination.VIEW_CARDS_1)
+                            rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN)
                         } else {
                             viewModel.isError.value = true
                             viewModel.errorMessage.value = it.statusDesc
@@ -174,7 +175,7 @@ fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) 
                             viewModel.viewCardData {
                                 if (it != null) {
                                     if (it.status == "0") {
-                                        rootNavController.navigate(Destination.VIEW_CARDS_1)
+                                        rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN)
                                     } else {
                                         viewModel.isError.value = true
                                         viewModel.errorMessage.value = it.statusDesc
@@ -196,7 +197,7 @@ fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) 
                         ) {
                             ClickableText(
                                 text = AnnotatedString("Apply Now"),
-                                onClick = { rootNavController.navigate(Destination.VIEW_CARDS_1) },
+                                onClick = { rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN) },
                                 style = TextStyle(
                                     color = isuGreen,
                                     fontSize = 18.sp,
@@ -244,7 +245,7 @@ fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) 
                         Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
                             ClickableText(
                                 text = AnnotatedString("Apply Now"),
-                                onClick = { rootNavController.navigate(Destination.PAGE_FOURTEEN) },
+                                onClick = { rootNavController.navigate(Destination.APPLY_CARD_SCREEN) },
                                 style = TextStyle(
                                     color = isuOrrange,
                                     fontSize = 18.sp,
@@ -295,7 +296,7 @@ fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) 
                         ) {
                             ClickableText(
                                 text = AnnotatedString("Apply Now"),
-                                onClick = { rootNavController.navigate(Destination.VIEW_CARDS_1) },
+                                onClick = { rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN) },
                                 style = TextStyle(
                                     color = isuGreen,
                                     fontSize = 18.sp,
@@ -343,7 +344,7 @@ fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) 
                         Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
                             ClickableText(
                                 text = AnnotatedString("Apply Now"),
-                                onClick = { rootNavController.navigate(Destination.PAGE_FOURTEEN) },
+                                onClick = { rootNavController.navigate(Destination.APPLY_CARD_SCREEN) },
                                 style = TextStyle(
                                     color = isuOrrange,
                                     fontSize = 18.sp,
@@ -393,7 +394,7 @@ fun PageSix(rootNavController: NavHostController, viewModel: CardDataViewModel) 
                     Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
                         ClickableText(
                             text = AnnotatedString("Apply Now"),
-                            onClick = { rootNavController.navigate(Destination.PAGE_FOURTEEN) },
+                            onClick = { rootNavController.navigate(Destination.APPLY_CARD_SCREEN) },
                             style = TextStyle(
                                 color = isuOrrange,
                                 fontSize = 18.sp,
