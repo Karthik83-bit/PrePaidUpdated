@@ -45,6 +45,7 @@ class GeneratePinViewModel @Inject constructor(
     var isError: MutableState<Boolean> = mutableStateOf(false)
     var errorMessage: MutableState<String> = mutableStateOf("")
     var response: MutableState<SetPinResponse?> = mutableStateOf(null)
+    var otp:MutableState<String> = mutableStateOf("")
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun encryptData(data: String, key: ByteArray): String {
@@ -79,7 +80,7 @@ class GeneratePinViewModel @Inject constructor(
 
         viewModelScope.launch {
 
-            handleFlow(response = resetPinUseCase.invoke(enc,"1234"), onLoading = {
+            handleFlow(response = resetPinUseCase.invoke(enc,otp.value), onLoading = {
                 isLoading.value = it
             }, onFailure = {
                 isError.value = true

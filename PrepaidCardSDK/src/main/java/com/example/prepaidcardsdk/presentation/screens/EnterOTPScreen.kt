@@ -1,4 +1,5 @@
 package com.example.prepaidcard.screens
+
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -47,12 +48,14 @@ import com.example.prepaidcardsdk.ui.theme.remainingTimeColor
 @Composable
 fun EnterOTPScreen(rootNavController: NavHostController, viewModel: GeneratePinViewModel) {
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
-    var context= LocalContext.current
+    var context = LocalContext.current
 
 
-    Scaffold(topBar = { CustomTopBar {
-        rootNavController.popBackStack()
-    }}) {
+    Scaffold(topBar = {
+        CustomTopBar {
+            rootNavController.popBackStack()
+        }
+    }) {
         Column(
             modifier = Modifier
                 .padding(it)
@@ -60,8 +63,9 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: GeneratePinV
                 .verticalScroll(enabled = true, state = ScrollState(0))
         ) {
 //            CustomTopBar {rootNavController.navigate(Destination.PAGE_FOURTY_ONE)}
-            Column(Modifier.padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Column(
+                Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
                 Text(
                     text = "Enter OTP",
                     fontSize = 22.sp,
@@ -75,7 +79,14 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: GeneratePinV
                 )
                 Row {
                     OutlinedTextField(
-                        value = "****", enabled = false, readOnly = true, onValueChange = {},
+                        value = viewModel.otp.value,
+                        enabled = true,
+                        readOnly = false,
+                        onValueChange = {
+                            if (it.length <= 4) {
+                                viewModel.otp.value = it
+                            }
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(10.dp)
@@ -98,39 +109,48 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: GeneratePinV
                         fontFamily = FontFamily(Font(R.font.lato_regular)),
                         color = lighttealGreen
                     )
-                    Text(text = "Remaining time", fontSize = 14.sp,
+                    Text(
+                        text = "Remaining time",
+                        fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.lato_regular)),
                         color = remainingTimeColor
                     )
                 }
             }
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)){
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
                 CustomButton(
                     text = "SUBMIT",
                     buttonColor = lighttealGreen,
                     onClick = {
-                        viewModel.setPin {
+                        viewModel.setPin() {
                             if (it != null) {
-                                Toast.makeText(context,it.statusDesc, Toast.LENGTH_LONG).show()
-                                if(it.status=="0"){
+                                Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
+                                if (it.status == "0") {
 
                                     rootNavController.navigate(Destination.ENTER_OTP_SCREEN)
-                                } else{
-                                    rootNavController.popBackStack(route = Destination.CARD_ACTIVATION_SCREEN,false,false)
+                                } else {
+                                    rootNavController.popBackStack(
+                                        route = Destination.CARD_ACTIVATION_SCREEN,
+                                        false,
+                                        false
+                                    )
                                 }
                             }
                         }
                     },
 
-                )
+                    )
                 CustomButton(
                     text = "CANCEL",
                     buttonColor = cancelGray,
                     onClick = {},
 
-                )
+                    )
             }
         }
     }
