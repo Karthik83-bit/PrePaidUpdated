@@ -6,6 +6,7 @@ import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
 import com.example.prepaidcardsdk.data.model.req.CardDataRequestModel
 import com.example.prepaidcardsdk.data.model.req.ResetPinRequestModel
 import com.example.prepaidcardsdk.data.model.req.SetPinRequestModel
+import com.example.prepaidcardsdk.data.model.req.ViewCardDataReqModel
 import com.example.prepaidcardsdk.data.model.resp.CardDataByCustomerResp
 import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
 import com.example.prepaidcardsdk.data.model.resp.ResetPinResponseModel
@@ -26,7 +27,7 @@ interface APIService {
     @POST()
     suspend fun cardData(
         @Url url: String,
-        @Body requestModel: CardDataRequestModel = CardDataRequestModel()
+        @Body requestModel: ViewCardDataReqModel
     ): Response<CardDataResponse>
 
     @POST()
