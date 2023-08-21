@@ -17,6 +17,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -63,28 +66,11 @@ import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataViewModel) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
-    LaunchedEffect(key1 = true) {
-        viewModel.cardDataByCustomer() {
-
-        }
-    }
     Column(
         Modifier
             .padding(16.dp)
             .fillMaxSize()
             .verticalScroll(enabled = true, state = ScrollState(0))
-            .clickable(onClick = {
-                viewModel.viewCardData {
-                    if (it != null) {
-                        if (it.status == "0") {
-                            rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN)
-                        } else {
-                            viewModel.isError.value = true
-                            viewModel.errorMessage.value = it.statusDesc
-                        }
-                    }
-                }
-            })
 
     ) {
         if (viewModel.isError.value) {
@@ -96,7 +82,7 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(viewModel.errorMessage.value!!)
+                            Text(viewModel.errorMessage.value)
                             Button(onClick = {
                                 viewModel.isError.value = false
                                 rootNavController.popBackStack()
@@ -158,269 +144,153 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                 )
             }
         }
-        Row(modifier = Modifier.horizontalScroll(scrollState)) {
-            OutlinedCard(
-                shape = RoundedCornerShape(10.dp),
-                elevation = CardDefaults.outlinedCardElevation(4.dp),
-                colors = CardDefaults.cardColors(
-                    Color.White
-                ),
-                modifier = Modifier.padding(10.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .height(140.dp)
-                        .width(250.dp)
-                        .clickable(onClick = {
-                            viewModel.viewCardData {
-                                if (it != null) {
-                                    if (it.status == "0") {
-                                        rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN)
-                                    } else {
-                                        viewModel.isError.value = true
-                                        viewModel.errorMessage.value = it.statusDesc
+
+
+        LaunchedEffect(key1 = true) {
+            viewModel.cardDataByCustomer()
+        }
+        viewModel.cardList.value?.let {
+            if(it.isNotEmpty()){
+                LazyRow() {
+                    items(it) {
+                        if(it.cardType.equals("GPR",true)) {
+                            OutlinedCard(
+                                shape = RoundedCornerShape(10.dp),
+                                elevation = CardDefaults.outlinedCardElevation(4.dp),
+                                colors = CardDefaults.cardColors(
+                                    Color.White
+                                ),
+                                modifier = Modifier.padding(10.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .height(140.dp)
+                                        .width(250.dp)
+                                        .clickable(onClick = {
+                                            viewModel.viewCardData(cardRefId = it.cardRefId, customerId = "181") {
+                                                if (it != null) {
+                                                    if (it.status == "0") {
+                                                        if (!it.viewcardresponseWrapper.isActive) {
+                                                            rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN)
+                                                        }
+
+                                                    }else {
+                                                        viewModel.isError.value = true
+                                                        viewModel.errorMessage.value = it.statusDesc
+                                                    }
+                                                }
+                                            }
+                                        })
+                                ) {
+                                    Column(
+                                        Modifier.padding(20.dp),
+                                        verticalArrangement = Arrangement.SpaceEvenly
+                                    ) {
+
+                                        Text(
+                                            text = "Prepaid Card",
+                                            fontFamily = FontFamily(Font(R.font.robot_medium)),
+                                            fontSize = 18.sp
+                                        )
+                                        Text(text = it.cardRefId, color = gray_color)
+                                        Spacer(modifier = Modifier.height(30.dp))
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy(80.dp)
+                                        ) {
+                                            ClickableText(
+                                                text = AnnotatedString("Apply Now"),
+                                                onClick = { rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN) },
+                                                style = TextStyle(
+                                                    color = isuGreen,
+                                                    fontSize = 18.sp,
+                                                    fontFamily = FontFamily(
+                                                        Font(R.font.roboto_regular)
+                                                    ),
+                                                    textDecoration = TextDecoration.Underline
+                                                )
+                                            )
+                                            Text(
+                                                text = "iServeU",
+                                                color = isuGreen,
+                                                fontSize = 18.sp,
+                                                fontFamily = FontFamily(
+                                                    Font(R.font.inter_extra_bold)
+                                                ),
+                                                fontStyle = FontStyle.Italic,
+                                                fontWeight = FontWeight.ExtraBold
+                                            )
+                                        }
                                     }
                                 }
                             }
-                        })
-                ) {
-                    Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.SpaceEvenly) {
-                        Text(
-                            text = "Prepaid Card",
-                            fontFamily = FontFamily(Font(R.font.robot_medium)),
-                            fontSize = 18.sp
-                        )
-                        Text(text = "7009 XXXX XXXX", color = gray_color)
-                        Spacer(modifier = Modifier.height(30.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(80.dp)
-                        ) {
-                            ClickableText(
-                                text = AnnotatedString("Apply Now"),
-                                onClick = { rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN) },
-                                style = TextStyle(
-                                    color = isuGreen,
-                                    fontSize = 18.sp,
-                                    fontFamily = FontFamily(
-                                        Font(R.font.roboto_regular)
-                                    ),
-                                    textDecoration = TextDecoration.Underline
-                                )
-                            )
-                            Text(
-                                text = "iServeU",
-                                color = isuGreen,
-                                fontSize = 18.sp,
-                                fontFamily = FontFamily(
-                                    Font(R.font.inter_extra_bold)
-                                ),
-                                fontStyle = FontStyle.Italic,
-                                fontWeight = FontWeight.ExtraBold
-                            )
                         }
                     }
+//                    items(it){if(it.cardType.equals("GPR",true)) {}
                 }
-            }
-            OutlinedCard(
-                shape = RoundedCornerShape(10.dp),
-                elevation = CardDefaults.outlinedCardElevation(4.dp),
-                colors = CardDefaults.cardColors(
-                    Color.White
-                ),
-                modifier = Modifier.padding(10.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .height(140.dp)
-                        .width(250.dp)
-                ) {
-                    Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.SpaceEvenly) {
-                        Text(
-                            text = "Gift Card",
-                            fontFamily = FontFamily(Font(R.font.robot_medium)),
-                            fontSize = 18.sp
-                        )
-                        Text(text = "7009 XXXX XXXX", color = gray_color)
-                        Spacer(modifier = Modifier.height(30.dp))
-                        Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
-                            ClickableText(
-                                text = AnnotatedString("Apply Now"),
-                                onClick = { rootNavController.navigate(Destination.APPLY_CARD_SCREEN) },
-                                style = TextStyle(
-                                    color = isuOrrange,
-                                    fontSize = 18.sp,
-                                    fontFamily = FontFamily(
-                                        Font(R.font.roboto_regular)
-                                    ),
-                                    textDecoration = TextDecoration.Underline
-                                )
-                            )
-                            Text(
-                                text = "iServeU",
-                                color = isuOrrange,
-                                fontSize = 18.sp,
-                                fontFamily = FontFamily(
-                                    Font(R.font.inter_extra_bold)
+                LazyRow() {
+                    items(it) {
+                        if(it.cardType.equals("GIFT",true)) {
+                            OutlinedCard(
+                                shape = RoundedCornerShape(10.dp),
+                                elevation = CardDefaults.outlinedCardElevation(4.dp),
+                                colors = CardDefaults.cardColors(
+                                    Color.White
                                 ),
-                                fontStyle = FontStyle.Italic,
-                                fontWeight = FontWeight.ExtraBold
-                            )
-                        }
+                                modifier = Modifier.padding(10.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .height(140.dp)
+                                        .width(250.dp)
+                                ) {
+                                    Column(
+                                        Modifier.padding(20.dp),
+                                        verticalArrangement = Arrangement.SpaceEvenly
+                                    ) {
+                                        Text(
+                                            text = "Gift Card",
+                                            fontFamily = FontFamily(Font(R.font.robot_medium)),
+                                            fontSize = 18.sp
+                                        )
+                                        Text(text = it.cardRefId, color = gray_color)
+                                        Spacer(modifier = Modifier.height(30.dp))
+                                        Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
+                                            ClickableText(
+                                                text = AnnotatedString("Apply Now"),
+                                                onClick = { rootNavController.navigate(Destination.APPLY_CARD_SCREEN) },
+                                                style = TextStyle(
+                                                    color = isuOrrange,
+                                                    fontSize = 18.sp,
+                                                    fontFamily = FontFamily(
+                                                        Font(R.font.roboto_regular)
+                                                    ),
+                                                    textDecoration = TextDecoration.Underline
+                                                )
+                                            )
+                                            Text(
+                                                text = "iServeU",
+                                                color = isuOrrange,
+                                                fontSize = 18.sp,
+                                                fontFamily = FontFamily(
+                                                    Font(R.font.inter_extra_bold)
+                                                ),
+                                                fontStyle = FontStyle.Italic,
+                                                fontWeight = FontWeight.ExtraBold
+                                            )
+                                        }
 
-                    }
-                }
-            }
-            OutlinedCard(
-                shape = RoundedCornerShape(10.dp),
-                elevation = CardDefaults.outlinedCardElevation(4.dp),
-                colors = CardDefaults.cardColors(
-                    Color.White
-                ),
-                modifier = Modifier.padding(10.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .height(140.dp)
-                        .width(250.dp)
-                ) {
-                    Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.SpaceEvenly) {
-                        Text(
-                            text = "Prepaid Card",
-                            fontFamily = FontFamily(Font(R.font.robot_medium)),
-                            fontSize = 18.sp
-                        )
-                        Text(text = "7009 XXXX XXXX", color = gray_color)
-                        Spacer(modifier = Modifier.height(30.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(80.dp)
-                        ) {
-                            ClickableText(
-                                text = AnnotatedString("Apply Now"),
-                                onClick = { rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN) },
-                                style = TextStyle(
-                                    color = isuGreen,
-                                    fontSize = 18.sp,
-                                    fontFamily = FontFamily(
-                                        Font(R.font.roboto_regular)
-                                    ),
-                                    textDecoration = TextDecoration.Underline
-                                )
-                            )
-                            Text(
-                                text = "iServeU",
-                                color = isuGreen,
-                                fontSize = 18.sp,
-                                fontFamily = FontFamily(
-                                    Font(R.font.inter_extra_bold)
-                                ),
-                                fontStyle = FontStyle.Italic,
-                                fontWeight = FontWeight.ExtraBold
-                            )
+                                    }
+                                }
+                            }
                         }
-                    }
-                }
-            }
-            OutlinedCard(
-                shape = RoundedCornerShape(10.dp),
-                elevation = CardDefaults.outlinedCardElevation(4.dp),
-                colors = CardDefaults.cardColors(
-                    Color.White
-                ),
-                modifier = Modifier.padding(10.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .height(140.dp)
-                        .width(250.dp)
-                ) {
-                    Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.SpaceEvenly) {
-                        Text(
-                            text = "Gift Card",
-                            fontFamily = FontFamily(Font(R.font.robot_medium)),
-                            fontSize = 18.sp
-                        )
-                        Text(text = "7009 XXXX XXXX", color = gray_color)
-                        Spacer(modifier = Modifier.height(30.dp))
-                        Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
-                            ClickableText(
-                                text = AnnotatedString("Apply Now"),
-                                onClick = { rootNavController.navigate(Destination.APPLY_CARD_SCREEN) },
-                                style = TextStyle(
-                                    color = isuOrrange,
-                                    fontSize = 18.sp,
-                                    fontFamily = FontFamily(
-                                        Font(R.font.roboto_regular)
-                                    ),
-                                    textDecoration = TextDecoration.Underline
-                                )
-                            )
-                            Text(
-                                text = "iServeU",
-                                color = isuOrrange,
-                                fontSize = 18.sp,
-                                fontFamily = FontFamily(
-                                    Font(R.font.inter_extra_bold)
-                                ),
-                                fontStyle = FontStyle.Italic,
-                                fontWeight = FontWeight.ExtraBold
-                            )
-                        }
-
                     }
                 }
             }
         }
-        OutlinedCard(
-            shape = RoundedCornerShape(10.dp),
-            elevation = CardDefaults.outlinedCardElevation(4.dp),
-            colors = CardDefaults.cardColors(
-                Color.White
-            ),
-            modifier = Modifier.padding(10.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .height(140.dp)
-                    .width(250.dp)
-            ) {
-                Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.SpaceEvenly) {
-                    Text(
-                        text = "Gift Card",
-                        fontFamily = FontFamily(Font(R.font.robot_medium)),
-                        fontSize = 18.sp
-                    )
-                    Text(text = "7009 XXXX XXXX", color = gray_color)
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
-                        ClickableText(
-                            text = AnnotatedString("Apply Now"),
-                            onClick = { rootNavController.navigate(Destination.APPLY_CARD_SCREEN) },
-                            style = TextStyle(
-                                color = isuOrrange,
-                                fontSize = 18.sp,
-                                fontFamily = FontFamily(
-                                    Font(R.font.roboto_regular)
-                                ),
-                                textDecoration = TextDecoration.Underline
-                            )
-                        )
-                        Text(
-                            text = "iServeU",
-                            color = isuOrrange,
-                            fontSize = 18.sp,
-                            fontFamily = FontFamily(
-                                Font(R.font.inter_extra_bold)
-                            ),
-                            fontStyle = FontStyle.Italic,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                    }
 
-                }
-            }
-        }
+
         Spacer(modifier = Modifier.height(20.dp))
-        Column() {
+        Column {
             Row(
                 Modifier
                     .fillMaxWidth()

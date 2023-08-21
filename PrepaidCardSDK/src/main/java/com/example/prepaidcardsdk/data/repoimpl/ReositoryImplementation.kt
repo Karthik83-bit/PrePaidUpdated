@@ -8,6 +8,7 @@ import com.example.prepaidcardsdk.data.model.req.ResetPinRequestModel
 import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
 
 import com.example.prepaidcardsdk.data.model.req.SetPinRequestModel
+import com.example.prepaidcardsdk.data.model.req.ViewCardDataReqModel
 import com.example.prepaidcardsdk.data.model.resp.CardDataByCustomerResp
 import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
 import com.example.prepaidcardsdk.data.model.resp.ResetPinResponseModel
@@ -38,13 +39,25 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
 
     override fun cardDataStatus(
         url: String,
-        requestModel: CardDataRequestModel
+        requestModel: ViewCardDataReqModel,
+
     ): Flow<NetworkResponse<CardDataResponse>> {
-        val reqBody = CardDataRequestModel(cardRefId = "1287208", customerId = "181")
+
+        return handleFlowResponse(call = {
+            apiService.cardData(url,requestModel)
+        },{it})
+    }
+
+    /*override fun cardDataStatus(
+        url: String,
+        requestModel: ViewCardDataReqModel,
+
+    ): Flow<NetworkResponse<CardDataResponse>> {
+        val reqBody = ViewCardDataReqModel()
         return handleFlowResponse(call = {
             apiService.cardData(url, reqBody)
         },{it})
-    }
+    }*/
     @RequiresApi(Build.VERSION_CODES.O)
     fun encryptData(data: String, key: ByteArray): String {
         println("Before Encrypt")
@@ -72,7 +85,7 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
         url: String,
         requestModel: CardDataRequestModel
     ): Flow<NetworkResponse<CardDataByCustomerResp>> {
-        val reqBody = CardDataRequestModel(cardRefId = "1287208", customerId = "181")
+        val reqBody = CardDataRequestModel(customerId = "181")
         return handleFlowResponse(call = {
             apiService.cardDataByCustomer(url, reqBody)
         },{it})
