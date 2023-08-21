@@ -16,6 +16,7 @@ import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
 import com.example.prepaidcardsdk.data.src.APIService
 import com.example.prepaidcardsdk.domain.repo.Repository
 import com.example.prepaidcardsdk.utils.NetworkResponse
+import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import com.example.prepaidcardsdk.utils.handleFlowResponse
 import kotlinx.coroutines.flow.Flow
 import java.nio.charset.StandardCharsets
@@ -32,7 +33,7 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
     }
 
     override fun changeCardStatus(): Flow<NetworkResponse<ChangeStatusResponseModel>> {
-        val reqBody= ChangeStatusRequestModel(cardRefId = "168", cardStatus = "active")
+        val reqBody= ChangeStatusRequestModel(cardRefId = SDK_CONSTANTS.cardRefId?:"168", cardStatus = "active")
 
         return handleFlowResponse(call = {apiService.changeStatus(reqBody)},{it})
     }
