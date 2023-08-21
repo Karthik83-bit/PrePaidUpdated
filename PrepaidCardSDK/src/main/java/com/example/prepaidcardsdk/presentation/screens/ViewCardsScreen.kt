@@ -173,6 +173,9 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                                         if (!it.viewcardresponseWrapper.isActive) {
                                                             rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN)
                                                         }
+                                                        else{
+                                                            rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN)
+                                                        }
 
                                                     }else {
                                                         viewModel.isError.value = true
@@ -225,7 +228,6 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                             }
                         }
                     }
-//                    items(it){if(it.cardType.equals("GPR",true)) {}
                 }
                 LazyRow() {
                     items(it) {
@@ -236,7 +238,24 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                 colors = CardDefaults.cardColors(
                                     Color.White
                                 ),
-                                modifier = Modifier.padding(10.dp)
+                                modifier = Modifier.padding(10.dp).clickable(onClick = {
+                                    viewModel.viewCardData(cardRefId = it.cardRefId, customerId = "181") {
+                                        if (it != null) {
+                                            if (it.status == "0") {
+                                                if (!it.viewcardresponseWrapper.isActive) {
+                                                    rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN)
+                                                }
+                                                else{
+                                                    rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN)
+                                                }
+
+                                            }else {
+                                                viewModel.isError.value = true
+                                                viewModel.errorMessage.value = it.statusDesc
+                                            }
+                                        }
+                                    }
+                                })
                             ) {
                                 Box(
                                     modifier = Modifier

@@ -17,6 +17,7 @@ data class ViewcardresponseWrapperX(
     val isActive: Boolean,
     val isBlock: Boolean,
     val isHotlist: Boolean,
+    val isVirtual: Boolean,
     val lastfourDigit: String,
     val nameonCard: String,
     val productName: String
