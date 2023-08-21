@@ -8,7 +8,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.example.prepaidcard.screens.ViewModel
+import com.example.prepaidcardsdk.data.model.resp.ResetPinResponseModel
 import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
+import com.example.prepaidcardsdk.domain.usecases.ResetPinUseCase
 import com.example.prepaidcardsdk.domain.usecases.SetPinUseCase
 import com.example.prepaidcardsdk.utils.handleFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GeneratePinViewModel @Inject constructor(
-    val setPinUseCase: SetPinUseCase,
+    val resetPinUseCase: ResetPinUseCase,
 
 ) : ViewModel() {
 
@@ -68,7 +70,7 @@ class GeneratePinViewModel @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun setPin(onComplete: (SetPinResponse?) -> Unit) {
+    fun setPin(onComplete: (ResetPinResponseModel?) -> Unit) {
         val key = "ASDFGHJASHJKLQWEASDFGHJASHJKLQWE".toByteArray(StandardCharsets.UTF_8)
         val enc = encryptData(reenterPin.value, key)
 
@@ -77,7 +79,7 @@ class GeneratePinViewModel @Inject constructor(
 
         viewModelScope.launch {
 
-            handleFlow(response = setPinUseCase.invoke(encPin = enc), onLoading = {
+            handleFlow(response = resetPinUseCase.invoke(enc,"1234"), onLoading = {
                 isLoading.value = it
             }, onFailure = {
                 isError.value = true

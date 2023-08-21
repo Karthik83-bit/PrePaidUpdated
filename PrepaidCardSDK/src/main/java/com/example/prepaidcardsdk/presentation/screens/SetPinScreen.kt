@@ -48,6 +48,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.navigation.compose.rememberNavController
 //import androidx.compose.material3.TextFieldDefaults
 import com.example.prepaidcard.components.CustomButton
 
@@ -277,17 +278,7 @@ val pindontMatch=remember{
                     buttonColor = lighttealGreen,
                     enable=!pindontMatch.value
                 ) {
-                    viewModel.setPin {
-                        if (it != null) {
-                            Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
-                            if(it.status=="0"){
-
-                                rootNavController.navigate(Destination.ENTER_OTP_SCREEN)
-                            } else{
-                                rootNavController.popBackStack()
-                            }
-                        }
-                    }
+                        rootNavController.navigate(Destination.ENTER_OTP_SCREEN)
                 }
                 CustomButton(
                     text = "CANCEL",

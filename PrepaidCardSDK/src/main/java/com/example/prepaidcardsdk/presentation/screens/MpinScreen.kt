@@ -29,15 +29,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextRange
 
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
@@ -45,6 +48,8 @@ import androidx.navigation.NavHostController
 //import com.example.prepaidcard.R
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.components.CustomOTPinp
+import com.example.prepaidcardsdk.components.OTPInput
 
 @Composable
 fun MpinScreen(rootNavController: NavHostController) {
@@ -58,6 +63,47 @@ fun MpinScreen(rootNavController: NavHostController) {
     // in below line we are creating our bitmap and initializing it.
     val bit = Bitmap.createBitmap(
         db!!.intrinsicWidth, db.intrinsicHeight, Bitmap.Config.ARGB_8888
+    )
+     val textlist=listOf(
+        remember {
+
+        mutableStateOf(
+            TextFieldValue(
+            text = "",
+            selection = TextRange(0)
+        )
+        )},
+         remember {
+
+             mutableStateOf(
+                 TextFieldValue(
+                     text = "",
+                     selection = TextRange(0)
+                 )
+             )},
+         remember {
+
+             mutableStateOf(
+                 TextFieldValue(
+                     text = "",
+                     selection = TextRange(0)
+                 )
+             )},
+         remember {
+
+             mutableStateOf(
+                 TextFieldValue(
+                     text = "",
+                     selection = TextRange(0)
+                 )
+             )}
+
+    )
+     val focusRequesterList= listOf<FocusRequester>(
+        FocusRequester(),
+        FocusRequester(),
+        FocusRequester(),
+        FocusRequester(),
     )
 
     Column(
@@ -101,31 +147,32 @@ val cont= LocalContext.current
                     imeAction = ImeAction.Done
                 )
                 ){
-                    Row(){
-                        repeat(6){
-                            val char=when{
-                                it>=otpValue.value.length->"0"
-                                else->otpValue.value[it]
-                            }
-                            Column(
-                                Modifier
-                                    .width(60.dp)
-
-                                    .padding(horizontal = 10.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-
-                                Text(char.toString(), color =if(it>=otpValue.value.length) Color.Gray else Color.Black, fontWeight = if(it>=otpValue.value.length) FontWeight(300) else FontWeight(800))
-
-
-                                Row(
-                                    Modifier
-                                        .height(2.dp)
-                                        .fillMaxWidth()
-                                        .background(Color.Gray)){}
-
-
-                            }
-                        }
-                    }
+                    OTPInput(textList =textlist , requestList =focusRequesterList )
+//                    Row(){
+//                        repeat(6){
+//                            val char=when{
+//                                it>=otpValue.value.length->"0"
+//                                else->otpValue.value[it]
+//                            }
+//                            Column(
+//                                Modifier
+//                                    .width(60.dp)
+//
+//                                    .padding(horizontal = 10.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+//
+//                                Text(char.toString(), color =if(it>=otpValue.value.length) Color.Gray else Color.Black, fontWeight = if(it>=otpValue.value.length) FontWeight(300) else FontWeight(800))
+//
+//
+//                                Row(
+//                                    Modifier
+//                                        .height(2.dp)
+//                                        .fillMaxWidth()
+//                                        .background(Color.Gray)){}
+//
+//
+//                            }
+//                        }
+//                    }
 
 
                 }

@@ -1,4 +1,7 @@
 package com.example.prepaidcard.screens
+import android.os.Build
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material.OutlinedTextField
@@ -23,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -33,14 +37,17 @@ import com.example.prepaidcard.components.CustomButton
 import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.ui.theme.Cultured
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 import com.example.prepaidcardsdk.ui.theme.remainingTimeColor
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EnterOTPScreen(rootNavController: NavHostController) {
+fun EnterOTPScreen(rootNavController: NavHostController, viewModel: GeneratePinViewModel) {
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
+    var context= LocalContext.current
 
 
     Scaffold(topBar = { CustomTopBar {
@@ -103,7 +110,19 @@ fun EnterOTPScreen(rootNavController: NavHostController) {
                 CustomButton(
                     text = "SUBMIT",
                     buttonColor = lighttealGreen,
-                    onClick = {rootNavController.navigate(Destination.CARD_ACTIVATION_CONFIRM)},
+                    onClick = {
+                        viewModel.setPin {
+                            if (it != null) {
+                                Toast.makeText(context,it.statusDesc, Toast.LENGTH_LONG).show()
+                                if(it.status=="0"){
+
+                                    rootNavController.navigate(Destination.ENTER_OTP_SCREEN)
+                                } else{
+                                    rootNavController.popBackStack(route = Destination.CARD_ACTIVATION_SCREEN,false,false)
+                                }
+                            }
+                        }
+                    },
 
                 )
                 CustomButton(
