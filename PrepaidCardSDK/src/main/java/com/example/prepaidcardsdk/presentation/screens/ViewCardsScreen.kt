@@ -158,22 +158,44 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                     Box(Modifier.fillMaxSize()) {
                         Column(
                             Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
+                            verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(viewModel.errorMessage.value)
-                            Button(onClick = {
-                                viewModel.isError.value = false
-                                if(viewModel.destination.value.isNotEmpty()){
-                                    rootNavController.navigate(viewModel.destination.value)
+                            Row(){
+                                Box(Modifier.fillMaxWidth(0.8f))
+                                IconButton(onClick = {
+                                    viewModel.isError.value = false
+                                    viewModel.isError.value = false
+                                }) {
+                                    Icon(painterResource(id = R.drawable.baseline_close_24), "")
                                 }
+                            }
+                            Icon(
+                                painterResource(id = R.drawable.baseline_error_24),
+                                contentDescription = "",
+                                Modifier.fillMaxSize(0.5f),
+                                tint = Color.Red
+                            )
+                            Column(modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally) {
 
+                                Text(viewModel.errorMessage.value.replaceFirstChar {
+                                    it.uppercase()
+                                }, fontWeight = FontWeight(400), style = TextStyle(
+                                    fontSize = 20.sp
 
-                                viewModel.errorMessage.value = ""
-                                viewModel.destination.value = ""
-                            }) {
-                                Text("ok")
+                                ),)
+                                Button(onClick = {
+                                    viewModel.isError.value = false
 
+                                    rootNavController.navigate(viewModel.destination.value)
+                                    viewModel.errorMessage.value = ""
+                                    viewModel.destination.value = ""
+                                }) {
+                                    Text("ok")
+
+                                }
                             }
                         }
 
@@ -496,7 +518,7 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                             Text(
                                                 text = it1,
                                                 color = gray_color,
-                                                modifier = Modifier.blur(10.dp)
+                                                modifier = Modifier.blur(0.dp)
                                             )
                                         }
                                         Spacer(modifier = Modifier.height(30.dp))

@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
@@ -40,9 +42,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.R
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
+import com.example.prepaidcardsdk.ui.theme.HitextColor
 import com.example.prepaidcardsdk.ui.theme.Resetcolor
 import com.example.prepaidcardsdk.ui.theme.tealGreen
 
@@ -103,7 +109,8 @@ AnimatedVisibility(visible = cardfaceState.value.angle<90f) {
                         cardfaceState.value = cardfaceState.value.next
 
 
-                    })
+                    }, manageCardViewModel = hiltViewModel<ManageCardViewModel>
+                    ())
             }
 
 
@@ -214,11 +221,11 @@ fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String) 
 }
 
 @Composable
-fun PrepaidCardBack(clickable: Modifier) {
+fun PrepaidCardBack(clickable: Modifier, manageCardViewModel: ManageCardViewModel) {
 
     Card(
         shape = RoundedCornerShape(5.dp),
-        colors = CardDefaults.cardColors(Resetcolor),
+        colors = CardDefaults.cardColors(tealGreen),
         modifier = clickable
 
             .width(380.dp)
@@ -230,18 +237,76 @@ fun PrepaidCardBack(clickable: Modifier) {
 
 
         ) {
-        Box(){
-
+        Box {
             Canvas(modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp)) {
-                drawCircle(
-                    brush = Brush.horizontalGradient(listOf(  Resetcolor, tealGreen), startX = 0f, endX = 700f),
+                .height(50.dp)
+                .fillMaxWidth()) {
 
-                    radius = 900f,
-                    center = Offset(x = 500f, y = 1150f)
+                drawRect(
+                    color = HitextColor,
+                    topLeft = Offset(x =0.dp.toPx(), y = 20.dp.toPx())
+                )
+                drawRect(
+                    color = Color.White,
+                    topLeft = Offset(x =200.dp.toPx(), y = 80.dp.toPx())
+
                 )
             }
+            Column (modifier = Modifier.padding(6.dp),
+                verticalArrangement = Arrangement.spacedBy(40.dp)){
+                Text(
+                    text = "For Queries call 022653666377 / 08997734322 or mail us info@card.com",
+                    color = Color.White,
+                    modifier = Modifier.graphicsLayer {
+                        translationX = 10.dp.toPx()
+                    rotationX =180f
+                        rotationZ =180f
+                    },
+                    fontSize = 12.sp
+                )
+                    Text(
+                        "123",
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .graphicsLayer {
+                                translationX = 200.dp.toPx()
+
+                                rotationX = 180f
+                                rotationZ = 180f
+                            },
+                        color = Color.Black
+                    )
+
+                Column {
+                    Text(text = "AUTHORIZED SIGNATURE - NOT VALID UNLESS SIGNED. NOT TRANSABLE", modifier = Modifier
+                        .graphicsLayer {
+                            translationX = 10.dp.toPx()
+
+                            rotationX = 180f
+                            rotationZ = 180f
+                        },
+                        color = Color.White)
+                    Text(text = "the point of using Lorem Ipsum",
+                        modifier = Modifier
+                            .graphicsLayer {
+                                translationX = 10.dp.toPx()
+
+                                rotationX = 180f
+                                rotationZ = 180f
+                            },
+                        color = Color.White)
+                    Text(text = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+                        modifier = Modifier
+                            .graphicsLayer {
+                                translationX = 10.dp.toPx()
+
+                                rotationX = 180f
+                                rotationZ = 180f
+                            },
+                        color = Color.White)
+                }
+                }
+
 
 
 
