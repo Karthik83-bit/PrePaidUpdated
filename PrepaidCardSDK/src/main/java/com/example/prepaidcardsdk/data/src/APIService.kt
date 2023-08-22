@@ -7,10 +7,12 @@ import com.example.prepaidcardsdk.data.model.req.CardDataRequestModel
 import com.example.prepaidcardsdk.data.model.req.ResetPinRequestModel
 import com.example.prepaidcardsdk.data.model.req.SetPinRequestModel
 import com.example.prepaidcardsdk.data.model.req.ViewCardDataReqModel
+import com.example.prepaidcardsdk.data.model.req.ViewCvvRequestModel
 import com.example.prepaidcardsdk.data.model.resp.CardDataByCustomerResp
 import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
 import com.example.prepaidcardsdk.data.model.resp.ResetPinResponseModel
 import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
+import com.example.prepaidcardsdk.data.model.resp.ViewCvvResponseModel
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -40,4 +42,7 @@ interface APIService {
     suspend fun resetPin(
         @Body req:ResetPinRequestModel
     ):Response<ResetPinResponseModel>
+
+    @POST("cms/viewCvvByCardRefId")
+    suspend fun viewCvv(@Body req:ViewCvvRequestModel):Response<ViewCvvResponseModel>
 }

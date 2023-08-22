@@ -86,7 +86,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
             SetPinScreen(rootNavController,viewModel)
         }
         composable(Destination.ENTER_OTP_SCREEN){
-            val viewModel= hiltViewModel<GeneratePinViewModel>()
+            val viewModel= hiltViewModel<ManageCardViewModel>()
             EnterOTPScreen(rootNavController,viewModel)
         }
         composable(Destination.CARD_ACTIVATION_CONFIRM){

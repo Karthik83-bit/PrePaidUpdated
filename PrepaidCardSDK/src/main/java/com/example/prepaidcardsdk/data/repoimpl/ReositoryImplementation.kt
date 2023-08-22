@@ -9,10 +9,12 @@ import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
 
 import com.example.prepaidcardsdk.data.model.req.SetPinRequestModel
 import com.example.prepaidcardsdk.data.model.req.ViewCardDataReqModel
+import com.example.prepaidcardsdk.data.model.req.ViewCvvRequestModel
 import com.example.prepaidcardsdk.data.model.resp.CardDataByCustomerResp
 import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
 import com.example.prepaidcardsdk.data.model.resp.ResetPinResponseModel
 import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
+import com.example.prepaidcardsdk.data.model.resp.ViewCvvResponseModel
 import com.example.prepaidcardsdk.data.src.APIService
 import com.example.prepaidcardsdk.domain.repo.Repository
 import com.example.prepaidcardsdk.utils.NetworkResponse
@@ -32,8 +34,8 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
         return handleFlowResponse(call = {apiService.setPin(reqBody)},{it})
     }
 
-    override fun changeCardStatus(): Flow<NetworkResponse<ChangeStatusResponseModel>> {
-        val reqBody= ChangeStatusRequestModel(cardRefId = SDK_CONSTANTS.cardRefId?:"168", cardStatus = "active")
+    override fun changeCardStatus(otp:String,cardStatus:String): Flow<NetworkResponse<ChangeStatusResponseModel>> {
+        val reqBody= ChangeStatusRequestModel(cardRefId = SDK_CONSTANTS.cardRefId?:"168", cardStatus = cardStatus,otp)
 
         return handleFlowResponse(call = {apiService.changeStatus(reqBody)},{it})
     }
@@ -81,6 +83,20 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
         val encryptedByteValue = Base64.getEncoder().encode(encryptedData)
         return String(encryptedByteValue)
     }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun decryptData(encryptedData: ByteArray, key: ByteArray): String {
+        var cipher: Cipher? = null
+        var decryptedData: ByteArray? = null
+        try {
+            cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING")
+            val secretKeySpec = SecretKeySpec(key, "AES")
+            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec)
+            decryptedData = cipher.doFinal(Base64.getDecoder().decode(encryptedData))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return decryptedData?.let { String(it, StandardCharsets.UTF_8) } ?: ""
+    }
 
     override fun cardDataByCustomerStatus(
         url: String,
@@ -97,6 +113,12 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
         val encPin = encryptData(pin, key)
         val reqbody = ResetPinRequestModel(encryptPin = encPin, otp = otp)
         return handleFlowResponse({ apiService.resetPin(reqbody) }, { it })
+    }
+
+    override fun viewCvv(otp: String): Flow<NetworkResponse<ViewCvvResponseModel>> {
+
+       val reqBody=ViewCvvRequestModel(otp = otp, cardRefNumber = SDK_CONSTANTS.cardRefId?:"")
+        return handleFlowResponse({ apiService.viewCvv(reqBody) },{it})
     }
 
 

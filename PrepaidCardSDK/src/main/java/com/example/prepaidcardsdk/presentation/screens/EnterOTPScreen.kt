@@ -38,7 +38,7 @@ import com.example.prepaidcard.components.CustomButton
 import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
-import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.ui.theme.Cultured
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
@@ -46,7 +46,7 @@ import com.example.prepaidcardsdk.ui.theme.remainingTimeColor
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EnterOTPScreen(rootNavController: NavHostController, viewModel: GeneratePinViewModel) {
+fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardViewModel) {
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
     var context = LocalContext.current
 
@@ -79,12 +79,12 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: GeneratePinV
                 )
                 Row {
                     OutlinedTextField(
-                        value = viewModel.otp.value,
+                        value = viewModel.Otp.value,
                         enabled = true,
                         readOnly = false,
                         onValueChange = {
                             if (it.length <= 4) {
-                                viewModel.otp.value = it
+                                viewModel.Otp.value = it
                             }
                         },
                         modifier = Modifier
@@ -127,21 +127,13 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: GeneratePinV
                     text = "SUBMIT",
                     buttonColor = lighttealGreen,
                     onClick = {
-                        viewModel.setPin() {
-                            if (it != null) {
-                                Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
-                                if (it.status == "0") {
-
-                                    rootNavController.navigate(Destination.ENTER_OTP_SCREEN)
-                                } else {
-                                    rootNavController.popBackStack(
-                                        route = Destination.CARD_ACTIVATION_SCREEN,
-                                        false,
-                                        false
-                                    )
-                                }
-                            }
+                    viewModel.changeCardStatus(viewModel.Otp.value, status = "active"){
+                        Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+                        if(it.status=="0"){
+                            rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN)
                         }
+
+                    }
                     },
 
                     )

@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -36,8 +34,11 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
@@ -61,6 +62,7 @@ import com.example.prepaidcardsdk.ui.theme.gray_color
 import com.example.prepaidcardsdk.ui.theme.isuGreen
 import com.example.prepaidcardsdk.ui.theme.isuOrrange
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
+import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -75,7 +77,82 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
             .verticalScroll(enabled = true, state = ScrollState(0))
 
     ) {
+        @Composable
+        fun CustomAlertDialogBox(error: MutableState<Boolean>, errMsg: String, dest: String) {
+            AlertDialog(onDismissRequest = { }) {
+                Card(Modifier.size(300.dp)) {
+                    Box(Modifier.fillMaxSize()) {
+                        Column(
+                            Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(errMsg)
+                            Button(onClick = {
+                                error.value = false
+                                rootNavController.navigate(dest)
+
+                            }) {
+                                Text("ok")
+
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+        }
         if (viewModel.isError.value) {
+            /*AlertDialog(onDismissRequest = { }) {
+                Card(Modifier.size(300.dp)) {
+                    Box(Modifier.fillMaxSize()) {
+
+                        Column(
+                            Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Row(){
+                                Box(Modifier.fillMaxWidth(0.8f))
+                                IconButton(onClick = {
+                                    viewModel.isError.value = false
+                                    viewModel.isError.value = false
+
+                                    rootNavController.navigate(viewModel.destination.value)
+                                    viewModel.errorMessage.value=""
+                                    viewModel.destination.value=""
+
+                                }) {
+                                    Icon(painterResource(id = R.drawable.baseline_close_24),"")
+                                }
+                            }
+                            Icon(painterResource(id = R.drawable.baseline_error_24), contentDescription = "",Modifier.fillMaxSize(0.5f), tint = Color.Red)
+                            Box(Modifier.weight(2f).padding(5.dp), contentAlignment = Alignment.Center){
+                                Text(viewModel.errorMessage.value.replaceFirstChar {
+                                    it.uppercase()
+                                }, fontWeight = FontWeight(400), style = TextStyle(
+                                    fontSize = 20.sp
+
+                                ),)
+
+                            }
+//                            Button(onClick = {
+//                                viewModel.isError.value = false
+//                                viewModel.cardActivationToggleState.value=false
+//
+//                            }, shape = RoundedCornerShape(5.dp)) {
+//                                Text("ok")
+//
+//                            }
+                        }
+
+                    }
+
+                }
+
+            }*/
             AlertDialog(onDismissRequest = { }) {
                 Card(Modifier.size(300.dp)) {
                     Box(Modifier.fillMaxSize()) {
@@ -87,10 +164,13 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                             Text(viewModel.errorMessage.value)
                             Button(onClick = {
                                 viewModel.isError.value = false
+                                if(viewModel.destination.value.isNotEmpty()){
+                                    rootNavController.navigate(viewModel.destination.value)
+                                }
 
-rootNavController.navigate(viewModel.destination.value)
-                                viewModel.errorMessage.value=""
-                                viewModel.destination.value=""
+
+                                viewModel.errorMessage.value = ""
+                                viewModel.destination.value = ""
                             }) {
                                 Text("ok")
 
@@ -154,11 +234,13 @@ rootNavController.navigate(viewModel.destination.value)
         LaunchedEffect(key1 = true) {
             viewModel.cardDataByCustomer()
         }
+
         viewModel.cardList.value?.let {
-            if(it.isNotEmpty()){
-                LazyRow() {
+
+            if (it.isNotEmpty()) {
+                LazyRow {
                     items(it) {
-                        if(it.cardType.equals("GPR",true)) {
+                        if (it.cardType.equals("GPR", true)) {
                             OutlinedCard(
                                 shape = RoundedCornerShape(10.dp),
                                 elevation = CardDefaults.outlinedCardElevation(4.dp),
@@ -175,104 +257,96 @@ rootNavController.navigate(viewModel.destination.value)
                                             if (it != null) {
                                                 SDK_CONSTANTS.cardRefId = it.cardRefId
                                             }
-                                            viewModel.viewCardData(
-                                                cardRefId = it.cardRefId,
-                                                customerId = "181"
-                                            )
-                                            /*{ res ->
                                             it.cardRefId?.let { it1 ->
-                                                viewModel.viewCardData(cardRefId = it1, customerId = "181") {
-                                                    if (it != null) {
-                                                        if (it.status == "0") {
-                                                            if (!it.viewcardresponseWrapper.isActive) {
-                                                                rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN)
-                                                            } else{
-                                                                rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN)
-                                                            }
+                                                viewModel.viewCardData(
+                                                    cardRefId = it1,
+                                                    customerId = "181"
+                                                )
+                                                /*{ res ->
 
-                                                if (res != null) {
-                                                    if (res.status == "0") {
-                                                        //hotlist
-                                                        if (!res.viewcardresponseWrapper.isHotlist) {
-                                                            if (res.viewcardresponseWrapper.isBlock) {
-                                                                rootNavController.navigate(
-                                                                    Destination.ENTER_OTP_SCREEN
-                                                                )
-                                                            } else {
-                                                                if (res.viewcardresponseWrapper.isActive) {
-                                                                    rootNavController.navigate(
-                                                                        Destination.CARD_MANAGEMENT_SCREEN
-                                                                    )
+                                                                                            if (res != null) {
+                                                                                                if (res.status == "0") {
+                                                                                                    //hotlist
+                                                                                                    if (!res.viewcardresponseWrapper.isHotlist) {
+                                                                                                        if (res.viewcardresponseWrapper.isBlock) {
+                                                                                                            rootNavController.navigate(
+                                                                                                                Destination.ENTER_OTP_SCREEN
+                                                                                                            )
+                                                                                                        } else {
+                                                                                                            if (res.viewcardresponseWrapper.isActive) {
+                                                                                                                rootNavController.navigate(
+                                                                                                                    Destination.CARD_MANAGEMENT_SCREEN
+                                                                                                                )
+                                                                                                            } else {
+                                                                                                                rootNavController.navigate(
+                                                                                                                    Destination.CARD_ACTIVATION_SCREEN
+                                                                                                                )
+                                                                                                            }
+                                                                                                        }
+                                                                                                    } else {
+                                                                                                        rootNavController.popBackStack(
+                                                                                                            Destination.VIEW_CARDS_SCREEN,
+                                                                                                            false,
+                                                                                                            false
+                                                                                                        )
+                                                                                                    }
+
+                                                                                                } else {
+                                                                                                    viewModel.isError.value = true
+                                                                                                    viewModel.errorMessage.value =
+                                                                                                        res.statusDesc
+                                                                                                }
+                                                                                            }
+                                                                                        }*/
+                                                { res ->
+
+                                                    if (res != null) {
+                                                        if (res.status == "0") {
+                                                            //hotlist
+                                                            val hotlist =
+                                                            res.viewcardresponseWrapper.isHotlist
+                                                            val isBlock = res.viewcardresponseWrapper.isBlock
+                                                            val isActive = res.viewcardresponseWrapper.isActive
+                                        //
+                                                            if (!hotlist) {
+                                                                if (isBlock) {
+                                                                    viewModel.isError.value = true
+                                                                    viewModel.errorMessage.value =
+                                                                        "Card is Blocked"
+                                                                    viewModel.destination.value =
+                                                                        Destination.ENTER_OTP_SCREEN
+
+
                                                                 } else {
-                                                                    rootNavController.navigate(
-                                                                        Destination.CARD_ACTIVATION_SCREEN
-                                                                    )
+                                                                    if (isActive) {
+                                                                        rootNavController.navigate(
+                                                                            Destination.CARD_MANAGEMENT_SCREEN
+                                                                        )
+                                                                    } else {
+                                                                        viewModel.isError.value = true
+                                                                        viewModel.errorMessage.value =
+                                                                            "Card is Inactive"
+                                                                        viewModel.destination.value =
+                                                                            Destination.CARD_ACTIVATION_SCREEN
+
+                                                                    }
                                                                 }
-                                                            }
-                                                        } else {
-                                                            rootNavController.popBackStack(
-                                                                Destination.VIEW_CARDS_SCREEN,
-                                                                false,
-                                                                false
-                                                            )
-                                                        }
+                                                            } else {
 
-                                                    } else {
-                                                        viewModel.isError.value = true
-                                                        viewModel.errorMessage.value =
-                                                            res.statusDesc
-                                                    }
-                                                }
-                                            }*/
-                                            { res ->
-
-                                                if (res != null) {
-                                                    if (res.status == "0") {
-                                                        //hotlist
-                                                        val hotlist = false
-
-//                                                res.viewcardresponseWrapper.isHotlist
-                                                        val isBlock = false
-//                                                res.viewcardresponseWrapper.isBlock
-                                                        val isActive = false
-//                                                res.viewcardresponseWrapper.isActive
-//
-                                                        if (!hotlist) {
-                                                            if (isBlock) {
                                                                 viewModel.isError.value = true
-                                                                viewModel.errorMessage.value="Card is Blocked"
-                                                                viewModel.destination.value=Destination.ENTER_OTP_SCREEN
-
-
-                                                            } else {
-                                                                if (isActive) {
-                                                                    rootNavController.navigate(
-                                                                        Destination.CARD_MANAGEMENT_SCREEN
-                                                                    )
-                                                                } else {
-                                                                    viewModel.isError.value=true
-                                                                    viewModel.errorMessage.value="Card is Inactive"
-                                                                    viewModel.destination.value=Destination.CARD_ACTIVATION_SCREEN
-
-                                                                }
+                                                                viewModel.errorMessage.value =
+                                                                    "Card is Hot Listed"
+                                                                viewModel.destination.value =
+                                                                    Destination.VIEW_CARDS_SCREEN
                                                             }
+
                                                         } else {
 
                                                             viewModel.isError.value = true
                                                             viewModel.errorMessage.value =
                                                                 "Card is Hot Listed"
-                                                            viewModel.destination.value=Destination.VIEW_CARDS_SCREEN
-                                                        }
-
-                                                    } else {
-
-                                                        viewModel.isError.value = true
-                                                        viewModel.errorMessage.value =
-                                                            "Card is Hot Listed"
-                                                        viewModel.destination.value=Destination.VIEW_CARDS_SCREEN
-                                                        }else {
-                                                            viewModel.isError.value = true
-                                                            viewModel.errorMessage.value = it.statusDesc
+                                                            viewModel.destination.value =
+                                                                Destination.VIEW_CARDS_SCREEN
                                                         }
                                                     }
                                                 }
@@ -289,9 +363,12 @@ rootNavController.navigate(viewModel.destination.value)
                                             fontFamily = FontFamily(Font(R.font.robot_medium)),
                                             fontSize = 18.sp
                                         )
-                                        Text(text = it.cardRefId, color = gray_color,
-                                            modifier = Modifier.blur(10.dp))
-                                        Text(text = formatString(it.toViewcardresponseWrapperDomain().decryptedCard.toString()),color = gray_color)
+                                        it.toViewcardresponseWrapperDomain().decryptedCard?.let { it1 ->
+                                            Text(
+                                                text = it1, color = gray_color,
+                                                modifier = Modifier.blur(0.dp)
+                                            )
+                                        }
                                         Spacer(modifier = Modifier.height(30.dp))
                                         Row(
                                             horizontalArrangement = Arrangement.spacedBy(80.dp)
@@ -325,9 +402,9 @@ rootNavController.navigate(viewModel.destination.value)
                         }
                     }
                 }
-                LazyRow() {
+                LazyRow {
                     items(it) {
-                        if(it.cardType.equals("GIFT",true)) {
+                        if (it.cardType.equals("GIFT", true)) {
                             OutlinedCard(
                                 shape = RoundedCornerShape(10.dp),
                                 elevation = CardDefaults.outlinedCardElevation(4.dp),
@@ -341,78 +418,64 @@ rootNavController.navigate(viewModel.destination.value)
                                             SDK_CONSTANTS.cardRefId = it.cardRefId
                                         }
 
-                                        viewModel.viewCardData(
-                                            cardRefId = it.cardRefId,
-                                            customerId = "181"
-                                        )
-                                        { res ->
+                                        it.cardRefId?.let { it1 ->
+                                            viewModel.viewCardData(
+                                                cardRefId = it1,
+                                                customerId = "181"
+                                            )
+                                            { res ->
 
-                                            if (res != null) {
-                                                if (res.status == "0") {
-                                                    //hotlist
-                                                    val hotlist = false
+                                                if (res != null) {
+                                                    if (res.status == "0") {
+                                                        //hotlist
+                                                        val hotlist =  res.viewcardresponseWrapper.isHotlist
+                                                        val isBlock = res.viewcardresponseWrapper.isBlock
+                                                        val isActive = res.viewcardresponseWrapper.isActive
 
-//                                                res.viewcardresponseWrapper.isHotlist
-                                                    val isBlock = false
-//                                                res.viewcardresponseWrapper.isBlock
-                                                    val isActive = false
-//                                                res.viewcardresponseWrapper.isActive
-//
-                                                    if (!hotlist) {
-                                                        if (isBlock) {
-                                                            viewModel.isError.value = true
-                                                            viewModel.errorMessage.value="Card is Blocked"
-                                                            viewModel.destination.value=Destination.ENTER_OTP_SCREEN
+                                                        if (!hotlist) {
+                                                            if (isBlock) {
+                                                                viewModel.isError.value = true
+                                                                viewModel.errorMessage.value =
+                                                                    "Card is Blocked"
+                                                                viewModel.destination.value =
+                                                                    Destination.ENTER_OTP_SCREEN
 
-                                modifier = Modifier.padding(10.dp).clickable(onClick = {
-                                    it.cardRefId?.let { it1 ->
-                                        viewModel.viewCardData(cardRefId = it1, customerId = "181") {
-                                            if (it != null) {
-                                                if (it.status == "0") {
-                                                    if (!it.viewcardresponseWrapper.isActive) {
-                                                        rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN)
-                                                    } else{
-                                                        rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN)
-                                                    }
 
-                                                        } else {
-                                                            if (isActive) {
-                                                                rootNavController.navigate(
-                                                                    Destination.CARD_MANAGEMENT_SCREEN
-                                                                )
                                                             } else {
-                                                                viewModel.isError.value=true
-                                                                viewModel.errorMessage.value="Card is Inactive"
-                                                                viewModel.destination.value=Destination.CARD_ACTIVATION_SCREEN
+                                                                if (isActive) {
+                                                                    rootNavController.navigate(
+                                                                        Destination.CARD_MANAGEMENT_SCREEN
+                                                                    )
+                                                                } else {
+                                                                    viewModel.isError.value = true
+                                                                    viewModel.errorMessage.value =
+                                                                        "Card is Inactive"
+                                                                    viewModel.destination.value =
+                                                                        Destination.CARD_ACTIVATION_SCREEN
 
+                                                                }
                                                             }
+                                                        } else {
+
+                                                            viewModel.isError.value = true
+                                                            viewModel.errorMessage.value =
+                                                                "Card is Hot Listed"
+                                                            viewModel.destination.value =
+                                                                Destination.VIEW_CARDS_SCREEN
                                                         }
+
                                                     } else {
 
                                                         viewModel.isError.value = true
                                                         viewModel.errorMessage.value =
                                                             "Card is Hot Listed"
-                                                        viewModel.destination.value=Destination.VIEW_CARDS_SCREEN
+                                                        viewModel.destination.value =
+                                                            Destination.VIEW_CARDS_SCREEN
                                                     }
-
-                                                } else {
-
-                                                    viewModel.isError.value = true
-                                                    viewModel.errorMessage.value =
-                                                         "Card is Hot Listed"
-                                                    viewModel.destination.value=Destination.VIEW_CARDS_SCREEN
                                                 }
                                             }
                                         }
                                     })
-                                                }else {
-                                                    viewModel.isError.value = true
-                                                    viewModel.errorMessage.value = it.statusDesc
-                                                }
-                                            }
-                                        }
-                                    }
-                                })
                             ) {
                                 Box(
                                     modifier = Modifier
@@ -426,11 +489,16 @@ rootNavController.navigate(viewModel.destination.value)
                                         Text(
                                             text = "Gift Card",
                                             fontFamily = FontFamily(Font(R.font.robot_medium)),
-                                            fontSize = 18.sp)
-                                        Text(text = it.cardRefId, color = gray_color, modifier = Modifier.blur(10.dp))
                                             fontSize = 18.sp
                                         )
-                                        Text(text = formatString( it.toViewcardresponseWrapperDomain().decryptedCard?:"00000000000000"), color = gray_color)
+
+                                        it.toViewcardresponseWrapperDomain().decryptedCard?.let { it1 ->
+                                            Text(
+                                                text = it1,
+                                                color = gray_color,
+                                                modifier = Modifier.blur(10.dp)
+                                            )
+                                        }
                                         Spacer(modifier = Modifier.height(30.dp))
                                         Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
                                             ClickableText(
@@ -528,12 +596,5 @@ rootNavController.navigate(viewModel.destination.value)
     }
 
 }
-
-fun formatString(toString: String): String {
-
-    return toString.replaceRange(12,13," "+toString[12]).replaceRange(8,9," "+toString[8]).replaceRange(4,5," "+toString[4])
-
-}
-
 
 

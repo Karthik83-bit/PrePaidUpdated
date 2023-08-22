@@ -62,7 +62,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.example.prepaidcard.utils.STRING
 import com.example.prepaidcardsdk.R
@@ -73,9 +72,11 @@ import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 @Composable
 fun CustomScaffoldScreen(
     sheet: MutableState<Boolean>,
-    enterOtp: MutableState<Boolean>,
-    pauseCard: MutableState<Boolean>,
+    resetPinOtp: MutableState<Boolean>,
+    blockCard: MutableState<Boolean>,
+    blockCardOtp: MutableState<Boolean>,
     hotlist: MutableState<Boolean>,
+    hotlistCardOtp: MutableState<Boolean>,
     cvv: MutableState<Boolean>,
     maskState: MutableState<Dp>,
     details: MutableState<Boolean>,
@@ -83,14 +84,22 @@ fun CustomScaffoldScreen(
     mainContent: @Composable () -> Unit,
 
 
-) {
+
+
+    ) {
     val otpInp = remember {
         mutableStateOf("")
     }
     val context= LocalContext.current
+    val Sheet=sheet
+    val ResetPinOtp=resetPinOtp
+    val BlockCard=blockCard
+    val BlockCardOtp=blockCardOtp
+    val Hotlist=hotlist
+    val HotlistCardOtp=hotlistCardOtp
     Box(
         Modifier.blur(
-            if (sheet.value || enterOtp.value || pauseCard.value || hotlist.value || cvv.value) {
+            if (Sheet.value || ResetPinOtp.value || BlockCard.value || Hotlist.value || cvv.value) {
                 10.dp
             } else {
                 0.dp
@@ -99,7 +108,7 @@ fun CustomScaffoldScreen(
     ) {
 
         mainContent()
-        if (sheet.value || enterOtp.value || pauseCard.value || hotlist.value || cvv.value) {
+        if (Sheet.value || ResetPinOtp.value || BlockCard.value || Hotlist.value || cvv.value) {
             Box(
                 Modifier
                     .fillMaxSize()
@@ -142,7 +151,7 @@ fun CustomScaffoldScreen(
 //    }
 
     @Composable
-    fun Sheet(str: String, hotlist: MutableState<Boolean>) {
+    fun Sheet(str: String, hotlist: MutableState<Boolean>,onConirm:()->Unit) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -162,7 +171,9 @@ fun CustomScaffoldScreen(
             ) {
                 Button(
                     onClick = {
-                        hotlist.value = !hotlist.value
+                        onConirm()
+
+
                     },
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier
@@ -312,7 +323,8 @@ fun CustomScaffoldScreen(
 
 
                         hotlist.value = !hotlist.value
-                        enterOtp.value = !enterOtp.value
+//                        manageViewModel.ResetPinToggleState.value=true
+                        ResetPinOtp.value = !ResetPinOtp.value
                     },
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier
@@ -356,10 +368,10 @@ fun CustomScaffoldScreen(
         }
 
     }
-    if (enterOtp.value) timer.start() else timer.cancel()
+    if (ResetPinOtp.value) timer.start() else timer.cancel()
 
     @Composable
-    fun EnterOTPPinSheet(hotlist: MutableState<Boolean>, maskState: MutableState<Dp>) {
+    fun EnterOTPPinSheet(state:MutableState<String>,onSubmit:()->Unit) {
 
         var textFieldSize by remember { mutableStateOf(Size.Zero) }
         Column(
@@ -379,11 +391,10 @@ fun CustomScaffoldScreen(
                     fontFamily = FontFamily(Font(R.font.lato_regular))
                 )
                 BasicTextField(
-                    value = manageViewModel.resetPinOtp.value,
+                    value = state.value,
                     onValueChange = {
 
-                        if (it.length <= 4) {
-                           manageViewModel.resetPinOtp.value= it
+                        if (it.length <= 4) { state.value= it
                         }
 
 
@@ -400,8 +411,8 @@ fun CustomScaffoldScreen(
                         repeat(4) {
 
                             val char = when {
-                                it >= manageViewModel.resetPinOtp .value.length -> ""
-                                else -> manageViewModel.resetPinOtp .value[it]
+                                it >= state.value.length -> ""
+                                else -> state.value[it]
                             }
 
 
@@ -444,24 +455,7 @@ fun CustomScaffoldScreen(
                 horizontalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 Button(
-                    onClick = {
-                        manageViewModel.resetPin(){
-                            manageViewModel.enterPin.value=""
-                            manageViewModel.reenterPin.value=""
-                            Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
-                        }
-                        if(hotlist==cvv){
-                            maskState.value = if (maskState.value == 0.dp) {
-                                10.dp
-                            } else {
-                                0.dp
-                            }
-                        }
-                        hotlist.value = !hotlist.value
-
-                        manageViewModel.resetPinOtp.value=""
-
-                    },
+                    onClick = { onSubmit() },
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier
                         .weight(1f)
@@ -499,7 +493,9 @@ fun CustomScaffoldScreen(
     fun CustomSheetWrap(
         state: MutableState<Boolean>,
         initOffset: Int = 500,
-        cont: @Composable () -> Unit
+        delay:Int=0,
+        cont: @Composable () -> Unit,
+
     ) {
         Box(
             Modifier.fillMaxSize(),
@@ -511,7 +507,7 @@ fun CustomScaffoldScreen(
 
                 enter = slideInVertically(animationSpec = tween(
                     1000,
-                    delayMillis = if (state == enterOtp) 1000 else 0,
+                    delayMillis = delay,
                     easing = EaseInOut
                 ),
                     initialOffsetY = { initOffset }),
@@ -553,27 +549,73 @@ fun CustomScaffoldScreen(
         }
     }
 
-    CustomSheetWrap(state = sheet, 1000) {
-        ResetPinSheet(hotlist = sheet)
+    CustomSheetWrap(state = Sheet, 1000) {
+        ResetPinSheet(hotlist = Sheet)
     }
 
     CustomSheetWrap(state = hotlist) {
-        Sheet(str = STRING.HOTLIST_CARD, hotlist = hotlist)
+        Sheet(str = STRING.HOTLIST_CARD, hotlist = Hotlist){
+            hotlistCardOtp.value=true
+            Hotlist.value=false
+        }
+    }
+    CustomSheetWrap(state = BlockCard,) {
+        Sheet(str = STRING.HOTLIST_CARD, hotlist = Hotlist){
+            BlockCard.value=false
+            BlockCardOtp.value=true
+        }
     }
 
-    CustomSheetWrap(state = enterOtp, 800) {
-        EnterOTPPinSheet(hotlist = enterOtp, maskState)
+    CustomSheetWrap(state = ResetPinOtp, 800,1000) {
+        EnterOTPPinSheet(manageViewModel.Otp) {
+            manageViewModel.resetPin(){
+                manageViewModel.enterPin.value=""
+                manageViewModel.reenterPin.value=""
+                Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+            }
+
+
+
+            ResetPinOtp.value=false
+
+
+        }
     }
     CustomSheetWrap(state = cvv, 800) {
-        EnterOTPPinSheet(hotlist = cvv, maskState)
-    }
-    CustomSheetWrap(state = details, 800) {
-        EnterOTPPinSheet(hotlist = details, maskState)
-    }
+        EnterOTPPinSheet(manageViewModel.Otp){
+                manageViewModel.viewCvv(manageViewModel.Otp.value){
+                    Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+                }
+            cvv.value=false
 
-    CustomSheetWrap(state = pauseCard) {
-        Sheet(STRING.PAUSE_CARD, pauseCard)
+        }
     }
+    CustomSheetWrap(state = BlockCardOtp, 800, delay = 1000) {
+        EnterOTPPinSheet(manageViewModel.Otp){
+            manageViewModel.changeCardStatus(manageViewModel.Otp.value,"block"){
+                Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+            }
+            BlockCardOtp.value=false
+
+        }
+    }
+    CustomSheetWrap(state = hotlistCardOtp, 800, delay = 1000) {
+        EnterOTPPinSheet(manageViewModel.Otp){
+            manageViewModel.changeCardStatus(manageViewModel.Otp.value,"hotlist"){
+                Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+            }
+            hotlistCardOtp.value=false
+
+        }
+    }
+//    CustomSheetWrap(state = details, 800) {
+//        EnterOTPPinSheet(hotlist = details, maskState){
+//
+//        }
+//    }
+
+
+
 
 
 }

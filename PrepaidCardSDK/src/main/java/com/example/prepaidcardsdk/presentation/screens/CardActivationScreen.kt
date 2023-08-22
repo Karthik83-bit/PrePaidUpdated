@@ -13,12 +13,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.IconButton
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,17 +34,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieAnimatable
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.newui.components.FlipCard
 //import com.example.prepaidcard.R
 import com.example.prepaidcard.components.CustomCheckField
@@ -54,6 +45,7 @@ import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewModel
+import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -149,7 +141,7 @@ val context= LocalContext.current
 
             ) {
 
-                FlipCard()
+                FlipCard(SDK_CONSTANTS.cardUser, SDK_CONSTANTS.cardNumber, SDK_CONSTANTS.expiryDate)
                 CustomCheckField(
                     state = viewModel.cardActivationToggleState,
                     text = "Card Activation",
@@ -157,21 +149,8 @@ val context= LocalContext.current
                 ) {
                     viewModel.cardActivationToggleState.value =
                         !viewModel.cardActivationToggleState.value
-                    viewModel.changeCardStatus() {response->
-                        if (response != null) {
-                            viewModel.response.value = response
-                            Toast.makeText(context, response.statusDesc,Toast.LENGTH_LONG).show()
-                            if (response.status == "0") {
+                    rootNavController.navigate(Destination.ENTER_OTP_SCREEN)
 
-                                rootNavController.navigate(Destination.GENERATE_PIN_SCREEN)
-
-                            } else {
-                                viewModel.isError.value = true
-                                viewModel.errorMessage.value = response.statusDesc
-
-                            }
-                        }
-                    }
                 }
 
 

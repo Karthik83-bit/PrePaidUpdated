@@ -61,7 +61,7 @@ enum class CardFace(val angle: Float) {
 }
 
 @Composable
-fun FlipCard(){
+fun FlipCard(name: String, cardno: String, exp: String) {
 
     val cardfaceState= remember {
         mutableStateOf(CardFace.Front)
@@ -91,7 +91,7 @@ AnimatedVisibility(visible = cardfaceState.value.angle<90f) {
             cardfaceState.value = cardfaceState.value.next
 
 
-        })
+        },cardno,name,exp)
 }
 
             }else{
@@ -114,7 +114,7 @@ AnimatedVisibility(visible = cardfaceState.value.angle<90f) {
 
 
 @Composable
-fun PrepaidCard(clickable: Modifier) {
+fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String) {
     val mask= remember {
         mutableStateOf(10.dp)
     }
@@ -170,8 +170,8 @@ fun PrepaidCard(clickable: Modifier) {
                     .fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly) {
                 Spacer(modifier = Modifier.height(20.dp))
                 Column() {
-                    Text("DEEPAK Kumar Behera", color = Color.White,style = TextStyle(letterSpacing = 5.sp, fontWeight = FontWeight(500)), modifier = Modifier.blur(mask.value))
-                    Text("0123 4567 8910 1234", color = Color.White, style = TextStyle(letterSpacing = 5.sp),fontWeight = FontWeight(500), modifier = Modifier.blur(mask.value))
+                    Text(name, color = Color.White,style = TextStyle(letterSpacing = 5.sp, fontWeight = FontWeight(500)), modifier = Modifier.blur(mask.value))
+                    Text("xxxx-xxxx-${cardno}", color = Color.White, style = TextStyle(letterSpacing = 5.sp),fontWeight = FontWeight(500), modifier = Modifier.blur(mask.value))
 
                 }
                 OutlinedButton(
@@ -199,7 +199,7 @@ fun PrepaidCard(clickable: Modifier) {
                     modifier = Modifier.fillMaxWidth()) {
                     Text(text = "12/16", color = Color.White)
                     Text("ValidThru", color = Color.White)
-                    Text(text = "12/16", color = Color.White)
+                    Text(text = "${exp}", color = Color.White)
                     Icon(
                         painter = painterResource(id = R.drawable.ic_call_answer,),
                         contentDescription = "",

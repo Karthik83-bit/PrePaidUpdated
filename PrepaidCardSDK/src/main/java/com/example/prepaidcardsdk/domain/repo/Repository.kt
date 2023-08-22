@@ -8,16 +8,19 @@ import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
 import com.example.prepaidcardsdk.data.model.resp.ResetPinResponseModel
 
 import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
+import com.example.prepaidcardsdk.data.model.resp.ViewCvvResponseModel
 import com.example.prepaidcardsdk.utils.NetworkResponse
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
 
     fun setPin(encPin: String): Flow<NetworkResponse<SetPinResponse>>
-    fun changeCardStatus():Flow<NetworkResponse<ChangeStatusResponseModel>>
+    fun changeCardStatus(otp:String,status:String):Flow<NetworkResponse<ChangeStatusResponseModel>>
     fun cardDataStatus(url: String, requestModel: ViewCardDataReqModel): Flow<NetworkResponse<CardDataResponse>>
     fun cardDataByCustomerStatus(url: String, requestModel: CardDataRequestModel): Flow<NetworkResponse<CardDataByCustomerResp>>
 
     fun resetPin(pin:String,otp:String):Flow<NetworkResponse<ResetPinResponseModel>>
+
+    fun viewCvv(otp:String):Flow<NetworkResponse<ViewCvvResponseModel>>
 
 }

@@ -134,7 +134,7 @@ fun MpinScreen(rootNavController: NavHostController) {
 val cont= LocalContext.current
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally){
                 BasicTextField(value = otpValue.value, onValueChange = {
-                    if(it.length<=6) {
+                    if(it.length<=4) {
                         otpValue.value=it
 
 
@@ -147,32 +147,32 @@ val cont= LocalContext.current
                     imeAction = ImeAction.Done
                 )
                 ){
-                    OTPInput(textList =textlist , requestList =focusRequesterList )
-//                    Row(){
-//                        repeat(6){
-//                            val char=when{
-//                                it>=otpValue.value.length->"0"
-//                                else->otpValue.value[it]
-//                            }
-//                            Column(
-//                                Modifier
-//                                    .width(60.dp)
-//
-//                                    .padding(horizontal = 10.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-//
-//                                Text(char.toString(), color =if(it>=otpValue.value.length) Color.Gray else Color.Black, fontWeight = if(it>=otpValue.value.length) FontWeight(300) else FontWeight(800))
-//
-//
-//                                Row(
-//                                    Modifier
-//                                        .height(2.dp)
-//                                        .fillMaxWidth()
-//                                        .background(Color.Gray)){}
-//
-//
-//                            }
-//                        }
-//                    }
+//                    OTPInput(textList =textlist , requestList =focusRequesterList )
+                    Row(){
+                        repeat(4){
+                            val char=when{
+                                it>=otpValue.value.length->"0"
+                                else->otpValue.value[it]
+                            }
+                            Column(
+                                Modifier
+                                    .width(60.dp)
+
+                                    .padding(horizontal = 10.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+
+                                Text(char.toString(), color =if(it>=otpValue.value.length) Color.Gray else Color.Black, fontWeight = if(it>=otpValue.value.length) FontWeight(300) else FontWeight(800))
+
+
+                                Row(
+                                    Modifier
+                                        .height(2.dp)
+                                        .fillMaxWidth()
+                                        .background(Color.Gray)){}
+
+
+                            }
+                        }
+                    }
 
 
                 }

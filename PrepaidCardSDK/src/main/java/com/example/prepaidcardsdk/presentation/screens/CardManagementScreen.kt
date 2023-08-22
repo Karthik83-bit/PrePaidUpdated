@@ -13,12 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,14 +32,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Cyan
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -63,6 +58,7 @@ import com.example.prepaidcardsdk.ui.theme.Resetcolor
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.cdback
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
+import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,78 +68,32 @@ fun CardManagementScreen(
     onClick: (state: Boolean) -> Unit = {},
     manageViewModel: ManageCardViewModel
 ) {
-    val ReplaceToggleState = remember {
-        mutableStateOf(false)
-    }
-    val CvvToggleState = remember {
-        mutableStateOf(false)
-    }
-    val ResetPinToggleState = remember {
-        mutableStateOf(false)
-    }
-    val PauseCardToggleState = remember {
-        mutableStateOf(false)
-    }
-    val HotListToggleState = remember {
-        mutableStateOf(false)
-    }
-    val EnterOTPToggleState = remember {
-        mutableStateOf(false)
-    }
-    val DetailsState = remember {
-        mutableStateOf(false)
-    }
+    val ReplaceToggleState =
+        manageViewModel.ReplaceToggleState
 
-    @Composable
-    fun Sheet() {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                "Are you sure ? You want to cancel your prepaid card",
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp
-            )
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(30.dp), horizontalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                Button(
-                    onClick = {
-                        ResetPinToggleState.value = !ResetPinToggleState.value
-                    },
-                    shape = RoundedCornerShape(5.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(45.dp)
-                        .width(156.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Cyan)
+    val CvvToggleState =
+        manageViewModel.CvvToggleState_d
 
-                ) {
-                    Text(text = "Yes", fontSize = 14.sp)
-                }
-                Button(
-                    onClick = {
+    val ResetPinToggleState =
+        manageViewModel.ResetPinToggleState_d
 
-                    }, shape = RoundedCornerShape(5.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(45.dp)
-                        .width(156.dp),
-                    colors = ButtonDefaults.buttonColors(Color(0xFFA09D9D))
-                ) {
-                    Text("No")
-                }
-            }
+    val PauseCardToggleState =
+        manageViewModel.PauseCardToggleState_d
+
+    val PauseCardOtpToggleState =
+        manageViewModel.PauseCardOtpState
+
+    val HotListToggleState =
+        manageViewModel.HotListToggleState_d
+
+    val ResetPinOtpState =
+        manageViewModel.ResetPinOtpState
+
+    val DetailsState =
+       manageViewModel.DetailsState
 
 
-        }
-    }
+
     Scaffold(topBar = {
         CustomTopBar {
             rootNavController.popBackStack()
@@ -152,122 +102,121 @@ fun CardManagementScreen(
     {
         CustomScaffoldScreen(
             sheet = ResetPinToggleState,
-            enterOtp = EnterOTPToggleState,
-            pauseCard = PauseCardToggleState,
+            resetPinOtp = ResetPinOtpState,
+            blockCard = PauseCardToggleState,
+            blockCardOtp=PauseCardOtpToggleState,
             hotlist = HotListToggleState,
+            hotlistCardOtp = manageViewModel.HotListOtpState,
             cvv = CvvToggleState,
+            maskState = viewModel.mask,
             details = DetailsState,
             manageViewModel=manageViewModel,
-            maskState = viewModel.mask
-        )
+            {
+                var editTextValue by remember { mutableStateOf("") }
+                var textFieldValue by remember { mutableStateOf("dbehera56@gmail.com") }
 
-        {
-            var editTextValue by remember { mutableStateOf("") }
-            var textFieldValue by remember { mutableStateOf("dbehera56@gmail.com") }
-
-            Box(
-                Modifier
-                    .padding(it)
-                    .fillMaxSize()
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(1f)
-                        .verticalScroll(enabled = true, state = ScrollState(0))
-                        .background(Color.White),
-                    horizontalAlignment = Alignment.CenterHorizontally
-
+                Box(
+                    Modifier
+                        .padding(it)
+                        .fillMaxSize()
                 ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(1f)
+                            .verticalScroll(enabled = true, state = ScrollState(0))
+                            .background(Color.White),
+                        horizontalAlignment = Alignment.CenterHorizontally
 
-                    FlipCard()
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-
-                        Text("CVV:", fontWeight = FontWeight(700))
-                        Text(
-                            "123",
-                            fontWeight = FontWeight(700),
-                            modifier = Modifier.blur(viewModel.mask.value)
-                        )
-                        Switch(
-                            checked = CvvToggleState.value,
-                            onCheckedChange = {
-                                CvvToggleState.value = !CvvToggleState.value
-                                onClick(CvvToggleState.value)
-                            },
-                            colors = SwitchDefaults.colors(
-                                checkedTrackColor = Resetcolor,
-                                uncheckedIconColor = Resetcolor,
-                                uncheckedBorderColor = Resetcolor,
-                                disabledUncheckedIconColor = Resetcolor
-                            ),
-                        )
-
-                    }
-                    val list = listOf<String>("LoadCard", "Managecard", "Statement", "Details")
-                    val clickedState = remember {
-                        mutableStateOf("")
-                    }
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp, vertical = 10.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        list.forEachIndexed { index, s ->
+
+                        FlipCard(name=SDK_CONSTANTS.cardUser,cardno=SDK_CONSTANTS.cardNumber,exp=SDK_CONSTANTS.expiryDate)
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+
+                            Text("CVV:", fontWeight = FontWeight(700))
                             Text(
-                                s,
-                                Modifier.clickable { clickedState.value = s },
-                                color = if (s != clickedState.value) Resetcolor else {
-                                    Color(0xFFDB8726)
-                                },
-                                fontWeight = FontWeight(600)
+                                "123",
+                                fontWeight = FontWeight(700),
+                                modifier = Modifier.blur(manageViewModel.cvvMask.value)
                             )
-                            if (index != list.size - 1) {
-                                Spacer(
-                                    modifier = Modifier
-                                        .height(20.dp)
-                                        .width(1.dp)
-                                        .background(color = Resetcolor)
+                            Switch(
+                                checked =CvvToggleState.value,
+                                onCheckedChange = {
+                                    CvvToggleState.value=it
+
+                                },
+                                colors = SwitchDefaults.colors(
+                                    checkedTrackColor = Resetcolor,
+                                    uncheckedIconColor = Resetcolor,
+                                    uncheckedBorderColor = Resetcolor,
+                                    disabledUncheckedIconColor = Resetcolor
+                                ),
+                            )
+
+                        }
+                        val list = listOf<String>("LoadCard", "Managecard", "Statement", "Details")
+                        val clickedState = remember {
+                            mutableStateOf("")
+                        }
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp, vertical = 10.dp),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            list.forEachIndexed { index, s ->
+                                Text(
+                                    s,
+                                    Modifier.clickable { clickedState.value = s },
+                                    color = if (s != clickedState.value) Resetcolor else {
+                                        Color(0xFFDB8726)
+                                    },
+                                    fontWeight = FontWeight(600)
                                 )
+                                if (index != list.size - 1) {
+                                    Spacer(
+                                        modifier = Modifier
+                                            .height(20.dp)
+                                            .width(1.dp)
+                                            .background(color = Resetcolor)
+                                    )
+                                }
                             }
                         }
-                    }
-                    val checkBoxState = remember {
-                        mutableStateOf("")
-                    }
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(5.dp)
-                            .background(Color.LightGray)
-                    )
+                        val checkBoxState = remember {
+                            mutableStateOf("")
+                        }
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(5.dp)
+                                .background(Color.LightGray)
+                        )
 
-                    if (clickedState.value == "Statement") {
-                        Box(
-                            Modifier
-                                .padding(vertical = 10.dp, horizontal = 10.dp)
-                                .fillMaxSize()
-                        ) {
-                            Column(horizontalAlignment = Alignment.Start) {
-                                Text(
-                                    "Card Statement", fontWeight = FontWeight(600),
-                                    fontSize = 20.sp,
-                                    modifier = Modifier.padding(10.dp),
-                                    fontFamily = FontFamily(Font(R.font.lato_bold))
-                                )
-                                val checkList =
-                                    listOf<String>("Last 10 Transaction", "Transaction History")
-                                checkList.forEach {
-                                    CustomCheckBox(checkBoxState, it)
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(20.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                                ) {
-                                    CustomButton(
+                        if (clickedState.value == "Statement") {
+                            Box(
+                                Modifier
+                                    .padding(vertical = 10.dp, horizontal = 10.dp)
+                                    .fillMaxSize()
+                            ) {
+                                Column(horizontalAlignment = Alignment.Start) {
+                                    Text(
+                                        "Card Statement", fontWeight = FontWeight(600),
+                                        fontSize = 20.sp,
+                                        modifier = Modifier.padding(10.dp),
+                                        fontFamily = FontFamily(Font(R.font.lato_bold))
+                                    )
+                                    val checkList =
+                                        listOf<String>("Last 10 Transaction", "Transaction History")
+                                    checkList.forEach {
+                                        CustomCheckBox(checkBoxState, it)
+                                    }
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(20.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                    ) { CustomButton(
                                         text = "SUBMIT",
                                         buttonColor = lighttealGreen
                                     ) {
@@ -277,253 +226,256 @@ fun CardManagementScreen(
                                             rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/${FilterOption.SelectDate}")
                                         }
                                     }
-                                    CustomButton(text = "CANCEL", buttonColor = cancelGray) {
-                                        rootNavController.popBackStack()
+                                        CustomButton(text = "CANCEL", buttonColor = cancelGray) {
+                                            rootNavController.popBackStack()
+                                        }
+
                                     }
-
                                 }
                             }
-                        }
-                    }
-                    else if (clickedState.value == "Managecard") {
-                        Box(
-                            Modifier
-                                .padding(vertical = 10.dp)
-                                .fillMaxSize()
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.Start
+                        } else if (clickedState.value == "Managecard") {
+                            Box(
+                                Modifier
+                                    .padding(vertical = 10.dp)
+                                    .fillMaxSize()
                             ) {
-                                Text(
-                                    "Manage Card",
-                                    fontWeight = FontWeight(600),
-                                    fontSize = 20.sp,
-                                    modifier = Modifier.padding(10.dp),
-                                    fontFamily = FontFamily(Font(R.font.lato_bold))
-                                )
-                                CustomCheckField(
-                                    state = ResetPinToggleState,
-                                    text = "Reset Pin",
-                                    res = R.drawable.group_one
+                                Column(
+                                    horizontalAlignment = Alignment.Start
                                 ) {
-                                    ResetPinToggleState.value =
-                                        !ResetPinToggleState.value
-                                    onClick(ResetPinToggleState.value)
-                                }
-
-                                CustomCheckField(
-                                    state = PauseCardToggleState,
-                                    text = "Pause card",
-                                    res = R.drawable.group_two
-                                ) {
-                                    PauseCardToggleState.value =
-                                        !PauseCardToggleState.value
-                                    onClick(PauseCardToggleState.value)
-                                }
-
-                                CustomCheckField(
-                                    state = HotListToggleState,
-                                    text = "Hotlist card",
-                                    res = R.drawable.group_three
-                                ) {
-                                    HotListToggleState.value = !HotListToggleState.value
-                                    onClick(HotListToggleState.value)
-
-                                }
-
-                                CustomCheckField(
-                                    state = ReplaceToggleState,
-                                    text = "Replace card",
-                                    res = R.drawable.group_four
-                                ) {
-                                    ReplaceToggleState.value = !ReplaceToggleState.value
-                                    onClick(ReplaceToggleState.value)
-                                }
-
-                            }
-                        }
-                    }
-                    else if (clickedState.value == "Details") {
-                        DetailsState.value
-                        Box(
-                            Modifier
-                                .padding(
-                                    vertical = 10.dp,
-                                    horizontal = 10.dp
-                                )
-                                .fillMaxSize()
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.Start
-                            ) {
-                                Text(
-                                    "Card Details",
-                                    fontWeight = FontWeight(600),
-                                    fontSize = 20.sp,
-                                    modifier = Modifier.padding(10.dp),
-                                    fontFamily = FontFamily(Font(R.font.lato_bold))
-                                )
-                                ElevatedCard(
-                                    modifier = Modifier.padding(
-                                        horizontal = 20.dp,
-                                        vertical = 10.dp
-                                    ), colors = CardDefaults.elevatedCardColors(cdback),
-                                    elevation = CardDefaults.elevatedCardElevation(2.dp)
-                                ) {
-                                    Column(
-                                        Modifier.padding(10.dp),
-                                        verticalArrangement = Arrangement.spacedBy(15.dp)
+                                    Text(
+                                        "Manage Card",
+                                        fontWeight = FontWeight(600),
+                                        fontSize = 20.sp,
+                                        modifier = Modifier.padding(10.dp),
+                                        fontFamily = FontFamily(Font(R.font.lato_bold))
+                                    )
+                                    CustomCheckField(
+                                        state = manageViewModel.ResetPinToggleState,
+                                        text = "Reset Pin",
+                                        res = R.drawable.group_one
                                     ) {
-                                        Row(
-                                            Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            Text(
-                                                text = "Email:",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 12.sp
-                                            )
-                                            BasicTextField(
-                                                value = viewModel.username.value,
-                                                enabled = viewModel.mask.value != 10.dp,
-                                                keyboardOptions = KeyboardOptions(
-                                                    keyboardType = KeyboardType.Email,
-                                                    imeAction = ImeAction.Done
-                                                ),
-                                                textStyle = TextStyle(
-                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                    fontSize = 14.sp),
-                                                onValueChange = {
-                                                                viewModel.username.value = it
-                                                },
-                                                modifier = Modifier.blur(viewModel.mask.value)
-                                                    )
-                                        }
-                                        Row(
-                                            Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            Text(
-                                                text = "Mobile:",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 12.sp
-                                            )
-                                            Text(
-                                                text = "7978730692",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 14.sp,
-                                                modifier = Modifier.blur(viewModel.mask.value)
-                                            )
-                                        }
-                                        Row(
-                                            Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            Text(
-                                                text = "Monthly Limit:",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 12.sp
-                                            )
+                                        manageViewModel.ResetPinToggleState.value=!manageViewModel.ResetPinToggleState.value
 
-                                            BasicTextField(
-                                                value = viewModel.monthlyLimit.value,
-                                                enabled = viewModel.mask.value != 10.dp,
-                                                keyboardOptions = KeyboardOptions(
-                                                    keyboardType = KeyboardType.Number,
-                                                    imeAction = ImeAction.Done
-                                                ),
-                                                textStyle = TextStyle(
-                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                    fontSize = 14.sp),
-                                                onValueChange = {
-                                                    viewModel.monthlyLimit.value = it
-                                                },
-                                                modifier = Modifier.blur(viewModel.mask.value)
-                                            )
-                                        }
-                                        Row(
-                                            Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            Text(
-                                                text = "Card Limit:",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 12.sp
-                                            )
+                                        ResetPinToggleState.value =
+                                            !ResetPinToggleState.value
 
-                                            BasicTextField(
-                                                value = viewModel.cardLimit.value,
-                                                enabled = viewModel.mask.value != 10.dp,
-                                                keyboardOptions = KeyboardOptions(
-                                                    keyboardType = KeyboardType.Number,
-                                                    imeAction = ImeAction.Done
-                                                ),
-                                                textStyle = TextStyle(
-                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                    fontSize = 14.sp),
-                                                onValueChange = {
-                                                    viewModel.cardLimit.value = it
-                                                },
-                                                modifier = Modifier.blur(viewModel.mask.value)
-                                            )
-                                        }
-                                        Row(
-                                            Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            Text(
-                                                text = "KYC Status:",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 12.sp
-                                            )
-                                            Text(
-                                                text = "Completed",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 14.sp,
-                                                modifier = Modifier.blur(viewModel.mask.value)
-                                            )
-                                        }
-                                        Row(
-                                            Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            Text(
-                                                text = "Card Status:",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 12.sp
-                                            )
-                                            Text(
-                                                text = "Active",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 14.sp,
-                                                modifier = Modifier.blur(viewModel.mask.value)
-                                            )
-                                        }
+                                    }
+
+                                    CustomCheckField(
+                                        state = manageViewModel.PauseCardToggleState,
+                                        text = "Pause card",
+                                        res = R.drawable.group_two
+                                    ) {
+                                        manageViewModel.PauseCardToggleState.value=!manageViewModel.PauseCardToggleState.value
+                                        PauseCardToggleState.value =
+                                            !PauseCardToggleState.value
+                                        onClick(PauseCardToggleState.value)
+                                    }
+
+                                    CustomCheckField(
+                                        state = manageViewModel.HotListToggleState,
+                                        text = "Hotlist card",
+                                        res = R.drawable.group_three
+                                    ) {
+                                        manageViewModel.HotListToggleState.value=!manageViewModel.HotListToggleState.value
+                                        HotListToggleState.value = !HotListToggleState.value
+
+                                        onClick(HotListToggleState.value)
+
+                                    }
+
+                                    CustomCheckField(
+                                        state = ReplaceToggleState,
+                                        text = "Replace card",
+                                        res = R.drawable.group_four
+                                    ) {
+                                        ReplaceToggleState.value = !ReplaceToggleState.value
+                                        onClick(ReplaceToggleState.value)
                                     }
 
                                 }
                             }
-                        }
-                    }
-                    else {
-                        Box(
-                            Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                "ComingSoon...",
-                                fontSize = 30.sp,
-                                fontWeight = FontWeight(700),
-                                fontFamily = FontFamily(
-                                    listOf(Font(R.font.lato_bold))
-                                ),
-                                color = Color.Gray,
-                            )
+                        } else if (clickedState.value == "Details") {
+                            DetailsState.value
+                            Box(
+                                Modifier
+                                    .padding(
+                                        vertical = 10.dp,
+                                        horizontal = 10.dp
+                                    )
+                                    .fillMaxSize()
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.Start
+                                ) {
+                                    Text(
+                                        "Card Details",
+                                        fontWeight = FontWeight(600),
+                                        fontSize = 20.sp,
+                                        modifier = Modifier.padding(10.dp),
+                                        fontFamily = FontFamily(Font(R.font.lato_bold))
+                                    )
+                                    ElevatedCard(
+                                        modifier = Modifier.padding(
+                                            horizontal = 20.dp,
+                                            vertical = 10.dp
+                                        ), colors = CardDefaults.elevatedCardColors(cdback),
+                                        elevation = CardDefaults.elevatedCardElevation(2.dp)
+                                    ) {
+                                        Column(
+                                            Modifier.padding(10.dp),
+                                            verticalArrangement = Arrangement.spacedBy(15.dp)
+                                        ) {
+                                            Row(
+                                                Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween
+                                            ) {
+                                                Text(
+                                                    text = "Email:",
+                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                    fontSize = 12.sp
+                                                )
+                                                BasicTextField(
+                                                    value = viewModel.username.value,
+                                                    enabled = viewModel.mask.value != 10.dp,
+                                                    keyboardOptions = KeyboardOptions(
+                                                        keyboardType = KeyboardType.Email,
+                                                        imeAction = ImeAction.Done
+                                                    ),
+                                                    textStyle = TextStyle(
+                                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                        fontSize = 14.sp),
+                                                    onValueChange = {
+                                                        viewModel.username.value = it
+                                                    },
+                                                    modifier = Modifier.blur(viewModel.mask.value)
+                                                )
+                                            }
+                                            Row(
+                                                Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween
+                                            ) {
+                                                Text(
+                                                    text = "Mobile:",
+                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                    fontSize = 12.sp
+                                                )
+                                                Text(
+                                                    text = "7978730692",
+                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                    fontSize = 14.sp,
+                                                    modifier = Modifier.blur(viewModel.mask.value)
+                                                )
+                                            }
+                                            Row(
+                                                Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween
+                                            ) {
+                                                Text(
+                                                    text = "Monthly Limit:",
+                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                    fontSize = 12.sp
+                                                )
+
+                                                BasicTextField(
+                                                    value = viewModel.monthlyLimit.value,
+                                                    enabled = viewModel.mask.value != 10.dp,
+                                                    keyboardOptions = KeyboardOptions(
+                                                        keyboardType = KeyboardType.Number,
+                                                        imeAction = ImeAction.Done
+                                                    ),
+                                                    textStyle = TextStyle(
+                                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                        fontSize = 14.sp),
+                                                    onValueChange = {
+                                                        viewModel.monthlyLimit.value = it
+                                                    },
+                                                    modifier = Modifier.blur(viewModel.mask.value)
+                                                )
+                                            }
+                                            Row(
+                                                Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween
+                                            ) {
+                                                Text(
+                                                    text = "Card Limit:",
+                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                    fontSize = 12.sp
+                                                )
+
+                                                BasicTextField(
+                                                    value = viewModel.cardLimit.value,
+                                                    enabled = viewModel.mask.value != 10.dp,
+                                                    keyboardOptions = KeyboardOptions(
+                                                        keyboardType = KeyboardType.Number,
+                                                        imeAction = ImeAction.Done
+                                                    ),
+                                                    textStyle = TextStyle(
+                                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                        fontSize = 14.sp),
+                                                    onValueChange = {
+                                                        viewModel.cardLimit.value = it
+                                                    },
+                                                    modifier = Modifier.blur(viewModel.mask.value)
+                                                )
+                                            }
+                                            Row(
+                                                Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween
+                                            ) {
+                                                Text(
+                                                    text = "KYC Status:",
+                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                    fontSize = 12.sp
+                                                )
+                                                Text(
+                                                    text = "Completed",
+                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                    fontSize = 14.sp,
+                                                    modifier = Modifier.blur(viewModel.mask.value)
+                                                )
+                                            }
+                                            Row(
+                                                Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween
+                                            ) {
+                                                Text(
+                                                    text = "Card Status:",
+                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                    fontSize = 12.sp
+                                                )
+                                                Text(
+                                                    text = "Active",
+                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                    fontSize = 14.sp,
+                                                    modifier = Modifier.blur(viewModel.mask.value)
+                                                )
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        } else {
+                            Box(
+                                Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    "ComingSoon...",
+                                    fontSize = 30.sp,
+                                    fontWeight = FontWeight(700),
+                                    fontFamily = FontFamily(
+                                        listOf(Font(R.font.lato_bold))
+                                    ),
+                                    color = Color.Gray,
+                                )
+                            }
                         }
                     }
                 }
-            }
-        }
+            },
+        )
 
     }
 }
