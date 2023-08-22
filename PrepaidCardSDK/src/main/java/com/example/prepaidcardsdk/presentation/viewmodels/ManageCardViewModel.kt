@@ -1,7 +1,10 @@
 package com.example.prepaidcardsdk.presentation.viewmodels
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
@@ -11,6 +14,7 @@ import com.example.prepaidcardsdk.data.model.resp.ViewCvvResponseModel
 import com.example.prepaidcardsdk.domain.usecases.ChangeCardStatusUseCase
 import com.example.prepaidcardsdk.domain.usecases.ResetPinUseCase
 import com.example.prepaidcardsdk.domain.usecases.ViewCvvUseCase
+import com.example.prepaidcardsdk.utils.EncryptDecrypt
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import com.example.prepaidcardsdk.utils.handleFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCase,val viewCvvUseCase:ViewCvvUseCase,val changeCardStatus:ChangeCardStatusUseCase) :ViewModel(){
 
+    val viewBalanceOtp: MutableState<Boolean> = mutableStateOf(false)
     var isLoading: MutableState<Boolean> = mutableStateOf(false)
 
     var isError: MutableState<Boolean> = mutableStateOf(false)
@@ -28,6 +33,12 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
 
     var enterPin= mutableStateOf("")
     var reenterPin= mutableStateOf("")
+    var navDest= mutableStateOf("")
+
+    val list = listOf<String>("LoadCard", "Managecard", "Statement", "Details")
+    val clickedState =
+        mutableStateOf("")
+
 
     var Otp=mutableStateOf("")
     var blockCardOtp=mutableStateOf("")
@@ -79,6 +90,7 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
 
     val DetailsState =
         mutableStateOf(false)
+    val cvvValue= mutableStateOf("")
 
 
     fun resetPin(onSucess:(ResetPinResponseModel)->Unit){
@@ -99,13 +111,20 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
         )
     }
 
-    fun viewCvv(otp:String,onSucesss:(ViewCvvResponseModel)->Unit){
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun viewCvv(otp:String, onSucesss:(ViewCvvResponseModel)->Unit){
         handleFlow(viewCvvUseCase.invoke(otp),
             onSuccess = {
                 if (it != null) {
+                    onSucesss(it)
+                }
+                if (it != null) {
                     if(it.status=="0"){
-                        cvvMask.value=0.dp
-                    }
+                        CvvToggleState.value=!CvvToggleState.value
+                        cvvMask.value=if(cvvMask.value==0.dp){10.dp}else cvvMask.value
+                        cvvValue.value=EncryptDecrypt.decryptData(it.cvv.toByteArray(Charsets.UTF_8),EncryptDecrypt.key)
+
+                        }
                     else{
                         errorMessage.value=it.statusDesc
                         isError.value=true

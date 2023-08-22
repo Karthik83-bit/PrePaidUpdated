@@ -31,6 +31,7 @@ class CardActivationViewModel @Inject constructor(val changeCardStatusUseCase: C
                 onFailure = {
                     isError.value = true
                     errorMessage.value = it
+
                 },
                 onSuccess = {
                     onComplete(it)

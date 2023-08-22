@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+//import androidx.compose.foundation.layout.FlowColumnScopeInstance.align
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -55,6 +56,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.components.CustomAlertDialog
+import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.data.model.resp.toViewcardresponseWrapperDomain
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.ui.theme.HitextColor
@@ -201,20 +204,61 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
 
                     }
 
+                CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
+                    viewModel.isError.value = false
+                        if(viewModel.destination.value.isNotEmpty()){
+                            rootNavController.navigate(viewModel.destination.value)
+                        }
+                    viewModel.destination.value=""
+
+
+
+
+                    viewModel.errorMessage.value = ""
                 }
+//                Card(Modifier.size(300.dp)) {
+//                    Box(Modifier.fillMaxSize()) {
+//                        Column(
+//                            Modifier.fillMaxSize(),
+//                            verticalArrangement = Arrangement.Center,
+//                            horizontalAlignment = Alignment.CenterHorizontally
+//                        ) {
+//                            Text(viewModel.errorMessage.value)
+//                            Button(onClick = {
+//                                viewModel.isError.value = false
+//                                if(viewModel.destination.value.isNotEmpty()){
+//                                    rootNavController.navigate(viewModel.destination.value)
+//                                }
+//
+//
+//                                viewModel.errorMessage.value = ""
+//                                viewModel.destination.value = ""
+//                            }) {
+//                                Text("ok")
+//
+//                            }
+//                        }
+//
+//                    }
+//
+//                }
 
             }
         } else if (viewModel.isLoading.value) {
-            AlertDialog(onDismissRequest = { }) {
-                Card(Modifier.size(300.dp)) {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
-
-                    }
-
-                }
-
+            AlertDialog(onDismissRequest = { /*TODO*/ }) {
+                CustomLoader()
             }
+
+//            AlertDialog(onDismissRequest = { }) {
+//                Card(Modifier.size(300.dp)) {
+//                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+//                        CircularProgressIndicator()
+//
+//                    }
+//
+//                }
+//
+//            }
         }
         Row(
             modifier = Modifier
@@ -224,13 +268,15 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
         {
             Row {
                 Text(
-                    text = "Hi,",
+                    text = "Hi ,",
                     color = HitextColor,
                     fontFamily = FontFamily(Font(R.font.roboto_medium_italic)),
                     fontSize = 22.sp
                 )
                 Text(
-                    text = " John!",
+                    text = "${if(viewModel.cardList.value?.isNotEmpty() == true) {
+                        viewModel.cardList.value?.get(0)?.nameonCard
+                    } else ""}!",
                     color = HitextColor,
                     fontFamily = FontFamily(Font(R.font.robot_medium)),
                     fontSize = 22.sp
@@ -254,7 +300,9 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
 
 
         LaunchedEffect(key1 = true) {
+            if(viewModel.cardList.value?.isEmpty()==true){
             viewModel.cardDataByCustomer()
+            }
         }
 
         viewModel.cardList.value?.let {
@@ -326,10 +374,12 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                                         if (res.status == "0") {
                                                             //hotlist
                                                             val hotlist =
-                                                            res.viewcardresponseWrapper.isHotlist
-                                                            val isBlock = res.viewcardresponseWrapper.isBlock
-                                                            val isActive = res.viewcardresponseWrapper.isActive
-                                        //
+                                                                res.viewcardresponseWrapper.isHotlist
+                                                            val isBlock =
+                                                                res.viewcardresponseWrapper.isBlock
+                                                            val isActive =
+                                                                res.viewcardresponseWrapper.isActive
+                                                            //
                                                             if (!hotlist) {
                                                                 if (isBlock) {
                                                                     viewModel.isError.value = true
@@ -345,7 +395,8 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                                                             Destination.CARD_MANAGEMENT_SCREEN
                                                                         )
                                                                     } else {
-                                                                        viewModel.isError.value = true
+                                                                        viewModel.isError.value =
+                                                                            true
                                                                         viewModel.errorMessage.value =
                                                                             "Card is Inactive"
                                                                         viewModel.destination.value =
@@ -358,8 +409,8 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                                                 viewModel.isError.value = true
                                                                 viewModel.errorMessage.value =
                                                                     "Card is Hot Listed"
-                                                                viewModel.destination.value =
-                                                                    Destination.VIEW_CARDS_SCREEN
+
+
                                                             }
 
                                                         } else {
@@ -387,26 +438,16 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                         )
                                         it.toViewcardresponseWrapperDomain().decryptedCard?.let { it1 ->
                                             Text(
-                                                text = it1, color = gray_color,
+                                                text =it1.replaceRange(0,12,"xxxx-xxxxx-xxxxx-"), color = gray_color,
                                                 modifier = Modifier.blur(0.dp)
                                             )
                                         }
                                         Spacer(modifier = Modifier.height(30.dp))
                                         Row(
-                                            horizontalArrangement = Arrangement.spacedBy(80.dp)
+                                            horizontalArrangement = Arrangement.spacedBy(80.dp),
+                                            modifier = Modifier.fillMaxWidth()
                                         ) {
-                                            ClickableText(
-                                                text = AnnotatedString("Apply Now"),
-                                                onClick = { rootNavController.navigate(Destination.APPLY_CARD_SCREEN) },
-                                                style = TextStyle(
-                                                    color = isuGreen,
-                                                    fontSize = 18.sp,
-                                                    fontFamily = FontFamily(
-                                                        Font(R.font.roboto_regular)
-                                                    ),
-                                                    textDecoration = TextDecoration.Underline
-                                                )
-                                            )
+
                                             Text(
                                                 text = "iServeU",
                                                 color = isuGreen,
@@ -415,7 +456,8 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                                     Font(R.font.inter_extra_bold)
                                                 ),
                                                 fontStyle = FontStyle.Italic,
-                                                fontWeight = FontWeight.ExtraBold
+                                                fontWeight = FontWeight.ExtraBold,
+
                                             )
                                         }
                                     }
@@ -450,9 +492,12 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                                 if (res != null) {
                                                     if (res.status == "0") {
                                                         //hotlist
-                                                        val hotlist =  res.viewcardresponseWrapper.isHotlist
-                                                        val isBlock = res.viewcardresponseWrapper.isBlock
-                                                        val isActive = res.viewcardresponseWrapper.isActive
+                                                        val hotlist =
+                                                            res.viewcardresponseWrapper.isHotlist
+                                                        val isBlock =
+                                                            res.viewcardresponseWrapper.isBlock
+                                                        val isActive =
+                                                            res.viewcardresponseWrapper.isActive
 
                                                         if (!hotlist) {
                                                             if (isBlock) {
@@ -483,7 +528,7 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                                             viewModel.errorMessage.value =
                                                                 "Card is Hot Listed"
                                                             viewModel.destination.value =
-                                                                Destination.VIEW_CARDS_SCREEN
+                                                                ""
                                                         }
 
                                                     } else {
@@ -516,6 +561,8 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
 
                                         it.toViewcardresponseWrapperDomain().decryptedCard?.let { it1 ->
                                             Text(
+                                                text =it1.replaceRange(0,12,"xxxx-xxxxx-xxxxx-"), color = gray_color,
+                                                modifier = Modifier.blur(0.dp)
                                                 text = it1,
                                                 color = gray_color,
                                                 modifier = Modifier.blur(0.dp)
@@ -523,18 +570,7 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                         }
                                         Spacer(modifier = Modifier.height(30.dp))
                                         Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
-                                            ClickableText(
-                                                text = AnnotatedString("Apply Now"),
-                                                onClick = { rootNavController.navigate(Destination.APPLY_CARD_SCREEN) },
-                                                style = TextStyle(
-                                                    color = isuOrrange,
-                                                    fontSize = 18.sp,
-                                                    fontFamily = FontFamily(
-                                                        Font(R.font.roboto_regular)
-                                                    ),
-                                                    textDecoration = TextDecoration.Underline
-                                                )
-                                            )
+
                                             Text(
                                                 text = "iServeU",
                                                 color = isuOrrange,
@@ -618,5 +654,6 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
     }
 
 }
+
 
 

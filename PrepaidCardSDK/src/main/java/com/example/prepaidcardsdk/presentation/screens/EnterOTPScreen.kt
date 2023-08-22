@@ -17,11 +17,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.surfaceColorAtElevation
 //import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -38,17 +42,26 @@ import com.example.prepaidcard.components.CustomButton
 import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.components.CustomAlertDialog
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.ui.theme.Cultured
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 import com.example.prepaidcardsdk.ui.theme.remainingTimeColor
+import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardViewModel) {
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
     var context = LocalContext.current
+    var success= remember {
+        mutableStateOf(false)
+    }
+    var scope= rememberCoroutineScope()
 
 
     Scaffold(topBar = {
@@ -56,6 +69,22 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
             rootNavController.popBackStack()
         }
     }) {
+        if(viewModel.isError.value){
+            AlertDialog(onDismissRequest = { /*TODO*/ }) {
+                CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
+                    viewModel.isError.value=false
+                    viewModel.errorMessage.value=""
+                    if(viewModel.navDest.value.isNotEmpty()) {
+                        rootNavController.navigate(Destination.VIEW_CARDS_SCREEN) {
+                            popUpTo(Destination.VIEW_CARDS_SCREEN)
+                        }
+
+                    }
+                    viewModel.navDest.value=""
+                }
+            }
+
+        }
         Column(
             modifier = Modifier
                 .padding(it)
@@ -127,10 +156,49 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
                     text = "SUBMIT",
                     buttonColor = lighttealGreen,
                     onClick = {
-                    viewModel.changeCardStatus(viewModel.Otp.value, status = "active"){
+                        if(viewModel.Otp.value.isEmpty()||viewModel.Otp.value.length<4){
+                            viewModel.isError.value=true
+                            viewModel.errorMessage.value="Enter a valid otp"
+                            viewModel.navDest.value=""
+                        }
+                        val status=when{
+
+                            SDK_CONSTANTS.isBlock==true->"unblock"
+
+                            SDK_CONSTANTS.isActive==false->"active"
+
+
+
+
+                            else->""
+                        }
+                    viewModel.changeCardStatus(viewModel.Otp.value, status = status){
                         Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
                         if(it.status=="0"){
-                            rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN)
+                            success.value=true
+                                scope.launch {
+                                    delay(2000)
+success.value=false
+                                }
+                            viewModel.PauseCardToggleState.value=!viewModel.PauseCardToggleState.value
+                            SDK_CONSTANTS.isBlock=viewModel.PauseCardToggleState.value
+                            if(SDK_CONSTANTS.isActive==true){
+
+                                rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN){
+                                    this.popUpTo(Destination.VIEW_CARDS_SCREEN)
+                                }
+                            }
+                            else{
+                                rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN){
+                                    this.popUpTo(Destination.VIEW_CARDS_SCREEN)
+                                }
+                            }
+
+                        }
+                        else{
+                            viewModel.isError.value=true
+                            viewModel.errorMessage.value=it.statusDesc
+                            viewModel.navDest.value=Destination.VIEW_CARDS_SCREEN
                         }
 
                     }

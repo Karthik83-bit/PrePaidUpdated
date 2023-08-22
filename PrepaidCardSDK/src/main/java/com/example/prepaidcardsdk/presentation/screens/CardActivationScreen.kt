@@ -141,7 +141,9 @@ val context= LocalContext.current
 
             ) {
 
-                FlipCard(SDK_CONSTANTS.cardUser, SDK_CONSTANTS.cardNumber, SDK_CONSTANTS.expiryDate)
+                FlipCard(SDK_CONSTANTS.cardUser, SDK_CONSTANTS.cardNumber, SDK_CONSTANTS.expiryDate){
+
+                }
                 CustomCheckField(
                     state = viewModel.cardActivationToggleState,
                     text = "Card Activation",

@@ -3,11 +3,14 @@ package com.example.prepaidcard.components
 //import androidx.compose.foundation.layout.FlowColumnScopeInstance.align
 //import androidx.compose.foundation.layout.ColumnScopeInstance.align
 //import androidx.compose.foundation.layout.ColumnScopeInstance.align
+import android.os.Build
 import android.os.CountDownTimer
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -26,6 +29,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -40,6 +44,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,12 +67,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.example.prepaidcard.utils.STRING
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.components.CustomAlertDialog
+import com.example.prepaidcardsdk.components.CustomSucessDialog
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomScaffoldScreen(
@@ -87,7 +98,11 @@ fun CustomScaffoldScreen(
 
 
     ) {
-    val otpInp = remember {
+    val successDialog = remember {
+        mutableStateOf(false)
+    }
+    val scope= rememberCoroutineScope()
+    val sucessMsg= remember {
         mutableStateOf("")
     }
     val context= LocalContext.current
@@ -151,7 +166,7 @@ fun CustomScaffoldScreen(
 //    }
 
     @Composable
-    fun Sheet(str: String, hotlist: MutableState<Boolean>,onConirm:()->Unit) {
+    fun Sheet(str: String, hotlist: MutableState<Boolean>,onCancel:()->Unit,onConirm:()->Unit) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -187,7 +202,7 @@ fun CustomScaffoldScreen(
                 }
                 Button(
                     onClick = {
-
+onCancel()
                     },
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier
@@ -205,7 +220,7 @@ fun CustomScaffoldScreen(
     }
 
     @Composable
-    fun ResetPinSheet(hotlist: MutableState<Boolean>) {
+    fun ResetPinSheet(hotlist: MutableState<Boolean>,) {
     var isError= remember {
         mutableStateOf(false)
     }
@@ -318,13 +333,14 @@ fun CustomScaffoldScreen(
                         }
                         else{
                             isError.value=false
-                        }
+
 
 
 
                         hotlist.value = !hotlist.value
 //                        manageViewModel.ResetPinToggleState.value=true
                         ResetPinOtp.value = !ResetPinOtp.value
+                        }
                     },
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier
@@ -338,7 +354,7 @@ fun CustomScaffoldScreen(
                 }
                 Button(
                     onClick = {
-
+                        hotlist.value = !hotlist.value
                     },
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier
@@ -371,7 +387,7 @@ fun CustomScaffoldScreen(
     if (ResetPinOtp.value) timer.start() else timer.cancel()
 
     @Composable
-    fun EnterOTPPinSheet(state:MutableState<String>,onSubmit:()->Unit) {
+    fun EnterOTPPinSheet(state:MutableState<String>,oncancel:()->Unit,onSubmit:()->Unit) {
 
         var textFieldSize by remember { mutableStateOf(Size.Zero) }
         Column(
@@ -468,7 +484,7 @@ fun CustomScaffoldScreen(
                 }
                 Button(
                     onClick = {
-
+                   oncancel()
                     },
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier
@@ -489,6 +505,7 @@ fun CustomScaffoldScreen(
         }
     }
 
+
     @Composable
     fun CustomSheetWrap(
         state: MutableState<Boolean>,
@@ -497,10 +514,27 @@ fun CustomScaffoldScreen(
         cont: @Composable () -> Unit,
 
     ) {
+        if(manageViewModel.isError.value){
+            AlertDialog(onDismissRequest = { /*TODO*/ }) {
+                CustomAlertDialog(errMsg = manageViewModel.errorMessage.value) {
+                    manageViewModel.isError.value=false
+                    manageViewModel.errorMessage.value=""
+                }
+            }
+
+        }
+
+
         Box(
             Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
+
+if(successDialog.value) {
+    CustomSucessDialog(msg = sucessMsg.value){}
+}
+
+
 
             AnimatedVisibility(
                 visible = state.value,
@@ -554,20 +588,34 @@ fun CustomScaffoldScreen(
     }
 
     CustomSheetWrap(state = hotlist) {
-        Sheet(str = STRING.HOTLIST_CARD, hotlist = Hotlist){
-            hotlistCardOtp.value=true
-            Hotlist.value=false
+      val string=  if(manageViewModel.HotListToggleState.value){
+                STRING.UNHOTLIST_CARD
+        }
+        else{
+STRING.HOTLIST_CARD
+        }
+        Sheet(str = string, hotlist = Hotlist, onCancel = {
+            Hotlist.value=!hotlist.value}){
+            hotlistCardOtp.value=!hotlistCardOtp.value
+            Hotlist.value=!hotlist.value
         }
     }
     CustomSheetWrap(state = BlockCard,) {
-        Sheet(str = STRING.HOTLIST_CARD, hotlist = Hotlist){
+        val string=  if(manageViewModel.PauseCardToggleState.value){
+            STRING.UNBLOCK_CARD
+        }
+        else{
+            STRING.BLOCK_CARD
+        }
+        Sheet(str = string, hotlist = Hotlist,{BlockCard.value=false
+        }){
             BlockCard.value=false
             BlockCardOtp.value=true
         }
     }
 
     CustomSheetWrap(state = ResetPinOtp, 800,1000) {
-        EnterOTPPinSheet(manageViewModel.Otp) {
+        EnterOTPPinSheet(manageViewModel.Otp, { ResetPinOtp.value = !ResetPinOtp.value }) {
             manageViewModel.resetPin(){
                 manageViewModel.enterPin.value=""
                 manageViewModel.reenterPin.value=""
@@ -582,27 +630,66 @@ fun CustomScaffoldScreen(
         }
     }
     CustomSheetWrap(state = cvv, 800) {
-        EnterOTPPinSheet(manageViewModel.Otp){
+        EnterOTPPinSheet(manageViewModel.Otp, oncancel = {cvv.value=!cvv.value}){
                 manageViewModel.viewCvv(manageViewModel.Otp.value){
                     Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+                    if(it.status=="0"){
+                        successDialog.value=true
+                        sucessMsg.value="Cvv Unmasked"
+                        scope.launch {
+                            successDialog.value=false
+                        }
+
+                    }
+                    else{
+                        manageViewModel.isError.value=true
+                        manageViewModel.errorMessage.value=it.statusDesc
+                    }
                 }
             cvv.value=false
 
         }
     }
+
     CustomSheetWrap(state = BlockCardOtp, 800, delay = 1000) {
-        EnterOTPPinSheet(manageViewModel.Otp){
-            manageViewModel.changeCardStatus(manageViewModel.Otp.value,"block"){
+        EnterOTPPinSheet(manageViewModel.Otp, oncancel = {
+            BlockCardOtp.value = !BlockCardOtp.value
+        }){
+            val status=if(manageViewModel.PauseCardToggleState.value==true){
+                "unblock"
+            }else "block"
+            manageViewModel.changeCardStatus(manageViewModel.Otp.value,status){
                 Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+                if(it.status=="0"){
+                    manageViewModel.PauseCardToggleState.value=!manageViewModel.PauseCardToggleState.value
+                    successDialog.value=true
+                    sucessMsg.value="Card sucessfully ${status}ed"
+                    scope.launch {
+                        delay(2000)
+                        successDialog.value=false
+                    }
+
+
+
+                }
+                else{
+                        manageViewModel.errorMessage.value=it.statusDesc
+                    manageViewModel.isError.value=true
+                }
             }
+            manageViewModel.Otp.value=""
             BlockCardOtp.value=false
 
         }
     }
     CustomSheetWrap(state = hotlistCardOtp, 800, delay = 1000) {
-        EnterOTPPinSheet(manageViewModel.Otp){
+        EnterOTPPinSheet(manageViewModel.Otp,{hotlistCardOtp.value=false}){
             manageViewModel.changeCardStatus(manageViewModel.Otp.value,"hotlist"){
                 Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+                if(it.status=="0"){
+                    manageViewModel.HotListToggleState.value=!manageViewModel.HotListToggleState.value
+
+                }
             }
             hotlistCardOtp.value=false
 
@@ -619,5 +706,4 @@ fun CustomScaffoldScreen(
 
 
 }
-
 
