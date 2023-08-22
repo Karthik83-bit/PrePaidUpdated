@@ -61,7 +61,7 @@ enum class CardFace(val angle: Float) {
 }
 
 @Composable
-fun FlipCard(name: String, cardno: String, exp: String) {
+fun FlipCard(name: String, cardno: String, exp: String,viewBalance: () -> Unit) {
 
     val cardfaceState= remember {
         mutableStateOf(CardFace.Front)
@@ -91,7 +91,10 @@ AnimatedVisibility(visible = cardfaceState.value.angle<90f) {
             cardfaceState.value = cardfaceState.value.next
 
 
-        },cardno,name,exp)
+        },cardno,name,exp){
+viewBalance()
+
+    }
 }
 
             }else{
@@ -114,7 +117,7 @@ AnimatedVisibility(visible = cardfaceState.value.angle<90f) {
 
 
 @Composable
-fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String) {
+fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String,viewBalance:()->Unit) {
     val mask= remember {
         mutableStateOf(10.dp)
     }
@@ -171,7 +174,7 @@ fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String) 
                 Spacer(modifier = Modifier.height(20.dp))
                 Column() {
                     Text(name, color = Color.White,style = TextStyle(letterSpacing = 5.sp, fontWeight = FontWeight(500)), modifier = Modifier.blur(mask.value))
-                    Text("xxxx-xxxx-${cardno}", color = Color.White, style = TextStyle(letterSpacing = 5.sp),fontWeight = FontWeight(500), modifier = Modifier.blur(mask.value))
+                    Text("${cardFormat(cardno)}", color = Color.White, style = TextStyle(letterSpacing = 5.sp),fontWeight = FontWeight(500), modifier = Modifier.blur(mask.value))
 
                 }
                 OutlinedButton(
@@ -211,6 +214,10 @@ fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String) 
         }
 
       }
+}
+
+fun cardFormat(cardno: String): String {
+return cardno.replaceRange(4,5," "+cardno[4].toString()).replaceRange(9,10," "+cardno[9].toString()).replaceRange(14,15," "+cardno[14].toString())
 }
 
 @Composable

@@ -59,6 +59,7 @@ import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.cdback
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
+import javax.crypto.spec.DESKeySpec
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,6 +71,7 @@ fun CardManagementScreen(
 ) {
     val ReplaceToggleState =
         manageViewModel.ReplaceToggleState
+
 
     val CvvToggleState =
         manageViewModel.CvvToggleState_d
@@ -100,6 +102,11 @@ fun CardManagementScreen(
         }
     })
     {
+        if(manageViewModel.HotListToggleState.value){
+            rootNavController.navigate(Destination.VIEW_CARDS_SCREEN){
+                popUpTo(Destination.VIEW_CARDS_SCREEN)
+            }
+        }
         CustomScaffoldScreen(
             sheet = ResetPinToggleState,
             resetPinOtp = ResetPinOtpState,
@@ -129,7 +136,9 @@ fun CardManagementScreen(
 
                     ) {
 
-                        FlipCard(name=SDK_CONSTANTS.cardUser,cardno=SDK_CONSTANTS.cardNumber,exp=SDK_CONSTANTS.expiryDate)
+                        FlipCard(name=SDK_CONSTANTS.cardUser,cardno=SDK_CONSTANTS.cardNumber,exp=SDK_CONSTANTS.expiryDate){
+                            manageViewModel.viewBalanceOtp.value=!manageViewModel.viewBalanceOtp.value
+                        }
                         Row(verticalAlignment = Alignment.CenterVertically) {
 
                             Text("CVV:", fontWeight = FontWeight(700))
@@ -139,7 +148,7 @@ fun CardManagementScreen(
                                 modifier = Modifier.blur(manageViewModel.cvvMask.value)
                             )
                             Switch(
-                                checked =CvvToggleState.value,
+                                checked =manageViewModel.CvvToggleState.value,
                                 onCheckedChange = {
                                     CvvToggleState.value=it
 
@@ -153,10 +162,7 @@ fun CardManagementScreen(
                             )
 
                         }
-                        val list = listOf<String>("LoadCard", "Managecard", "Statement", "Details")
-                        val clickedState = remember {
-                            mutableStateOf("")
-                        }
+
                         Row(
                             Modifier
                                 .fillMaxWidth()
@@ -164,16 +170,16 @@ fun CardManagementScreen(
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            list.forEachIndexed { index, s ->
+                            manageViewModel.list.forEachIndexed { index, s ->
                                 Text(
                                     s,
-                                    Modifier.clickable { clickedState.value = s },
-                                    color = if (s != clickedState.value) Resetcolor else {
+                                    Modifier.clickable { manageViewModel.clickedState.value = s },
+                                    color = if (s != manageViewModel.clickedState.value) Resetcolor else {
                                         Color(0xFFDB8726)
                                     },
                                     fontWeight = FontWeight(600)
                                 )
-                                if (index != list.size - 1) {
+                                if (index != manageViewModel.list.size - 1) {
                                     Spacer(
                                         modifier = Modifier
                                             .height(20.dp)
@@ -193,7 +199,7 @@ fun CardManagementScreen(
                                 .background(Color.LightGray)
                         )
 
-                        if (clickedState.value == "Statement") {
+                        if (manageViewModel.clickedState.value == "Statement") {
                             Box(
                                 Modifier
                                     .padding(vertical = 10.dp, horizontal = 10.dp)
@@ -233,7 +239,7 @@ fun CardManagementScreen(
                                     }
                                 }
                             }
-                        } else if (clickedState.value == "Managecard") {
+                        } else if (manageViewModel.clickedState.value == "Managecard") {
                             Box(
                                 Modifier
                                     .padding(vertical = 10.dp)
@@ -266,7 +272,7 @@ fun CardManagementScreen(
                                         text = "Pause card",
                                         res = R.drawable.group_two
                                     ) {
-                                        manageViewModel.PauseCardToggleState.value=!manageViewModel.PauseCardToggleState.value
+//                                        manageViewModel.PauseCardToggleState.value=!manageViewModel.PauseCardToggleState.value
                                         PauseCardToggleState.value =
                                             !PauseCardToggleState.value
                                         onClick(PauseCardToggleState.value)
@@ -277,7 +283,7 @@ fun CardManagementScreen(
                                         text = "Hotlist card",
                                         res = R.drawable.group_three
                                     ) {
-                                        manageViewModel.HotListToggleState.value=!manageViewModel.HotListToggleState.value
+
                                         HotListToggleState.value = !HotListToggleState.value
 
                                         onClick(HotListToggleState.value)
@@ -295,7 +301,7 @@ fun CardManagementScreen(
 
                                 }
                             }
-                        } else if (clickedState.value == "Details") {
+                        } else if (manageViewModel.clickedState.value == "Details") {
                             DetailsState.value
                             Box(
                                 Modifier
