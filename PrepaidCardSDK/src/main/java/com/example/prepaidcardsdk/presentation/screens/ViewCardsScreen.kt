@@ -109,109 +109,164 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
         }
         if (viewModel.isError.value) {
             /*AlertDialog(onDismissRequest = { }) {
+    Card(Modifier.size(300.dp)) {
+        Box(Modifier.fillMaxSize()) {
+
+            Column(
+                Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(){
+                    Box(Modifier.fillMaxWidth(0.8f))
+                    IconButton(onClick = {
+                        viewModel.isError.value = false
+                        viewModel.isError.value = false
+
+                        rootNavController.navigate(viewModel.destination.value)
+                        viewModel.errorMessage.value=""
+                        viewModel.destination.value=""
+
+                    }) {
+                        Icon(painterResource(id = R.drawable.baseline_close_24),"")
+                    }
+                }
+                Icon(painterResource(id = R.drawable.baseline_error_24), contentDescription = "",Modifier.fillMaxSize(0.5f), tint = Color.Red)
+                Box(Modifier.weight(2f).padding(5.dp), contentAlignment = Alignment.Center){
+                    Text(viewModel.errorMessage.value.replaceFirstChar {
+                        it.uppercase()
+                    }, fontWeight = FontWeight(400), style = TextStyle(
+                        fontSize = 20.sp
+
+                    ),)
+
+                }
+                            Button(onClick = {
+                                viewModel.isError.value = false
+                                viewModel.cardActivationToggleState.value=false
+
+                            }, shape = RoundedCornerShape(5.dp)) {
+                                Text("ok")
+
+                            }
+            }
+
+        }
+
+    }
+
+}*/
+            AlertDialog(onDismissRequest = { }) {
                 Card(Modifier.size(300.dp)) {
                     Box(Modifier.fillMaxSize()) {
-
                         Column(
                             Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Row(){
+                            Row() {
                                 Box(Modifier.fillMaxWidth(0.8f))
                                 IconButton(onClick = {
                                     viewModel.isError.value = false
                                     viewModel.isError.value = false
-
-                                    rootNavController.navigate(viewModel.destination.value)
-                                    viewModel.errorMessage.value=""
-                                    viewModel.destination.value=""
-
                                 }) {
-                                    Icon(painterResource(id = R.drawable.baseline_close_24),"")
+                                    Icon(painterResource(id = R.drawable.baseline_close_24), "")
                                 }
                             }
-                            Icon(painterResource(id = R.drawable.baseline_error_24), contentDescription = "",Modifier.fillMaxSize(0.5f), tint = Color.Red)
-                            Box(Modifier.weight(2f).padding(5.dp), contentAlignment = Alignment.Center){
-                                Text(viewModel.errorMessage.value.replaceFirstChar {
-                                    it.uppercase()
-                                }, fontWeight = FontWeight(400), style = TextStyle(
-                                    fontSize = 20.sp
+                            Icon(
+                                painterResource(id = R.drawable.baseline_error_24),
+                                contentDescription = "",
+                                Modifier.fillMaxSize(0.5f),
+                                tint = Color.Red
+                            )
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
 
-                                ),)
+                                Text(
+                                    viewModel.errorMessage.value.replaceFirstChar {
+                                        it.uppercase()
+                                    },
+                                    fontWeight = FontWeight(400),
+                                    style = TextStyle(
+                                        fontSize = 20.sp
+
+                                    ),
+                                )
+                                Button(onClick = {
+                                    viewModel.isError.value = false
+
+                                    rootNavController.navigate(viewModel.destination.value)
+                                    viewModel.errorMessage.value = ""
+                                    viewModel.destination.value = ""
+                                }) {
+                                    Text("ok")
+
+                                }
+                            }
+                        }
+
+                    }
+
+                    CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
+                        viewModel.isError.value = false
+                        if (viewModel.destination.value.isNotEmpty()) {
+                            rootNavController.navigate(viewModel.destination.value)
+                        }
+                        viewModel.destination.value = ""
+
+
+
+
+                        viewModel.errorMessage.value = ""
+                    }
+
+                }
+
+               /* Card(Modifier.size(300.dp)) {
+                    Box(Modifier.fillMaxSize()) {
+                        Column(
+                            Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(viewModel.errorMessage.value)
+                            Button(onClick = {
+                                viewModel.isError.value = false
+                                if(viewModel.destination.value.isNotEmpty()){
+                                    rootNavController.navigate(viewModel.destination.value)
+                                }
+
+
+                                viewModel.errorMessage.value = ""
+                                viewModel.destination.value = ""
+                            }) {
+                                Text("ok")
 
                             }
-//                            Button(onClick = {
-//                                viewModel.isError.value = false
-//                                viewModel.cardActivationToggleState.value=false
-//
-//                            }, shape = RoundedCornerShape(5.dp)) {
-//                                Text("ok")
-//
-//                            }
                         }
+
+                    }
+
+                }*/
+            }
+        }else if (viewModel.isLoading.value) {
+            AlertDialog(onDismissRequest = { /*TODO*/ }) {
+                CustomLoader()
+            }
+
+          /*  AlertDialog(onDismissRequest = { }) {
+                Card(Modifier.size(300.dp)) {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
 
                     }
 
                 }
 
             }*/
-            AlertDialog(onDismissRequest = { }) {
-                CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
-                    viewModel.isError.value = false
-                        if(viewModel.destination.value.isNotEmpty()){
-                            rootNavController.navigate(viewModel.destination.value)
-                        }
-                    viewModel.destination.value=""
-
-
-
-
-                    viewModel.errorMessage.value = ""
-                }
-//                Card(Modifier.size(300.dp)) {
-//                    Box(Modifier.fillMaxSize()) {
-//                        Column(
-//                            Modifier.fillMaxSize(),
-//                            verticalArrangement = Arrangement.Center,
-//                            horizontalAlignment = Alignment.CenterHorizontally
-//                        ) {
-//                            Text(viewModel.errorMessage.value)
-//                            Button(onClick = {
-//                                viewModel.isError.value = false
-//                                if(viewModel.destination.value.isNotEmpty()){
-//                                    rootNavController.navigate(viewModel.destination.value)
-//                                }
-//
-//
-//                                viewModel.errorMessage.value = ""
-//                                viewModel.destination.value = ""
-//                            }) {
-//                                Text("ok")
-//
-//                            }
-//                        }
-//
-//                    }
-//
-//                }
-
-            }
-        } else if (viewModel.isLoading.value) {
-            AlertDialog(onDismissRequest = { /*TODO*/ }) {
-                CustomLoader()
-            }
-
-//            AlertDialog(onDismissRequest = { }) {
-//                Card(Modifier.size(300.dp)) {
-//                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//                        CircularProgressIndicator()
-//
-//                    }
-//
-//                }
-//
-//            }
         }
         Row(
             modifier = Modifier
@@ -515,7 +570,7 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                         it.toViewcardresponseWrapperDomain().decryptedCard?.let { it1 ->
                                             Text(
                                                 text =it1.replaceRange(0,12,"xxxx-xxxxx-xxxxx-"), color = gray_color,
-                                                modifier = Modifier.blur(0.dp)
+                                                modifier = Modifier.blur(0.dp),
                                             )
                                         }
                                         Spacer(modifier = Modifier.height(30.dp))

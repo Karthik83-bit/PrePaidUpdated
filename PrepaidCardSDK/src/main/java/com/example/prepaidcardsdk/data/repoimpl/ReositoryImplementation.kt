@@ -8,12 +8,14 @@ import com.example.prepaidcardsdk.data.model.req.ResetPinRequestModel
 import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
 
 import com.example.prepaidcardsdk.data.model.req.SetPinRequestModel
+import com.example.prepaidcardsdk.data.model.req.VerifyOtpReq
 import com.example.prepaidcardsdk.data.model.req.ViewCardDataReqModel
 import com.example.prepaidcardsdk.data.model.req.ViewCvvRequestModel
 import com.example.prepaidcardsdk.data.model.resp.CardDataByCustomerResp
 import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
 import com.example.prepaidcardsdk.data.model.resp.ResetPinResponseModel
 import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
+import com.example.prepaidcardsdk.data.model.resp.VerifyOtpResp
 import com.example.prepaidcardsdk.data.model.resp.ViewCvvResponseModel
 import com.example.prepaidcardsdk.data.src.APIService
 import com.example.prepaidcardsdk.domain.repo.Repository
@@ -120,6 +122,11 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
        val reqBody=ViewCvvRequestModel(otp = otp, cardRefNumber = SDK_CONSTANTS.cardRefId?:"")
         return handleFlowResponse({ apiService.viewCvv(reqBody) },{it})
     }
+
+    override fun verifyOtp(verifyOtpReq: VerifyOtpReq): Flow<NetworkResponse<VerifyOtpResp>> {
+        return handleFlowResponse({apiService.verifyOtp(verifyOtpReq)},{it})
+    }
+
 
 
 }

@@ -32,27 +32,29 @@ import com.example.prepaidcard.screens.ViewModel
 //import com.example.prepaidcard.screens.VerifyOTP
 //import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.utils.Destination
+import com.example.prepaidcardsdk.presentation.screens.EnterMobileNumScreen
 import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.screens.ViewCardsScreen
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun NavigationController(rootNavController:NavHostController, viewModel: ViewModel){
+fun NavigationController(rootNavController:NavHostController, viewModel: ViewModel, verifyOTPViewModel: VerifyOTPViewModel = hiltViewModel()){
     NavHost(
         modifier = Modifier
             .fillMaxSize(),
-        navController = rootNavController, startDestination = Destination.MPIN_SCREEN){
+        navController = rootNavController, startDestination = Destination.ENTER_MOBILE_NUM_SCREEN){
 
         composable(Destination.APPLY_CARD_SCREEN){
             ApplyCardScreen(rootNavController,viewModel)
         }
 
-        /*composable(Destination.SCREEN_23){
-            Screen23(rootNavController )
-        }*/
+        composable(Destination.ENTER_MOBILE_NUM_SCREEN){
+            EnterMobileNumScreen(rootNavController, viewModel = verifyOTPViewModel)
+        }
 
         composable(Destination.VIEW_CARDS_SCREEN){
             ViewCardsScreen(rootNavController, viewModel = hiltViewModel<CardDataViewModel>())
@@ -61,7 +63,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
             CardManagementScreen(rootNavController, viewModel= hiltViewModel<GeneratePinViewModel>(),manageViewModel= hiltViewModel<ManageCardViewModel>() )
         }
         composable(Destination.MPIN_SCREEN){
-            MpinScreen(rootNavController = rootNavController)
+            MpinScreen(rootNavController = rootNavController, viewModel= verifyOTPViewModel)
         }
        /* composable(Destination.PAGE_ELEVEN){
             PageEleven(rootNavController)
