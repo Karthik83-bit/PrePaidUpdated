@@ -99,7 +99,8 @@ fun CardManagementScreen(
         if (manageViewModel.HotListToggleState.value) {
             viewModel.isError.value=false
             manageViewModel.isError.value=false
-            rootNavController.popBackStack()
+            rootNavController.navigate(Destination.VIEW_CARDS_SCREEN)
+            manageViewModel.HotListToggleState.value=false
         }
         CustomScaffoldScreen(
             sheet = ResetPinToggleState,
