@@ -134,19 +134,34 @@ fun CardManagementScreen(
                     FlipCard(
                         name = SDK_CONSTANTS.cardUser,
                         cardno = SDK_CONSTANTS.cardNumber,
-                        exp = SDK_CONSTANTS.expiryDate
+                        exp = SDK_CONSTANTS.expiryDate,
+                        avlbaln = SDK_CONSTANTS.availbalance,
+                        viewModel=manageViewModel
                     ) {
                         manageViewModel.viewBalanceOtp.value =
                             !manageViewModel.viewBalanceOtp.value
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
 
-                        Text("CVV", fontWeight = FontWeight(700))
+                        Text("CVV:", fontWeight = FontWeight(700))
+                        Text(text=if(!CvvToggleState.value)"xxxx" else {
+                            if( manageViewModel.cvvValue.value .isEmpty()){
+                                "Fetching..."
+                            }
+                            else{
+                                manageViewModel.cvvValue.value
+                            }
+                        })
 
                         Switch(
-                            checked = manageViewModel.CvvToggleState.value,
+                            checked = CvvToggleState.value,
                             onCheckedChange = {
+
                                 CvvToggleState.value = it
+                                if(manageViewModel.cvvValue.value.isEmpty()) {
+                                    manageViewModel.CvvToggleState.value = it
+                                }
+
 
                             },
                             colors = SwitchDefaults.colors(
@@ -254,19 +269,24 @@ fun CardManagementScreen(
                                 )
                                 CustomCheckField(
                                     state = manageViewModel.ResetPinToggleState,
-                                    text = "Reset Pin",
+                                    text = if(SDK_CONSTANTS.cardType.equals("GIFT")){"Generate OTP"}else "Reset Pin",
                                     res = R.drawable.group_one
                                 ) {
-                                    manageViewModel.ResetPinToggleState.value =
-                                        !manageViewModel.ResetPinToggleState.value
+                                    if(SDK_CONSTANTS.cardType.equals("GIFT")){
+                                        ResetPinOtpState.value=true
+                                    }else{
+                                        manageViewModel.ResetPinToggleState.value =
+                                            !manageViewModel.ResetPinToggleState.value
 
-                                    ResetPinToggleState.value = !ResetPinToggleState.value
+                                        ResetPinToggleState.value = !ResetPinToggleState.value
+                                    }
+
 
                                 }
 
                                 CustomCheckField(
                                     state = manageViewModel.PauseCardToggleState,
-                                    text = "Pause card",
+                                    text = "Block",
                                     res = R.drawable.group_two
                                 ) {
 //                                        manageViewModel.PauseCardToggleState.value=!manageViewModel.PauseCardToggleState.value
@@ -274,26 +294,26 @@ fun CardManagementScreen(
                                     onClick(PauseCardToggleState.value)
                                 }
 
-                                CustomCheckField(
-                                    state = manageViewModel.HotListToggleState,
-                                    text = "Hotlist card",
-                                    res = R.drawable.group_three
-                                ) {
+//                                CustomCheckField(
+//                                    state = manageViewModel.HotListToggleState,
+//                                    text = "Hotlist card",
+//                                    res = R.drawable.group_three
+//                                ) {
+//
+//                                    HotListToggleState.value = !HotListToggleState.value
+//
+//                                    onClick(HotListToggleState.value)
+//
+//                                }
 
-                                    HotListToggleState.value = !HotListToggleState.value
-
-                                    onClick(HotListToggleState.value)
-
-                                }
-
-                                CustomCheckField(
-                                    state = ReplaceToggleState,
-                                    text = "Replace card",
-                                    res = R.drawable.group_four
-                                ) {
-                                    ReplaceToggleState.value = !ReplaceToggleState.value
-                                    onClick(ReplaceToggleState.value)
-                                }
+//                                CustomCheckField(
+//                                    state = ReplaceToggleState,
+//                                    text = "Replace card",
+//                                    res = R.drawable.group_four
+//                                ) {
+//                                    ReplaceToggleState.value = !ReplaceToggleState.value
+//                                    onClick(ReplaceToggleState.value)
+//                                }
 
                             }
                         }

@@ -20,7 +20,8 @@ data class ViewcardresponseWrapperX(
     val isVirtual: Boolean,
     val lastfourDigit: String?,
     val nameonCard: String?,
-    val productName: String?
+    val productName: String?,
+    val balance:String
 )
 @RequiresApi(Build.VERSION_CODES.O)
 fun ViewcardresponseWrapperX.toViewcardresponseWrapperDomain(): ViewcardresponseWrapperDomain {

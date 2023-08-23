@@ -3,7 +3,8 @@ package com.example.prepaidcardsdk.utils
 import com.example.prepaidcardsdk.presentation.screens.EnterMobileNumScreen
 
 object SDK_CONSTANTS {
-     var cardRefId:String?=""
+    var cardType: String?=""
+    var cardRefId:String?=""
      var expiryDate:String=""
      var cardUser:String=""
      var cardNumber:String=""
@@ -13,4 +14,5 @@ object SDK_CONSTANTS {
      var isHotList:Boolean?=null
      var isBlock:Boolean?=null
      var isActive:Boolean?=null
+     var availbalance:String =""
 }

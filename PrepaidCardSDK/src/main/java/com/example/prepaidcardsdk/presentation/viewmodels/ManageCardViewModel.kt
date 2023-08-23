@@ -120,7 +120,7 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
                 }
                 if (it != null) {
                     if(it.status=="0"){
-                        CvvToggleState.value=!CvvToggleState.value
+
                         cvvMask.value=if(cvvMask.value==0.dp){10.dp}else cvvMask.value
                         cvvValue.value=EncryptDecrypt.decryptData(it.cvv.toByteArray(Charsets.UTF_8),EncryptDecrypt.key)
 

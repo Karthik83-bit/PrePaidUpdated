@@ -76,6 +76,8 @@ class CardDataViewModel @Inject constructor(
                         SDK_CONSTANTS.isVirtual=it.viewcardresponseWrapper.isVirtual
                         SDK_CONSTANTS.cardUser=it.viewcardresponseWrapper.nameonCard
                         SDK_CONSTANTS.expiryDate=it.viewcardresponseWrapper.expiryDate
+                        SDK_CONSTANTS.availbalance=it.viewcardresponseWrapper.balance
+                        SDK_CONSTANTS.cardType=it.viewcardresponseWrapper.cardType
                     }
 
                             },

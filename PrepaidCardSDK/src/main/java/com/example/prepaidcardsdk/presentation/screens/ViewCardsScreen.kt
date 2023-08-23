@@ -1,6 +1,8 @@
 package com.example.prepaidcardsdk.screens
 
+import android.app.Activity
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
@@ -73,6 +75,10 @@ import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataViewModel) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
+    val activity = LocalContext.current as Activity
+    BackHandler {
+        activity.finish()
+    }
     if (viewModel.isError.value) {
 
         AlertDialog(onDismissRequest = { /*TODO*/ }) {

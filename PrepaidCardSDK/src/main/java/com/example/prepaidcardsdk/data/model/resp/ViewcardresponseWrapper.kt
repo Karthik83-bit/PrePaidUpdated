@@ -19,7 +19,8 @@ data class ViewcardresponseWrapper(
     val lastfourDigit: String,
     val nameonCard: String,
     val productName: String,
-    val isVirtual:Boolean
+    val isVirtual:Boolean,
+    val balance:String
 )
 
 

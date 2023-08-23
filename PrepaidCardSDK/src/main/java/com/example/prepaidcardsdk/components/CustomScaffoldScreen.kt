@@ -74,6 +74,7 @@ import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
 import com.example.prepaidcardsdk.components.CustomSucessDialog
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
+import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -112,7 +113,7 @@ fun CustomScaffoldScreen(
     val HotlistCardOtp = hotlistCardOtp
     Box(
         Modifier.blur(
-            if (Sheet.value || ResetPinOtp.value || BlockCard.value || Hotlist.value || cvv.value) {
+            if (Sheet.value || ResetPinOtp.value || BlockCard.value || Hotlist.value||manageViewModel.CvvToggleState.value  ) {
                 10.dp
             } else {
                 0.dp
@@ -121,7 +122,7 @@ fun CustomScaffoldScreen(
     ) {
 
         mainContent()
-        if (Sheet.value || ResetPinOtp.value || BlockCard.value || Hotlist.value || cvv.value) {
+        if (Sheet.value || ResetPinOtp.value || BlockCard.value || Hotlist.value ||manageViewModel.CvvToggleState.value) {
             Box(
                 Modifier
                     .fillMaxSize()
@@ -629,7 +630,7 @@ fun CustomScaffoldScreen(
         }
     }
 
-    CustomSheetWrap(state = ResetPinOtp, 800, 1000) {
+    CustomSheetWrap(state = ResetPinOtp, 800, delay=if(SDK_CONSTANTS.cardType.equals("GIFT"))0 else 1000) {
         EnterOTPPinSheet(manageViewModel.Otp, { ResetPinOtp.value = !ResetPinOtp.value }) {
             manageViewModel.resetPin() {
                 manageViewModel.enterPin.value = ""
@@ -644,23 +645,38 @@ fun CustomScaffoldScreen(
 
         }
     }
-    CustomSheetWrap(state = cvv, 800) {
-        EnterOTPPinSheet(manageViewModel.Otp, oncancel = { cvv.value = !cvv.value }) {
-            manageViewModel.viewCvv(manageViewModel.Otp.value) {
+    CustomSheetWrap(manageViewModel.CvvToggleState, 800) {
+        EnterOTPPinSheet(manageViewModel.Otp, oncancel = { manageViewModel.CvvToggleState.value=!manageViewModel.CvvToggleState.value
+        cvv.value=!cvv.value}) {
+            if(manageViewModel.CvvToggleState.value==true){
+                if(manageViewModel.cvvValue.value.isEmpty())
+            manageViewModel.viewCvv(manageViewModel.Otp.value)
+            {
                 Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
                 if (it.status == "0") {
                     successDialog.value = true
                     sucessMsg.value = "Cvv Unmasked"
+
                     scope.launch {
                         successDialog.value = false
                     }
+
 
                 } else {
                     manageViewModel.isError.value = true
                     manageViewModel.errorMessage.value = it.statusDesc
                 }
+
+
+            }}
+            else{
+                manageViewModel.cvvValue.value=""
             }
-            cvv.value = false
+            cvv.value=true
+            manageViewModel.CvvToggleState.value=false
+
+
+
 
         }
     }
@@ -683,6 +699,8 @@ fun CustomScaffoldScreen(
                         delay(2000)
                         successDialog.value = false
                     }
+
+
 
 
                 } else {

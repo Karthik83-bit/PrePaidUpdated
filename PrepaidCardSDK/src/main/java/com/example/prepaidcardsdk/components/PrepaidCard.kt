@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -70,11 +71,16 @@ enum class CardFace(val angle: Float) {
     abstract val next: CardFace
 }
 @Composable
-fun FlipCard(name: String, cardno: String, exp: String,viewBalance: () -> Unit) {
+fun FlipCard(name: String, cardno: String, exp: String,avlbaln: String,viewModel:ManageCardViewModel?, viewBalance: () -> Unit) {
 
     val cardfaceState= remember {
         mutableStateOf(CardFace.Front)
     }
+//    if (viewModel != null) {
+//        if(viewModel.cvvValue.value.isNotEmpty()){
+//            cardfaceState.value = cardfaceState.value.next
+//        }
+//    }
 
     val rotatiom= animateFloatAsState(
             targetValue = cardfaceState.value.angle,
@@ -98,10 +104,11 @@ AnimatedVisibility(visible = cardfaceState.value.angle<90f) {
 
             }
             .clickable {
-                cardfaceState.value = cardfaceState.value.next
 
 
-            },cardno,name,exp, manageCardViewModel = hiltViewModel<ManageCardViewModel>(), generatePinViewModel = hiltViewModel<GeneratePinViewModel>()){
+
+
+            },cardno,name,exp,avlbaln, manageCardViewModel = hiltViewModel<ManageCardViewModel>(), generatePinViewModel = hiltViewModel<GeneratePinViewModel>()){
 viewBalance()
 
     }
@@ -128,7 +135,7 @@ viewBalance()
 
 
 @Composable
-fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String,manageCardViewModel: ManageCardViewModel, generatePinViewModel: GeneratePinViewModel,viewBalance:()->Unit) {
+fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String,avlbaln: String, manageCardViewModel: ManageCardViewModel, generatePinViewModel: GeneratePinViewModel,viewBalance:()->Unit) {
     val mask= generatePinViewModel.mask
     var buttonText by remember {
         mutableStateOf("View Details")
@@ -182,14 +189,14 @@ fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String,m
                     .fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly) {
                 Spacer(modifier = Modifier.height(20.dp))
                 Column() {
-                    Text(name, color = Color.White,style = TextStyle(letterSpacing = 5.sp, fontWeight = FontWeight(500)), modifier = Modifier.blur(mask.value))
-                    Text("${cardFormat(cardno)}", color = Color.White, style = TextStyle(letterSpacing = 5.sp),fontWeight = FontWeight(500), modifier = Modifier.blur(mask.value))
+                    Text( if(mask.value==10.dp)name.replaceRange(0,name.length,"xxxxxx") else name, color = Color.White,style = TextStyle(letterSpacing = 5.sp, fontWeight = FontWeight(600)))
+                    Text(if(mask.value==10.dp)"${cardFormat(cardno)}" else cardSpaceFormat(cardno), color = Color.White, style = TextStyle(letterSpacing = 5.sp),fontWeight = FontWeight(600),)
 
                 }
                 OutlinedButton(
                     onClick = {
                         if (buttonText == "View Details") {
-                            buttonText = "${viewBalance}"
+                            buttonText = "Available Balance:\n ${avlbaln}"
                         }else{
                             buttonText = "View Details"
                         }
@@ -205,13 +212,12 @@ fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String,m
                     )
 //                    enabled = manageCardViewModel.CvvToggleState.value
                 ) {
-                    Text(buttonText, color = Color.White)
+                    Text(buttonText, color = Color.White, fontWeight = FontWeight(700), fontFamily = FontFamily.Monospace)
                 }
                 Row(horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier.fillMaxWidth()) {
-                    Text(text = "12/16", color = Color.White)
                     Text("ValidThru", color = Color.White)
-                    Text(text = "${exp}", color = Color.White)
+                    Text(if(mask.value == 10.dp) exp.replaceRange(0, exp.length,"xxxx") else expFormater(exp), color = Color.White)
                     Icon(
                         painter = painterResource(id = R.drawable.ic_call_answer,),
                         contentDescription = "",
@@ -225,8 +231,16 @@ fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String,m
       }
 }
 
+fun expFormater(exp: String): String {
+return exp.replaceRange(2,3,"/"+exp[2])
+}
+
+fun cardSpaceFormat(cardno: String): String {
+    return cardno.replaceRange(4,5," "+cardno[4]).replaceRange(9,10," "+cardno[9]).replaceRange(14,15," "+cardno[14])
+}
+
 fun cardFormat(cardno: String): String {
-return cardno.replaceRange(4,5," "+cardno[4].toString()).replaceRange(9,10," "+cardno[9].toString()).replaceRange(14,15," "+cardno[14].toString())
+return cardno.replaceRange(0,16,"xxxx-xxxx-xxxx-xxxx ")
 }
 
 @Composable
@@ -285,35 +299,6 @@ fun PrepaidCardBack(clickable: Modifier, manageCardViewModel: ManageCardViewMode
                             },
                         color = Color.Black
                     )
-
-                Column {
-                    Text(text = "AUTHORIZED SIGNATURE - NOT VALID UNLESS SIGNED. NOT TRANSABLE", modifier = Modifier
-                        .graphicsLayer {
-                            translationX = 10.dp.toPx()
-
-                            rotationX = 180f
-                            rotationZ = 180f
-                        },
-                        color = Color.White)
-                    Text(text = "the point of using Lorem Ipsum",
-                        modifier = Modifier
-                            .graphicsLayer {
-                                translationX = 10.dp.toPx()
-
-                                rotationX = 180f
-                                rotationZ = 180f
-                            },
-                        color = Color.White)
-                    Text(text = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
-                        modifier = Modifier
-                            .graphicsLayer {
-                                translationX = 10.dp.toPx()
-
-                                rotationX = 180f
-                                rotationZ = 180f
-                            },
-                        color = Color.White)
-                }
                 }
 
         }

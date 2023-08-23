@@ -230,6 +230,7 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
                                     delay(2000)
 success.value=false
                                 }
+                            SDK_CONSTANTS.isActive=true
                             viewModel.PauseCardToggleState.value=!viewModel.PauseCardToggleState.value
                             SDK_CONSTANTS.isBlock=viewModel.PauseCardToggleState.value
                             if(SDK_CONSTANTS.isActive==true){
