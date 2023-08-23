@@ -282,9 +282,7 @@ fun CardManagementScreen(
                                     res = R.drawable.group_three
                                 ) {
 
-                                    HotListToggleState.value = !HotListToggleState.value
 
-                                    onClick(HotListToggleState.value)
 
                                 }
 
