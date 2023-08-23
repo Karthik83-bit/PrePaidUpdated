@@ -63,6 +63,7 @@ import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import javax.crypto.spec.DESKeySpec
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardManagementScreen(
@@ -110,10 +111,10 @@ fun CardManagementScreen(
             cvv = CvvToggleState,
             maskState = viewModel.mask,
             details = DetailsState,
-            manageViewModel=manageViewModel,
-            {
-                var editTextValue by remember { mutableStateOf("") }
-                var textFieldValue by remember { mutableStateOf("dbehera56@gmail.com") }
+            manageViewModel=manageViewModel
+        ) {
+            var editTextValue by remember { mutableStateOf("") }
+            var textFieldValue by remember { mutableStateOf("dbehera56@gmail.com") }
 
             Box(
                 Modifier
@@ -127,7 +128,7 @@ fun CardManagementScreen(
                         .background(Color.White),
                     horizontalAlignment = Alignment.CenterHorizontally
 
-                    ) {
+                ) {
 
                     FlipCard(
                         name = SDK_CONSTANTS.cardUser,
@@ -139,12 +140,8 @@ fun CardManagementScreen(
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
 
-                        Text("CVV:", fontWeight = FontWeight(700))
-                        Text(
-                            "123",
-                            fontWeight = FontWeight(700),
-                            modifier = Modifier.blur(manageViewModel.cvvMask.value)
-                        )
+                        Text("CVV", fontWeight = FontWeight(700))
+
                         Switch(
                             checked = manageViewModel.CvvToggleState.value,
                             onCheckedChange = {
@@ -333,13 +330,15 @@ fun CardManagementScreen(
                                             Modifier.fillMaxWidth(),
                                             horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
+
                                             Text(
                                                 text = "Email:",
                                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                                 fontSize = 12.sp
                                             )
                                             BasicTextField(
-                                                value = viewModel.username.value,
+                                                value = viewModel.username.value
+                                                ,
                                                 enabled = viewModel.mask.value != 10.dp,
                                                 keyboardOptions = KeyboardOptions(
                                                     keyboardType = KeyboardType.Email,
@@ -383,7 +382,7 @@ fun CardManagementScreen(
 
                                             BasicTextField(
                                                 value = viewModel.monthlyLimit.value,
-                                                enabled = viewModel.mask.value != 10.dp,
+                                                enabled =viewModel.mask.value != 10.dp,
                                                 keyboardOptions = KeyboardOptions(
                                                     keyboardType = KeyboardType.Number,
                                                     imeAction = ImeAction.Done
@@ -479,5 +478,6 @@ fun CardManagementScreen(
                     }
                 }
             }
-        })}}
+        }
+    }}
 
