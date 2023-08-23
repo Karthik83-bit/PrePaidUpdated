@@ -1,5 +1,7 @@
 package com.example.newui.components
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.animateFloatAsState
@@ -45,6 +47,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.R
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.prepaidcardsdk.domain.usecases.ResetPinUseCase
+import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.ui.theme.HitextColor
 import com.example.prepaidcardsdk.ui.theme.Resetcolor
@@ -63,7 +67,6 @@ enum class CardFace(val angle: Float) {
 
     abstract val next: CardFace
 }
-
 @Composable
 fun FlipCard(name: String, cardno: String, exp: String,viewModel:ManageCardViewModel?,viewBalance: () -> Unit) {
 
@@ -86,9 +89,10 @@ fun FlipCard(name: String, cardno: String, exp: String,viewModel:ManageCardViewM
 
             if(cardfaceState.value.angle<90f){
 AnimatedVisibility(visible = cardfaceState.value.angle<90f) {
-    PrepaidCard(Modifier
-        .graphicsLayer {
-            rotationY = rotatiom.value
+    PrepaidCard(
+        Modifier
+            .graphicsLayer {
+                rotationY = rotatiom.value
 
         }
         .clickable {
@@ -100,9 +104,13 @@ AnimatedVisibility(visible = cardfaceState.value.angle<90f) {
                     viewModel.isError.value=true
                     viewModel.errorMessage.value="Enable Cvv Toggle to view "
                 }
+            }
+            .clickable {
+                cardfaceState.value = cardfaceState.value.next
 
             }
 
+            },cardno,name,exp, manageCardViewModel = hiltViewModel<ManageCardViewModel>(), generatePinViewModel = hiltViewModel<GeneratePinViewModel>()){
 
         },cardno,name,exp,viewModel){
 viewBalance()
@@ -145,9 +153,12 @@ fun PrepaidCard(
         mutableStateOf(10.dp)
     }
 
+fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String,manageCardViewModel: ManageCardViewModel, generatePinViewModel: GeneratePinViewModel,viewBalance:()->Unit) {
+    val mask= generatePinViewModel.mask
     var buttonText by remember {
         mutableStateOf("View Details")
     }
+    var context = LocalContext.current
 
     Card(
         shape = RoundedCornerShape(5.dp),
@@ -211,7 +222,7 @@ fun PrepaidCard(
                 OutlinedButton(
                     onClick = {
                         if (buttonText == "View Details") {
-                            buttonText = "Available Balance\n ₹ 2,35,000.00"
+                            buttonText = "${viewBalance}"
                         }else{
                             buttonText = "View Details"
                         }
@@ -227,7 +238,6 @@ fun PrepaidCard(
                     )
                 ) {
                     Text(buttonText, color = Color.White)
-
                 }
                 Row(horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier.fillMaxWidth()) {
@@ -337,9 +347,6 @@ fun PrepaidCardBack(clickable: Modifier, manageCardViewModel: ManageCardViewMode
                         color = Color.White)
                 }
                 }
-
-
-
 
         }
 

@@ -36,7 +36,7 @@ class GeneratePinViewModel @Inject constructor(
     val reenterPin = mutableStateOf("")
 
     //    val pinset= mutableStateOf(false)
-    val mask = mutableStateOf(10.dp)
+    val mask = mutableStateOf(5.dp)
 
     //    val errorState= mutableStateOf(
 //        CustomError()
