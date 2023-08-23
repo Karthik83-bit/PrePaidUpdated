@@ -141,7 +141,7 @@ val context= LocalContext.current
 
             ) {
 
-                FlipCard(SDK_CONSTANTS.cardUser, SDK_CONSTANTS.cardNumber, SDK_CONSTANTS.expiryDate,null){
+                FlipCard(SDK_CONSTANTS.cardUser, SDK_CONSTANTS.cardNumber, SDK_CONSTANTS.expiryDate, SDK_CONSTANTS.availbalance,null){
 
                 }
                 CustomCheckField(

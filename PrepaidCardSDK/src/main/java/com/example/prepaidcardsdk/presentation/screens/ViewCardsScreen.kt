@@ -76,12 +76,28 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val activity = LocalContext.current as Activity
-
-    BackHandler() {
+    BackHandler {
         activity.finish()
     }
+    if (viewModel.isError.value) {
+
+        AlertDialog(onDismissRequest = { /*TODO*/ }) {
+            CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
+                viewModel.isError.value = false
+                if (viewModel.destination.value.isNotEmpty()) {
+                    rootNavController.navigate(viewModel.destination.value)
+                    viewModel.destination.value = ""
+                }
+            }
+        }
+
+    } else if (viewModel.isLoading.value) {
+        AlertDialog(onDismissRequest = { /*TODO*/ }) {
+            CustomLoader()
+        }
 
 
+    } else {
         Column(
             Modifier
                 .padding(16.dp)
@@ -89,26 +105,34 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                 .verticalScroll(enabled = true, state = ScrollState(0))
 
         ) {
+            @Composable
+            fun CustomAlertDialogBox(error: MutableState<Boolean>, errMsg: String, dest: String) {
+                AlertDialog(onDismissRequest = { }) {
+                    Card(Modifier.size(300.dp)) {
+                        Box(Modifier.fillMaxSize()) {
+                            Column(
+                                Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(errMsg)
+                                Button(onClick = {
+                                    error.value = false
+                                    rootNavController.navigate(dest)
 
-            if (viewModel.isError.value) {
+                                }) {
+                                    Text("ok")
 
-                AlertDialog(onDismissRequest = { /*TODO*/ }) {
-                    CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
-                        viewModel.isError.value = false
-                        if (viewModel.destination.value.isNotEmpty()) {
-                            rootNavController.navigate(viewModel.destination.value)
-                            viewModel.destination.value = ""
+                                }
+                            }
+
                         }
+
                     }
+
                 }
-
-            } else if (viewModel.isLoading.value) {
-                AlertDialog(onDismissRequest = { /*TODO*/ }) {
-                    CustomLoader()
-                }
-
-
             }
+
 
             Row(
                 modifier = Modifier
@@ -180,69 +204,67 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                                     SDK_CONSTANTS.cardRefId = it.cardRefId
                                                 }
                                                 it.cardRefId?.let { it1 ->
-                                                 
-                                                        viewModel.viewCardData(
-                                                            cardRefId = it1,
-                                                            customerId = "181"
-                                                        )
+                                                    viewModel.viewCardData(
+                                                        cardRefId = it1,
+                                                        customerId = "181"
+                                                    )
 
-                                                        { res ->
+                                                    { res ->
 
-                                                            if (res != null) {
-                                                                if (res.status == "0") {
-                                                                    //hotlist
-                                                                    val hotlist =
-                                                                        res.viewcardresponseWrapper.isHotlist
-                                                                    val isBlock =
-                                                                        res.viewcardresponseWrapper.isBlock
-                                                                    val isActive =
-                                                                        res.viewcardresponseWrapper.isActive
-                                                                    //
-                                                                    if (!hotlist) {
-                                                                        if (isBlock) {
+                                                        if (res != null) {
+                                                            if (res.status == "0") {
+                                                                //hotlist
+                                                                val hotlist =
+                                                                    res.viewcardresponseWrapper.isHotlist
+                                                                val isBlock =
+                                                                    res.viewcardresponseWrapper.isBlock
+                                                                val isActive =
+                                                                    res.viewcardresponseWrapper.isActive
+                                                                //
+                                                                if (!hotlist) {
+                                                                    if (isBlock) {
+                                                                        viewModel.isError.value =
+                                                                            true
+                                                                        viewModel.errorMessage.value =
+                                                                            "Card is Blocked"
+                                                                        viewModel.destination.value =
+                                                                            Destination.ENTER_OTP_SCREEN
+
+
+                                                                    } else {
+                                                                        if (isActive) {
+                                                                            rootNavController.navigate(
+                                                                                Destination.CARD_MANAGEMENT_SCREEN
+                                                                            )
+                                                                        } else {
                                                                             viewModel.isError.value =
                                                                                 true
                                                                             viewModel.errorMessage.value =
-                                                                                "Card is Blocked"
+                                                                                "Card is Inactive"
                                                                             viewModel.destination.value =
-                                                                                Destination.ENTER_OTP_SCREEN
+                                                                                Destination.CARD_ACTIVATION_SCREEN
 
-
-                                                                        } else {
-                                                                            if (isActive) {
-                                                                                rootNavController.navigate(
-                                                                                    Destination.CARD_MANAGEMENT_SCREEN
-                                                                                )
-                                                                            } else {
-                                                                                viewModel.isError.value =
-                                                                                    true
-                                                                                viewModel.errorMessage.value =
-                                                                                    "Card is Inactive"
-                                                                                viewModel.destination.value =
-                                                                                    Destination.CARD_ACTIVATION_SCREEN
-
-                                                                            }
                                                                         }
-                                                                    } else {
-
-                                                                        viewModel.isError.value = true
-                                                                        viewModel.errorMessage.value =
-                                                                            "Card is Hot Listed"
-
-
                                                                     }
-
                                                                 } else {
 
                                                                     viewModel.isError.value = true
                                                                     viewModel.errorMessage.value =
                                                                         "Card is Hot Listed"
-                                                                    viewModel.destination.value =
-                                                                        Destination.VIEW_CARDS_SCREEN
+
+
                                                                 }
+
+                                                            } else {
+
+                                                                viewModel.isError.value = true
+                                                                viewModel.errorMessage.value =
+                                                                    "Card is Hot Listed"
+                                                                viewModel.destination.value =
+                                                                    Destination.VIEW_CARDS_SCREEN
                                                             }
                                                         }
-
+                                                    }
                                                 }
                                             })
                                     ) {
@@ -481,7 +503,7 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                     )
                 }
             }
-
+        }
     }
 
 }

@@ -41,6 +41,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.ui.theme.tealGreen
 
 @Composable
 fun CustomAlertDialog(errMsg:String,onClick:()->Unit) {
@@ -52,7 +53,7 @@ Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween, h
         .fillMaxWidth()
         .fillMaxHeight(0.3f)
         .background(Red, RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, 0.dp, 0.dp)), horizontalArrangement = Arrangement.Center){
-        Icon(painter = painterResource(id = R.drawable.round_warning_24),"", tint = Yellow, modifier = Modifier.size(60.dp))}
+        Icon(painter = painterResource(id = R.drawable.round_warning_24),"", tint = White, modifier = Modifier.size(60.dp))}
 
 
     Text(errMsg.replaceFirstChar { it.uppercase() }, fontWeight = FontWeight(600), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)

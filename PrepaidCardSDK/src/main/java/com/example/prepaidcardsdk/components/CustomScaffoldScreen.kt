@@ -113,7 +113,7 @@ fun CustomScaffoldScreen(
     val HotlistCardOtp = hotlistCardOtp
     Box(
         Modifier.blur(
-            if (Sheet.value || ResetPinOtp.value || BlockCard.value || Hotlist.value || cvv.value) {
+            if (Sheet.value || ResetPinOtp.value || BlockCard.value || Hotlist.value||manageViewModel.CvvToggleState.value  ) {
                 10.dp
             } else {
                 0.dp
@@ -122,7 +122,7 @@ fun CustomScaffoldScreen(
     ) {
 
         mainContent()
-        if (Sheet.value || ResetPinOtp.value || BlockCard.value || Hotlist.value || cvv.value) {
+        if (Sheet.value || ResetPinOtp.value || BlockCard.value || Hotlist.value ||manageViewModel.CvvToggleState.value) {
             Box(
                 Modifier
                     .fillMaxSize()
@@ -279,12 +279,7 @@ fun CustomScaffoldScreen(
                     value = manageViewModel.enterPin.value,
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text("Enetr PIN") },
-                    onValueChange = {
-                        if(it.length<=4){
-                            manageViewModel.enterPin.value = it
-                        }
-
-                                    },
+                    onValueChange = { manageViewModel.enterPin.value = it },
                     shape = RoundedCornerShape(2.dp),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.NumberPassword,
@@ -309,10 +304,7 @@ fun CustomScaffoldScreen(
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text("Enter PIN", modifier = Modifier.padding(0.dp)) },
                     onValueChange = {
-                        if(it.length<=4){
-                            manageViewModel.reenterPin.value = it
-                        }
-
+                        manageViewModel.reenterPin.value = it
                         if (it.length == 4 && !it.matches(manageViewModel.enterPin.value.toRegex())) {
                             isError.value = true
                             errStr.value = "PINS DONT MATCH"
@@ -348,11 +340,7 @@ fun CustomScaffoldScreen(
                         if (manageViewModel.enterPin.value.isEmpty() || manageViewModel.reenterPin.value.isEmpty()) {
                             isError.value = true
                             errStr.value = "FIELDS CANT BE EMPTY"
-                        } else if(!manageViewModel.enterPin.value.matches(manageViewModel.enterPin.value.toRegex())) {
-                            isError.value = true
-                            errStr.value = "FIELDS DoesNOT match"
-                        }else
-                         {
+                        } else {
                             isError.value = false
 
 
@@ -642,21 +630,13 @@ fun CustomScaffoldScreen(
         }
     }
 
-    CustomSheetWrap(state = ResetPinOtp, 800, 1000) {
+    CustomSheetWrap(state = ResetPinOtp, 800, delay=if(SDK_CONSTANTS.cardType.equals("GIFT"))0 else 1000) {
         EnterOTPPinSheet(manageViewModel.Otp, { ResetPinOtp.value = !ResetPinOtp.value }) {
             manageViewModel.resetPin() {
                 manageViewModel.enterPin.value = ""
                 manageViewModel.reenterPin.value = ""
                 Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
-                if(it.status!="0"){
-                    successDialog.value=true
-                    sucessMsg.value=it.statusDesc
-
-                    manageViewModel.isError.value=true
-                    manageViewModel.errorMessage.value=it.statusDesc
-                }
             }
-
 
 
 
@@ -665,25 +645,38 @@ fun CustomScaffoldScreen(
 
         }
     }
-    CustomSheetWrap(state = cvv, 800) {
-        EnterOTPPinSheet(manageViewModel.Otp, oncancel = { cvv.value = !cvv.value }) {
-            manageViewModel.viewCvv(manageViewModel.Otp.value) {
+    CustomSheetWrap(manageViewModel.CvvToggleState, 800) {
+        EnterOTPPinSheet(manageViewModel.Otp, oncancel = { manageViewModel.CvvToggleState.value=!manageViewModel.CvvToggleState.value
+        cvv.value=!cvv.value}) {
+            if(manageViewModel.CvvToggleState.value==true){
+                if(manageViewModel.cvvValue.value.isEmpty())
+            manageViewModel.viewCvv(manageViewModel.Otp.value)
+            {
                 Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
                 if (it.status == "0") {
                     successDialog.value = true
                     sucessMsg.value = "Cvv Unmasked"
+
                     scope.launch {
                         successDialog.value = false
                     }
+
 
                 } else {
                     manageViewModel.isError.value = true
                     manageViewModel.errorMessage.value = it.statusDesc
                 }
-            }
-            manageViewModel.Otp.value=""
 
-            cvv.value = false
+
+            }}
+            else{
+                manageViewModel.cvvValue.value=""
+            }
+            cvv.value=true
+            manageViewModel.CvvToggleState.value=false
+
+
+
 
         }
     }
@@ -708,6 +701,8 @@ fun CustomScaffoldScreen(
                     }
 
 
+
+
                 } else {
                     manageViewModel.errorMessage.value = it.statusDesc
                     manageViewModel.isError.value = true
@@ -719,10 +714,6 @@ fun CustomScaffoldScreen(
         }
     }
     CustomSheetWrap(state = hotlistCardOtp, 800, delay = 1000) {
-//        if(SDK_CONSTANTS.cardType.equals("GIFT")){
-//            hotlistCardOtp.value=true
-//            manageViewModel.Otp.value=false
-//        }
         EnterOTPPinSheet(manageViewModel.Otp, { hotlistCardOtp.value = false }) {
             manageViewModel.changeCardStatus(manageViewModel.Otp.value, "hotlist") {
                 Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
@@ -731,7 +722,6 @@ fun CustomScaffoldScreen(
                 }
             }
             hotlistCardOtp.value = false
-            manageViewModel.Otp.value=""
 
         }
     }

@@ -132,10 +132,12 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
             val cont= LocalContext.current
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally){
                 BasicTextField(value = viewModel.mobilenum.value, onValueChange = {
-                    if(it.length<=10) {
-                        viewModel.mobilenum.value=it
+                        if(it.length<=10){
+                            viewModel.mobilenum.value=it
+                        }
 
-                    }
+
+
 
 
                 }, keyboardOptions = KeyboardOptions(
@@ -169,16 +171,55 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
                         }
                     }
                     if(viewModel.isError.value){
-                        AlertDialog(onDismissRequest = { /*TODO*/ }) {
+                        AlertDialog(onDismissRequest = { }) {
                             CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
-                                viewModel.isError.value = false
-
-                                rootNavController.navigate(viewModel.destination.value)
-                                viewModel.errorMessage.value = ""
-                                viewModel.destination.value = ""
+                                viewModel.isError.value=false
                             }
-                        }
+//                            Card(Modifier.size(300.dp))
+//                            {
+//                                Box(Modifier.fillMaxSize()) {
+//                                    Column(
+//                                        Modifier.fillMaxSize(),
+//                                        verticalArrangement = Arrangement.SpaceBetween,
+//                                        horizontalAlignment = Alignment.CenterHorizontally
+//                                    ) {
+//                                        Row(){
+//                                            Box(Modifier.fillMaxWidth(0.8f))
+//                                            IconButton(onClick = {
+//                                                viewModel.isError.value = false
+//                                                viewModel.isError.value = false
+//                                            }) {
+//                                                Icon(painterResource(id = R.drawable.baseline_close_24), "")
+//                                            }
+//                                        }
+//                                        Column(modifier = Modifier.fillMaxSize(),
+//                                            verticalArrangement = Arrangement.Center,
+//                                            horizontalAlignment = Alignment.CenterHorizontally) {
+//
+//                                            Text(viewModel.errorMessage.value.replaceFirstChar {
+//                                                it.uppercase()
+//                                            }, fontWeight = FontWeight(400), style = TextStyle(
+//                                                fontSize = 20.sp
+//
+//                                            ),)
+//                                            Button(onClick = {
+//                                                viewModel.isError.value = false
+//
+//                                                rootNavController.navigate(viewModel.destination.value)
+//                                                viewModel.errorMessage.value = ""
+//                                                viewModel.destination.value = ""
+//                                            }) {
+//                                                Text("ok")
+//
+//                                            }
+//                                        }
+//                                    }
+//
+//                                }
+//
+//                            }
 
+                        }
                     }
 
 
@@ -200,12 +241,8 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
                     viewModel.destination.value = Destination.ENTER_MOBILE_NUM_SCREEN
 
                 }
-                else{
-                    viewModel.isError.value = true
-                    viewModel.errorMessage.value = "Mobile Number didn't match."
-                    viewModel.destination.value = Destination.ENTER_MOBILE_NUM_SCREEN
 
-                }
+
 
             }, shape = RoundedCornerShape(5.dp), elevation = ButtonDefaults.buttonElevation(20.dp), modifier = Modifier
                 .fillMaxWidth()

@@ -310,6 +310,8 @@ fun MpinScreen(rootNavController: NavHostController, viewModel: VerifyOTPViewMod
                            viewModel.isError.value = true
                              viewModel.errorMessage.value = it.statusDesc
                              viewModel.destination.value = Destination.MPIN_SCREEN
+                             viewModel. mobilenum.value=""
+                             viewModel.verifyOtp.value=""
                         }
                     }
 
