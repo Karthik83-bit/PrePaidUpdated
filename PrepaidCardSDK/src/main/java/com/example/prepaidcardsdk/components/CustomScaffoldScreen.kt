@@ -95,23 +95,21 @@ fun CustomScaffoldScreen(
     mainContent: @Composable () -> Unit,
 
 
-
-
     ) {
     val successDialog = remember {
         mutableStateOf(false)
     }
-    val scope= rememberCoroutineScope()
-    val sucessMsg= remember {
+    val scope = rememberCoroutineScope()
+    val sucessMsg = remember {
         mutableStateOf("")
     }
-    val context= LocalContext.current
-    val Sheet=sheet
-    val ResetPinOtp=resetPinOtp
-    val BlockCard=blockCard
-    val BlockCardOtp=blockCardOtp
-    val Hotlist=hotlist
-    val HotlistCardOtp=hotlistCardOtp
+    val context = LocalContext.current
+    val Sheet = sheet
+    val ResetPinOtp = resetPinOtp
+    val BlockCard = blockCard
+    val BlockCardOtp = blockCardOtp
+    val Hotlist = hotlist
+    val HotlistCardOtp = hotlistCardOtp
     Box(
         Modifier.blur(
             if (Sheet.value || ResetPinOtp.value || BlockCard.value || Hotlist.value || cvv.value) {
@@ -166,7 +164,12 @@ fun CustomScaffoldScreen(
 //    }
 
     @Composable
-    fun Sheet(str: String, hotlist: MutableState<Boolean>,onCancel:()->Unit,onConirm:()->Unit) {
+    fun Sheet(
+        str: String,
+        hotlist: MutableState<Boolean>,
+        onCancel: () -> Unit,
+        onConirm: () -> Unit,
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -202,7 +205,7 @@ fun CustomScaffoldScreen(
                 }
                 Button(
                     onClick = {
-onCancel()
+                        onCancel()
                     },
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier
@@ -220,11 +223,11 @@ onCancel()
     }
 
     @Composable
-    fun ResetPinSheet(hotlist: MutableState<Boolean>,) {
-    var isError= remember {
-        mutableStateOf(false)
-    }
-        var errStr= remember {
+    fun ResetPinSheet(hotlist: MutableState<Boolean>) {
+        var isError = remember {
+            mutableStateOf(false)
+        }
+        var errStr = remember {
             mutableStateOf("")
         }
         Column(
@@ -237,8 +240,8 @@ onCancel()
             Column(
                 Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                if(isError.value){
-                    Text(errStr.value,color=Red, fontWeight = FontWeight(700))
+                if (isError.value) {
+                    Text(errStr.value, color = Red, fontWeight = FontWeight(700))
                 }
                 Text(
                     text = "Generate Pin",
@@ -277,7 +280,10 @@ onCancel()
                     placeholder = { Text("Enetr PIN") },
                     onValueChange = { manageViewModel.enterPin.value = it },
                     shape = RoundedCornerShape(2.dp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.NumberPassword,
+                        imeAction = ImeAction.Done
+                    ),
                     colors = TextFieldDefaults.textFieldColors(
 
                         disabledIndicatorColor = Color.Transparent,
@@ -296,18 +302,21 @@ onCancel()
 
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text("Enter PIN", modifier = Modifier.padding(0.dp)) },
-                    onValueChange = { manageViewModel.reenterPin.value = it
-                        if(it.length==4&&!it.matches(manageViewModel.enterPin.value.toRegex())){
-                            isError.value=true
-                            errStr.value="PINS DONT MATCH"
-                        }
-                        else{
-                            isError.value=false
+                    onValueChange = {
+                        manageViewModel.reenterPin.value = it
+                        if (it.length == 4 && !it.matches(manageViewModel.enterPin.value.toRegex())) {
+                            isError.value = true
+                            errStr.value = "PINS DONT MATCH"
+                        } else {
+                            isError.value = false
                         }
 
-                                    },
+                    },
                     shape = RoundedCornerShape(2.dp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.NumberPassword,
+                        imeAction = ImeAction.Done
+                    ),
                     colors = TextFieldDefaults.textFieldColors(
 
                         disabledIndicatorColor = Color.Transparent,
@@ -327,19 +336,18 @@ onCancel()
             ) {
                 Button(
                     onClick = {
-                        if(manageViewModel.enterPin.value.isEmpty()||manageViewModel.reenterPin.value.isEmpty()){
-                            isError.value=true
-                            errStr.value="FIELDS CANT BE EMPTY"
-                        }
-                        else{
-                            isError.value=false
+                        if (manageViewModel.enterPin.value.isEmpty() || manageViewModel.reenterPin.value.isEmpty()) {
+                            isError.value = true
+                            errStr.value = "FIELDS CANT BE EMPTY"
+                        } else {
+                            isError.value = false
 
 
 
 
-                        hotlist.value = !hotlist.value
+                            hotlist.value = !hotlist.value
 //                        manageViewModel.ResetPinToggleState.value=true
-                        ResetPinOtp.value = !ResetPinOtp.value
+                            ResetPinOtp.value = !ResetPinOtp.value
                         }
                     },
                     shape = RoundedCornerShape(5.dp),
@@ -387,7 +395,7 @@ onCancel()
     if (ResetPinOtp.value) timer.start() else timer.cancel()
 
     @Composable
-    fun EnterOTPPinSheet(state:MutableState<String>,oncancel:()->Unit,onSubmit:()->Unit) {
+    fun EnterOTPPinSheet(state: MutableState<String>, oncancel: () -> Unit, onSubmit: () -> Unit) {
 
         var textFieldSize by remember { mutableStateOf(Size.Zero) }
         Column(
@@ -410,7 +418,8 @@ onCancel()
                     value = state.value,
                     onValueChange = {
 
-                        if (it.length <= 4) { state.value= it
+                        if (it.length <= 4) {
+                            state.value = it
                         }
 
 
@@ -423,7 +432,10 @@ onCancel()
 
                 {
 
-                    Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                         repeat(4) {
 
                             val char = when {
@@ -445,7 +457,10 @@ onCancel()
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 
                                     Text(
-                                        char.toString(), textAlign = TextAlign.Center, color = Black, fontWeight = FontWeight(600)
+                                        char.toString(),
+                                        textAlign = TextAlign.Center,
+                                        color = Black,
+                                        fontWeight = FontWeight(600)
                                     )
 
                                 }
@@ -484,7 +499,7 @@ onCancel()
                 }
                 Button(
                     onClick = {
-                   oncancel()
+                        oncancel()
                     },
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier
@@ -510,15 +525,15 @@ onCancel()
     fun CustomSheetWrap(
         state: MutableState<Boolean>,
         initOffset: Int = 500,
-        delay:Int=0,
+        delay: Int = 0,
         cont: @Composable () -> Unit,
 
-    ) {
-        if(manageViewModel.isError.value){
+        ) {
+        if (manageViewModel.isError.value) {
             AlertDialog(onDismissRequest = { /*TODO*/ }) {
                 CustomAlertDialog(errMsg = manageViewModel.errorMessage.value) {
-                    manageViewModel.isError.value=false
-                    manageViewModel.errorMessage.value=""
+                    manageViewModel.isError.value = false
+                    manageViewModel.errorMessage.value = ""
                 }
             }
 
@@ -530,9 +545,9 @@ onCancel()
             contentAlignment = Alignment.Center
         ) {
 
-if(successDialog.value) {
-    CustomSucessDialog(msg = sucessMsg.value){}
-}
+            if (successDialog.value) {
+                CustomSucessDialog(msg = sucessMsg.value) {}
+            }
 
 
 
@@ -588,65 +603,64 @@ if(successDialog.value) {
     }
 
     CustomSheetWrap(state = hotlist) {
-      val string=  if(manageViewModel.HotListToggleState.value){
-                STRING.UNHOTLIST_CARD
-        }
-        else{
-STRING.HOTLIST_CARD
+        val string = if (manageViewModel.HotListToggleState.value) {
+            STRING.UNHOTLIST_CARD
+        } else {
+            STRING.HOTLIST_CARD
         }
         Sheet(str = string, hotlist = Hotlist, onCancel = {
-            Hotlist.value=!hotlist.value}){
-            hotlistCardOtp.value=!hotlistCardOtp.value
-            Hotlist.value=!hotlist.value
+            Hotlist.value = !hotlist.value
+        }) {
+            hotlistCardOtp.value = !hotlistCardOtp.value
+            Hotlist.value = !hotlist.value
         }
     }
-    CustomSheetWrap(state = BlockCard,) {
-        val string=  if(manageViewModel.PauseCardToggleState.value){
+    CustomSheetWrap(state = BlockCard) {
+        val string = if (manageViewModel.PauseCardToggleState.value) {
             STRING.UNBLOCK_CARD
-        }
-        else{
+        } else {
             STRING.BLOCK_CARD
         }
-        Sheet(str = string, hotlist = Hotlist,{BlockCard.value=false
-        }){
-            BlockCard.value=false
-            BlockCardOtp.value=true
+        Sheet(str = string, hotlist = Hotlist, {
+            BlockCard.value = false
+        }) {
+            BlockCard.value = false
+            BlockCardOtp.value = true
         }
     }
 
-    CustomSheetWrap(state = ResetPinOtp, 800,1000) {
+    CustomSheetWrap(state = ResetPinOtp, 800, 1000) {
         EnterOTPPinSheet(manageViewModel.Otp, { ResetPinOtp.value = !ResetPinOtp.value }) {
-            manageViewModel.resetPin(){
-                manageViewModel.enterPin.value=""
-                manageViewModel.reenterPin.value=""
-                Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+            manageViewModel.resetPin() {
+                manageViewModel.enterPin.value = ""
+                manageViewModel.reenterPin.value = ""
+                Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
             }
 
 
 
-            ResetPinOtp.value=false
+            ResetPinOtp.value = false
 
 
         }
     }
     CustomSheetWrap(state = cvv, 800) {
-        EnterOTPPinSheet(manageViewModel.Otp, oncancel = {cvv.value=!cvv.value}){
-                manageViewModel.viewCvv(manageViewModel.Otp.value){
-                    Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
-                    if(it.status=="0"){
-                        successDialog.value=true
-                        sucessMsg.value="Cvv Unmasked"
-                        scope.launch {
-                            successDialog.value=false
-                        }
+        EnterOTPPinSheet(manageViewModel.Otp, oncancel = { cvv.value = !cvv.value }) {
+            manageViewModel.viewCvv(manageViewModel.Otp.value) {
+                Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
+                if (it.status == "0") {
+                    successDialog.value = true
+                    sucessMsg.value = "Cvv Unmasked"
+                    scope.launch {
+                        successDialog.value = false
+                    }
 
-                    }
-                    else{
-                        manageViewModel.isError.value=true
-                        manageViewModel.errorMessage.value=it.statusDesc
-                    }
+                } else {
+                    manageViewModel.isError.value = true
+                    manageViewModel.errorMessage.value = it.statusDesc
                 }
-            cvv.value=false
+            }
+            cvv.value = false
 
         }
     }
@@ -654,44 +668,42 @@ STRING.HOTLIST_CARD
     CustomSheetWrap(state = BlockCardOtp, 800, delay = 1000) {
         EnterOTPPinSheet(manageViewModel.Otp, oncancel = {
             BlockCardOtp.value = !BlockCardOtp.value
-        }){
-            val status=if(manageViewModel.PauseCardToggleState.value==true){
+        }) {
+            val status = if (manageViewModel.PauseCardToggleState.value == true) {
                 "unblock"
-            }else "block"
-            manageViewModel.changeCardStatus(manageViewModel.Otp.value,status){
-                Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
-                if(it.status=="0"){
-                    manageViewModel.PauseCardToggleState.value=!manageViewModel.PauseCardToggleState.value
-                    successDialog.value=true
-                    sucessMsg.value="Card sucessfully ${status}ed"
+            } else "block"
+            manageViewModel.changeCardStatus(manageViewModel.Otp.value, status) {
+                Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
+                if (it.status == "0") {
+                    manageViewModel.PauseCardToggleState.value =
+                        !manageViewModel.PauseCardToggleState.value
+                    successDialog.value = true
+                    sucessMsg.value = "Card sucessfully ${status}ed"
                     scope.launch {
                         delay(2000)
-                        successDialog.value=false
+                        successDialog.value = false
                     }
 
 
-
-                }
-                else{
-                        manageViewModel.errorMessage.value=it.statusDesc
-                    manageViewModel.isError.value=true
+                } else {
+                    manageViewModel.errorMessage.value = it.statusDesc
+                    manageViewModel.isError.value = true
                 }
             }
-            manageViewModel.Otp.value=""
-            BlockCardOtp.value=false
+            manageViewModel.Otp.value = ""
+            BlockCardOtp.value = false
 
         }
     }
     CustomSheetWrap(state = hotlistCardOtp, 800, delay = 1000) {
-        EnterOTPPinSheet(manageViewModel.Otp,{hotlistCardOtp.value=false}){
-            manageViewModel.changeCardStatus(manageViewModel.Otp.value,"hotlist"){
-                Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
-                if(it.status=="0"){
-                    manageViewModel.HotListToggleState.value=!manageViewModel.HotListToggleState.value
-
+        EnterOTPPinSheet(manageViewModel.Otp, { hotlistCardOtp.value = false }) {
+            manageViewModel.changeCardStatus(manageViewModel.Otp.value, "hotlist") {
+                Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
+                if (it.status == "0") {
+                    manageViewModel.HotListToggleState.value = true
                 }
             }
-            hotlistCardOtp.value=false
+            hotlistCardOtp.value = false
 
         }
     }
@@ -700,9 +712,6 @@ STRING.HOTLIST_CARD
 //
 //        }
 //    }
-
-
-
 
 
 }

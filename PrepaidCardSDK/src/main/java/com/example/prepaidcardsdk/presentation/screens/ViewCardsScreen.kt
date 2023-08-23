@@ -73,309 +73,260 @@ import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataViewModel) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
-    Column(
-        Modifier
-            .padding(16.dp)
-            .fillMaxSize()
-            .verticalScroll(enabled = true, state = ScrollState(0))
+    if (viewModel.isError.value) {
 
-    ) {
-        @Composable
-        fun CustomAlertDialogBox(error: MutableState<Boolean>, errMsg: String, dest: String) {
-            AlertDialog(onDismissRequest = { }) {
-                Card(Modifier.size(300.dp)) {
-                    Box(Modifier.fillMaxSize()) {
-                        Column(
-                            Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(errMsg)
-                            Button(onClick = {
-                                error.value = false
-                                rootNavController.navigate(dest)
-
-                            }) {
-                                Text("ok")
-
-                            }
-                        }
-
-                    }
-
+        AlertDialog(onDismissRequest = { /*TODO*/ }) {
+            CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
+                viewModel.isError.value = false
+                if (viewModel.destination.value.isNotEmpty()) {
+                    rootNavController.navigate(viewModel.destination.value)
+                    viewModel.destination.value = ""
                 }
-
             }
         }
-        if (viewModel.isError.value) {
-            /*AlertDialog(onDismissRequest = { }) {
-    Card(Modifier.size(300.dp)) {
-        Box(Modifier.fillMaxSize()) {
 
-            Column(
-                Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Row(){
-                    Box(Modifier.fillMaxWidth(0.8f))
-                    IconButton(onClick = {
-                        viewModel.isError.value = false
-                        viewModel.isError.value = false
-
-                        rootNavController.navigate(viewModel.destination.value)
-                        viewModel.errorMessage.value=""
-                        viewModel.destination.value=""
-
-                    }) {
-                        Icon(painterResource(id = R.drawable.baseline_close_24),"")
-                    }
-                }
-                Icon(painterResource(id = R.drawable.baseline_error_24), contentDescription = "",Modifier.fillMaxSize(0.5f), tint = Color.Red)
-                Box(Modifier.weight(2f).padding(5.dp), contentAlignment = Alignment.Center){
-                    Text(viewModel.errorMessage.value.replaceFirstChar {
-                        it.uppercase()
-                    }, fontWeight = FontWeight(400), style = TextStyle(
-                        fontSize = 20.sp
-
-                    ),)
-
-                }
-                            Button(onClick = {
-                                viewModel.isError.value = false
-                                viewModel.cardActivationToggleState.value=false
-
-                            }, shape = RoundedCornerShape(5.dp)) {
-                                Text("ok")
-
-                            }
-            }
-
+    } else if (viewModel.isLoading.value) {
+        AlertDialog(onDismissRequest = { /*TODO*/ }) {
+            CustomLoader()
         }
 
-    }
 
-}*/
-            AlertDialog(onDismissRequest = { }) {
-                Card(Modifier.size(300.dp)) {
-                    Box(Modifier.fillMaxSize()) {
-                        Column(
-                            Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.SpaceBetween,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Row() {
-                                Box(Modifier.fillMaxWidth(0.8f))
-                                IconButton(onClick = {
-                                    viewModel.isError.value = false
-                                    viewModel.isError.value = false
-                                }) {
-                                    Icon(painterResource(id = R.drawable.baseline_close_24), "")
-                                }
-                            }
-                            Icon(
-                                painterResource(id = R.drawable.baseline_error_24),
-                                contentDescription = "",
-                                Modifier.fillMaxSize(0.5f),
-                                tint = Color.Red
-                            )
+    } else {
+        Column(
+            Modifier
+                .padding(16.dp)
+                .fillMaxSize()
+                .verticalScroll(enabled = true, state = ScrollState(0))
+
+        ) {
+            @Composable
+            fun CustomAlertDialogBox(error: MutableState<Boolean>, errMsg: String, dest: String) {
+                AlertDialog(onDismissRequest = { }) {
+                    Card(Modifier.size(300.dp)) {
+                        Box(Modifier.fillMaxSize()) {
                             Column(
-                                modifier = Modifier.fillMaxSize(),
+                                Modifier.fillMaxSize(),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-
-                                Text(
-                                    viewModel.errorMessage.value.replaceFirstChar {
-                                        it.uppercase()
-                                    },
-                                    fontWeight = FontWeight(400),
-                                    style = TextStyle(
-                                        fontSize = 20.sp
-
-                                    ),
-                                )
+                                Text(errMsg)
                                 Button(onClick = {
-                                    viewModel.isError.value = false
+                                    error.value = false
+                                    rootNavController.navigate(dest)
 
-                                    rootNavController.navigate(viewModel.destination.value)
-                                    viewModel.errorMessage.value = ""
-                                    viewModel.destination.value = ""
                                 }) {
                                     Text("ok")
 
                                 }
                             }
+
                         }
 
-                    }
-
-                    CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
-                        viewModel.isError.value = false
-                        if (viewModel.destination.value.isNotEmpty()) {
-                            rootNavController.navigate(viewModel.destination.value)
-                        }
-                        viewModel.destination.value = ""
-
-
-
-
-                        viewModel.errorMessage.value = ""
                     }
 
                 }
+            }
 
-               /* Card(Modifier.size(300.dp)) {
-                    Box(Modifier.fillMaxSize()) {
-                        Column(
-                            Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(viewModel.errorMessage.value)
-                            Button(onClick = {
-                                viewModel.isError.value = false
-                                if(viewModel.destination.value.isNotEmpty()){
-                                    rootNavController.navigate(viewModel.destination.value)
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp), horizontalArrangement = Arrangement.SpaceBetween
+            )
+            {
+                Row {
+                    Text(
+                        text = "Hi ,",
+                        color = HitextColor,
+                        fontFamily = FontFamily(Font(R.font.roboto_medium_italic)),
+                        fontSize = 22.sp
+                    )
+                    Text(
+                        text = "${
+                            if (viewModel.cardList.value?.isNotEmpty() == true) {
+                                viewModel.cardList.value?.get(0)?.nameonCard
+                            } else ""
+                        }!",
+                        color = HitextColor,
+                        fontFamily = FontFamily(Font(R.font.robot_medium)),
+                        fontSize = 22.sp
+                    )
+                }
+                Row {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_add_circle_outline_24),
+                        contentDescription = "add",
+                        tint = lighttealGreen,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Text(
+                        text = "Featured",
+                        color = lighttealGreen,
+                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                        fontSize = 16.sp
+                    )
+                }
+            }
+
+
+            LaunchedEffect(key1 = true) {
+                if (viewModel.cardList.value?.isEmpty() == true) {
+                    viewModel.cardDataByCustomer()
+                }
+            }
+
+            viewModel.cardList.value?.let {
+
+                if (it.isNotEmpty()) {
+                    LazyRow {
+                        items(it) {
+                            if (it.cardType.equals("GPR", true)) {
+                                OutlinedCard(
+                                    shape = RoundedCornerShape(10.dp),
+                                    elevation = CardDefaults.outlinedCardElevation(4.dp),
+                                    colors = CardDefaults.cardColors(
+                                        Color.White
+                                    ),
+                                    modifier = Modifier.padding(10.dp)
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .height(140.dp)
+                                            .width(250.dp)
+                                            .clickable(onClick = {
+                                                if (it != null) {
+                                                    SDK_CONSTANTS.cardRefId = it.cardRefId
+                                                }
+                                                it.cardRefId?.let { it1 ->
+                                                    viewModel.viewCardData(
+                                                        cardRefId = it1,
+                                                        customerId = "181"
+                                                    )
+
+                                                    { res ->
+
+                                                        if (res != null) {
+                                                            if (res.status == "0") {
+                                                                //hotlist
+                                                                val hotlist =
+                                                                    res.viewcardresponseWrapper.isHotlist
+                                                                val isBlock =
+                                                                    res.viewcardresponseWrapper.isBlock
+                                                                val isActive =
+                                                                    res.viewcardresponseWrapper.isActive
+                                                                //
+                                                                if (!hotlist) {
+                                                                    if (isBlock) {
+                                                                        viewModel.isError.value =
+                                                                            true
+                                                                        viewModel.errorMessage.value =
+                                                                            "Card is Blocked"
+                                                                        viewModel.destination.value =
+                                                                            Destination.ENTER_OTP_SCREEN
+
+
+                                                                    } else {
+                                                                        if (isActive) {
+                                                                            rootNavController.navigate(
+                                                                                Destination.CARD_MANAGEMENT_SCREEN
+                                                                            )
+                                                                        } else {
+                                                                            viewModel.isError.value =
+                                                                                true
+                                                                            viewModel.errorMessage.value =
+                                                                                "Card is Inactive"
+                                                                            viewModel.destination.value =
+                                                                                Destination.CARD_ACTIVATION_SCREEN
+
+                                                                        }
+                                                                    }
+                                                                } else {
+
+                                                                    viewModel.isError.value = true
+                                                                    viewModel.errorMessage.value =
+                                                                        "Card is Hot Listed"
+
+
+                                                                }
+
+                                                            } else {
+
+                                                                viewModel.isError.value = true
+                                                                viewModel.errorMessage.value =
+                                                                    "Card is Hot Listed"
+                                                                viewModel.destination.value =
+                                                                    Destination.VIEW_CARDS_SCREEN
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            })
+                                    ) {
+                                        Column(
+                                            Modifier.padding(20.dp),
+                                            verticalArrangement = Arrangement.SpaceEvenly
+                                        ) {
+
+                                            Text(
+                                                text = "Prepaid Card",
+                                                fontFamily = FontFamily(Font(R.font.robot_medium)),
+                                                fontSize = 18.sp
+                                            )
+                                            it.toViewcardresponseWrapperDomain().decryptedCard?.let { it1 ->
+                                                Text(
+                                                    text = it1.replaceRange(
+                                                        0,
+                                                        12,
+                                                        "xxxx-xxxxx-xxxxx-"
+                                                    ), color = gray_color,
+                                                    modifier = Modifier.blur(0.dp)
+                                                )
+                                            }
+                                            Spacer(modifier = Modifier.height(30.dp))
+                                            Row(
+                                                horizontalArrangement = Arrangement.spacedBy(80.dp),
+                                                modifier = Modifier.fillMaxWidth()
+                                            ) {
+
+                                                Text(
+                                                    text = "iServeU",
+                                                    color = isuGreen,
+                                                    fontSize = 18.sp,
+                                                    fontFamily = FontFamily(
+                                                        Font(R.font.inter_extra_bold)
+                                                    ),
+                                                    fontStyle = FontStyle.Italic,
+                                                    fontWeight = FontWeight.ExtraBold,
+
+                                                    )
+                                            }
+                                        }
+                                    }
                                 }
-
-
-                                viewModel.errorMessage.value = ""
-                                viewModel.destination.value = ""
-                            }) {
-                                Text("ok")
-
                             }
                         }
-
                     }
-
-                }*/
-            }
-        }else if (viewModel.isLoading.value) {
-            AlertDialog(onDismissRequest = { /*TODO*/ }) {
-                CustomLoader()
-            }
-
-          /*  AlertDialog(onDismissRequest = { }) {
-                Card(Modifier.size(300.dp)) {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
-
-                    }
-
-                }
-
-            }*/
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp), horizontalArrangement = Arrangement.SpaceBetween
-        )
-        {
-            Row {
-                Text(
-                    text = "Hi ,",
-                    color = HitextColor,
-                    fontFamily = FontFamily(Font(R.font.roboto_medium_italic)),
-                    fontSize = 22.sp
-                )
-                Text(
-                    text = "${if(viewModel.cardList.value?.isNotEmpty() == true) {
-                        viewModel.cardList.value?.get(0)?.nameonCard
-                    } else ""}!",
-                    color = HitextColor,
-                    fontFamily = FontFamily(Font(R.font.robot_medium)),
-                    fontSize = 22.sp
-                )
-            }
-            Row {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_add_circle_outline_24),
-                    contentDescription = "add",
-                    tint = lighttealGreen,
-                    modifier = Modifier.size(20.dp)
-                )
-                Text(
-                    text = "Featured",
-                    color = lighttealGreen,
-                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                    fontSize = 16.sp
-                )
-            }
-        }
-
-
-        LaunchedEffect(key1 = true) {
-            if(viewModel.cardList.value?.isEmpty()==true){
-            viewModel.cardDataByCustomer()
-            }
-        }
-
-        viewModel.cardList.value?.let {
-
-            if (it.isNotEmpty()) {
-                LazyRow {
-                    items(it) {
-                        if (it.cardType.equals("GPR", true)) {
-                            OutlinedCard(
-                                shape = RoundedCornerShape(10.dp),
-                                elevation = CardDefaults.outlinedCardElevation(4.dp),
-                                colors = CardDefaults.cardColors(
-                                    Color.White
-                                ),
-                                modifier = Modifier.padding(10.dp)
-                            ) {
-                                Box(
+                    LazyRow {
+                        items(it) {
+                            if (it.cardType.equals("GIFT", true)) {
+                                OutlinedCard(
+                                    shape = RoundedCornerShape(10.dp),
+                                    elevation = CardDefaults.outlinedCardElevation(4.dp),
+                                    colors = CardDefaults.cardColors(
+                                        Color.White
+                                    ),
                                     modifier = Modifier
-                                        .height(140.dp)
-                                        .width(250.dp)
+                                        .padding(10.dp)
                                         .clickable(onClick = {
                                             if (it != null) {
                                                 SDK_CONSTANTS.cardRefId = it.cardRefId
                                             }
+
                                             it.cardRefId?.let { it1 ->
                                                 viewModel.viewCardData(
                                                     cardRefId = it1,
                                                     customerId = "181"
                                                 )
-                                                /*{ res ->
-
-                                                                                            if (res != null) {
-                                                                                                if (res.status == "0") {
-                                                                                                    //hotlist
-                                                                                                    if (!res.viewcardresponseWrapper.isHotlist) {
-                                                                                                        if (res.viewcardresponseWrapper.isBlock) {
-                                                                                                            rootNavController.navigate(
-                                                                                                                Destination.ENTER_OTP_SCREEN
-                                                                                                            )
-                                                                                                        } else {
-                                                                                                            if (res.viewcardresponseWrapper.isActive) {
-                                                                                                                rootNavController.navigate(
-                                                                                                                    Destination.CARD_MANAGEMENT_SCREEN
-                                                                                                                )
-                                                                                                            } else {
-                                                                                                                rootNavController.navigate(
-                                                                                                                    Destination.CARD_ACTIVATION_SCREEN
-                                                                                                                )
-                                                                                                            }
-                                                                                                        }
-                                                                                                    } else {
-                                                                                                        rootNavController.popBackStack(
-                                                                                                            Destination.VIEW_CARDS_SCREEN,
-                                                                                                            false,
-                                                                                                            false
-                                                                                                        )
-                                                                                                    }
-
-                                                                                                } else {
-                                                                                                    viewModel.isError.value = true
-                                                                                                    viewModel.errorMessage.value =
-                                                                                                        res.statusDesc
-                                                                                                }
-                                                                                            }
-                                                                                        }*/
                                                 { res ->
 
                                                     if (res != null) {
@@ -387,7 +338,7 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                                                 res.viewcardresponseWrapper.isBlock
                                                             val isActive =
                                                                 res.viewcardresponseWrapper.isActive
-                                                            //
+
                                                             if (!hotlist) {
                                                                 if (isBlock) {
                                                                     viewModel.isError.value = true
@@ -417,8 +368,8 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                                                 viewModel.isError.value = true
                                                                 viewModel.errorMessage.value =
                                                                     "Card is Hot Listed"
-
-
+                                                                viewModel.destination.value =
+                                                                    ""
                                                             }
 
                                                         } else {
@@ -434,160 +385,48 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                             }
                                         })
                                 ) {
-                                    Column(
-                                        Modifier.padding(20.dp),
-                                        verticalArrangement = Arrangement.SpaceEvenly
+                                    Box(
+                                        modifier = Modifier
+                                            .height(140.dp)
+                                            .width(250.dp)
                                     ) {
-
-                                        Text(
-                                            text = "Prepaid Card",
-                                            fontFamily = FontFamily(Font(R.font.robot_medium)),
-                                            fontSize = 18.sp
-                                        )
-                                        it.toViewcardresponseWrapperDomain().decryptedCard?.let { it1 ->
-                                            Text(
-                                                text =it1.replaceRange(0,12,"xxxx-xxxxx-xxxxx-"), color = gray_color,
-                                                modifier = Modifier.blur(0.dp)
-                                            )
-                                        }
-                                        Spacer(modifier = Modifier.height(30.dp))
-                                        Row(
-                                            horizontalArrangement = Arrangement.spacedBy(80.dp),
-                                            modifier = Modifier.fillMaxWidth()
+                                        Column(
+                                            Modifier.padding(20.dp),
+                                            verticalArrangement = Arrangement.SpaceEvenly
                                         ) {
-
                                             Text(
-                                                text = "iServeU",
-                                                color = isuGreen,
-                                                fontSize = 18.sp,
-                                                fontFamily = FontFamily(
-                                                    Font(R.font.inter_extra_bold)
-                                                ),
-                                                fontStyle = FontStyle.Italic,
-                                                fontWeight = FontWeight.ExtraBold,
-
+                                                text = "Gift Card",
+                                                fontFamily = FontFamily(Font(R.font.robot_medium)),
+                                                fontSize = 18.sp
                                             )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                LazyRow {
-                    items(it) {
-                        if (it.cardType.equals("GIFT", true)) {
-                            OutlinedCard(
-                                shape = RoundedCornerShape(10.dp),
-                                elevation = CardDefaults.outlinedCardElevation(4.dp),
-                                colors = CardDefaults.cardColors(
-                                    Color.White
-                                ),
-                                modifier = Modifier
-                                    .padding(10.dp)
-                                    .clickable(onClick = {
-                                        if (it != null) {
-                                            SDK_CONSTANTS.cardRefId = it.cardRefId
-                                        }
 
-                                        it.cardRefId?.let { it1 ->
-                                            viewModel.viewCardData(
-                                                cardRefId = it1,
-                                                customerId = "181"
-                                            )
-                                            { res ->
-
-                                                if (res != null) {
-                                                    if (res.status == "0") {
-                                                        //hotlist
-                                                        val hotlist =
-                                                            res.viewcardresponseWrapper.isHotlist
-                                                        val isBlock =
-                                                            res.viewcardresponseWrapper.isBlock
-                                                        val isActive =
-                                                            res.viewcardresponseWrapper.isActive
-
-                                                        if (!hotlist) {
-                                                            if (isBlock) {
-                                                                viewModel.isError.value = true
-                                                                viewModel.errorMessage.value =
-                                                                    "Card is Blocked"
-                                                                viewModel.destination.value =
-                                                                    Destination.ENTER_OTP_SCREEN
-
-
-                                                            } else {
-                                                                if (isActive) {
-                                                                    rootNavController.navigate(
-                                                                        Destination.CARD_MANAGEMENT_SCREEN
-                                                                    )
-                                                                } else {
-                                                                    viewModel.isError.value = true
-                                                                    viewModel.errorMessage.value =
-                                                                        "Card is Inactive"
-                                                                    viewModel.destination.value =
-                                                                        Destination.CARD_ACTIVATION_SCREEN
-
-                                                                }
-                                                            }
-                                                        } else {
-
-                                                            viewModel.isError.value = true
-                                                            viewModel.errorMessage.value =
-                                                                "Card is Hot Listed"
-                                                            viewModel.destination.value =
-                                                                ""
-                                                        }
-
-                                                    } else {
-
-                                                        viewModel.isError.value = true
-                                                        viewModel.errorMessage.value =
-                                                            "Card is Hot Listed"
-                                                        viewModel.destination.value =
-                                                            Destination.VIEW_CARDS_SCREEN
-                                                    }
-                                                }
+                                            it.toViewcardresponseWrapperDomain().decryptedCard?.let { it1 ->
+                                                Text(
+                                                    text = it1.replaceRange(
+                                                        0,
+                                                        12,
+                                                        "xxxx-xxxxx-xxxxx-"
+                                                    ),
+                                                    color = gray_color,
+                                                    modifier = Modifier.blur(0.dp),
+                                                )
                                             }
-                                        }
-                                    })
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .height(140.dp)
-                                        .width(250.dp)
-                                ) {
-                                    Column(
-                                        Modifier.padding(20.dp),
-                                        verticalArrangement = Arrangement.SpaceEvenly
-                                    ) {
-                                        Text(
-                                            text = "Gift Card",
-                                            fontFamily = FontFamily(Font(R.font.robot_medium)),
-                                            fontSize = 18.sp
-                                        )
+                                            Spacer(modifier = Modifier.height(30.dp))
+                                            Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
 
-                                        it.toViewcardresponseWrapperDomain().decryptedCard?.let { it1 ->
-                                            Text(
-                                                text =it1.replaceRange(0,12,"xxxx-xxxxx-xxxxx-"), color = gray_color,
-                                                modifier = Modifier.blur(0.dp),
-                                            )
-                                        }
-                                        Spacer(modifier = Modifier.height(30.dp))
-                                        Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
+                                                Text(
+                                                    text = "iServeU",
+                                                    color = isuOrrange,
+                                                    fontSize = 18.sp,
+                                                    fontFamily = FontFamily(
+                                                        Font(R.font.inter_extra_bold)
+                                                    ),
+                                                    fontStyle = FontStyle.Italic,
+                                                    fontWeight = FontWeight.ExtraBold
+                                                )
+                                            }
 
-                                            Text(
-                                                text = "iServeU",
-                                                color = isuOrrange,
-                                                fontSize = 18.sp,
-                                                fontFamily = FontFamily(
-                                                    Font(R.font.inter_extra_bold)
-                                                ),
-                                                fontStyle = FontStyle.Italic,
-                                                fontWeight = FontWeight.ExtraBold
-                                            )
                                         }
-
                                     }
                                 }
                             }
@@ -595,65 +434,68 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                     }
                 }
             }
-        }
 
 
-        Spacer(modifier = Modifier.height(20.dp))
-        Column {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(5.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "My Payments",
-                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.forwardspace),
-                    contentDescription = "Back"
-                )
-            }
-            Row(
-                Modifier
-                    .padding(5.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Recent",
-                    fontFamily = FontFamily(Font(R.font.robot_medium)),
-                    fontSize = 14.sp
-                )
-                Text(
-                    text = "Received",
-                    fontFamily = FontFamily(Font(R.font.robot_medium)),
-                    fontSize = 14.sp,
-                    color = gray_color
-                )
-                Text(
-                    text = "Pay",
-                    fontFamily = FontFamily(Font(R.font.robot_medium)),
-                    fontSize = 14.sp
-                )
-            }
-            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Image(
-                    painter = painterResource(id = R.drawable.girl_doing_online_payment),
-                    contentDescription = "Girl doing online payment",
-                    colorFilter = ColorFilter.tint(
-                        gray_color
+            Spacer(modifier = Modifier.height(20.dp))
+            Column {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "My Payments",
+                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
                     )
-                )
-                Text(
-                    text = "Last 5 Transaction you should view",
-                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                    fontSize = 14.sp,
-                    color = gray_color
-                )
+                    Icon(
+                        painter = painterResource(id = R.drawable.forwardspace),
+                        contentDescription = "Back"
+                    )
+                }
+                Row(
+                    Modifier
+                        .padding(5.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Recent",
+                        fontFamily = FontFamily(Font(R.font.robot_medium)),
+                        fontSize = 14.sp
+                    )
+                    Text(
+                        text = "Received",
+                        fontFamily = FontFamily(Font(R.font.robot_medium)),
+                        fontSize = 14.sp,
+                        color = gray_color
+                    )
+                    Text(
+                        text = "Pay",
+                        fontFamily = FontFamily(Font(R.font.robot_medium)),
+                        fontSize = 14.sp
+                    )
+                }
+                Column(
+                    Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.girl_doing_online_payment),
+                        contentDescription = "Girl doing online payment",
+                        colorFilter = ColorFilter.tint(
+                            gray_color
+                        )
+                    )
+                    Text(
+                        text = "Last 5 Transaction you should view",
+                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                        fontSize = 14.sp,
+                        color = gray_color
+                    )
+                }
             }
         }
     }

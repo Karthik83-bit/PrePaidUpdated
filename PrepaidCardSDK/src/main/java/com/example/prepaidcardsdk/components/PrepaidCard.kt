@@ -272,7 +272,7 @@ fun PrepaidCardBack(clickable: Modifier, manageCardViewModel: ManageCardViewMode
                     fontSize = 12.sp
                 )
                     Text(
-                        "123",
+                        manageCardViewModel.cvvValue.value,
                         fontSize = 14.sp,
                         modifier = Modifier
                             .graphicsLayer {

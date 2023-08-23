@@ -21,8 +21,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -50,11 +52,14 @@ import androidx.navigation.NavHostController
 //import com.example.prepaidcard.R
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.components.CustomAlertDialog
 import com.example.prepaidcardsdk.components.CustomOTPinp
-import com.example.prepaidcardsdk.components.OTPInput
+import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MpinScreen(rootNavController: NavHostController) {
+fun MpinScreen(rootNavController: NavHostController, viewModel: VerifyOTPViewModel) {
 
     val otpValue= remember {
         mutableStateOf("")
@@ -139,57 +144,64 @@ fun MpinScreen(rootNavController: NavHostController) {
                         })
                 if (viewModel.isError.value) {
                     AlertDialog(onDismissRequest = { }) {
-                        Card(Modifier.size(300.dp)) {
-                            Box(Modifier.fillMaxSize()) {
-                                Column(
-                                    Modifier.fillMaxSize(),
-                                    verticalArrangement = Arrangement.SpaceBetween,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Row {
-                                        Box(Modifier.fillMaxWidth(0.8f))
-                                        IconButton(onClick = {
-                                            viewModel.isError.value = false
-                                            viewModel.isError.value = false
-                                        }) {
-                                            Icon(
-                                                painterResource(id = R.drawable.baseline_close_24),
-                                                ""
-                                            )
-                                        }
-                                    }
-                                    Column(
-                                        modifier = Modifier.fillMaxSize(),
-                                        verticalArrangement = Arrangement.Center,
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
+                        CustomAlertDialog(viewModel.errorMessage.value){
+                            viewModel.isError.value = false
 
-                                        Text(
-                                            viewModel.errorMessage.value.replaceFirstChar {
-                                                it.uppercase()
-                                            },
-                                            fontWeight = FontWeight(400),
-                                            style = TextStyle(
-                                                fontSize = 20.sp
-
-                                            ),
-                                        )
-                                        Button(onClick = {
-                                            viewModel.isError.value = false
-
-                                            rootNavController.navigate(viewModel.destination.value)
-                                            viewModel.errorMessage.value = ""
-                                            viewModel.destination.value = ""
-                                        }) {
-                                            Text("ok")
-
-                                        }
-                                    }
-                                }
-
-                            }
-
+                            rootNavController.navigate(viewModel.destination.value)
+                            viewModel.errorMessage.value = ""
+                            viewModel.destination.value = ""
                         }
+//                        Card(Modifier.size(300.dp)) {
+//                            Box(Modifier.fillMaxSize()) {
+//                                Column(
+//                                    Modifier.fillMaxSize(),
+//                                    verticalArrangement = Arrangement.SpaceBetween,
+//                                    horizontalAlignment = Alignment.CenterHorizontally
+//                                ) {
+//                                    Row {
+//                                        Box(Modifier.fillMaxWidth(0.8f))
+//                                        IconButton(onClick = {
+//                                            viewModel.isError.value = false
+//                                            viewModel.isError.value = false
+//                                        }) {
+//                                            Icon(
+//                                                painterResource(id = R.drawable.baseline_close_24),
+//                                                ""
+//                                            )
+//                                        }
+//                                    }
+//                                    Column(
+//                                        modifier = Modifier.fillMaxSize(),
+//                                        verticalArrangement = Arrangement.Center,
+//                                        horizontalAlignment = Alignment.CenterHorizontally
+//                                    ) {
+//
+//                                        Text(
+//                                            viewModel.errorMessage.value.replaceFirstChar {
+//                                                it.uppercase()
+//                                            },
+//                                            fontWeight = FontWeight(400),
+//                                            style = TextStyle(
+//                                                fontSize = 20.sp
+//
+//                                            ),
+//                                        )
+//                                        Button(onClick = {
+//                                            viewModel.isError.value = false
+//
+//                                            rootNavController.navigate(viewModel.destination.value)
+//                                            viewModel.errorMessage.value = ""
+//                                            viewModel.destination.value = ""
+//                                        }) {
+//                                            Text("ok")
+//
+//                                        }
+//                                    }
+//                                }
+//
+//                            }
+//
+//                        }
 
                     }
                 }
@@ -297,6 +309,8 @@ fun MpinScreen(rootNavController: NavHostController) {
                              viewModel.destination.value = Destination.MPIN_SCREEN
                         }
                     }
+                    viewModel. mobilenum.value=""
+                    viewModel.verifyOtp.value=""
                 },
                 shape = RoundedCornerShape(5.dp),
                 elevation = ButtonDefaults.buttonElevation(20.dp),

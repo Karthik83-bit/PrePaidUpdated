@@ -30,7 +30,7 @@ class VerifyOTPViewModel @Inject constructor(val verifyOTPUseCase: VerifyOTPUseC
     fun VerifyOtp(onSuccess: (VerifyOtpResp)->Unit) {
 
             handleFlow<VerifyOtpResp>(
-                response = verifyOTPUseCase.invoke(verifyOtpReq = VerifyOtpReq( mobilenum.value, verifyOtp.value)),
+                response = verifyOTPUseCase.invoke(verifyOtpReq = VerifyOtpReq("9128663078", verifyOtp.value)),
                 onLoading = { isLoading.value = it },
                 onFailure = {
                     isError.value = true
