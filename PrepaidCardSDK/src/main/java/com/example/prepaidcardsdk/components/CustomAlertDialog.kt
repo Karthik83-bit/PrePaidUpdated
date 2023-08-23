@@ -16,6 +16,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,11 +25,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.Color.Companion.Yellow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -76,21 +79,38 @@ fun CustomSucessDialog(msg:String,onClick:()->Unit) {
     val progress by animateLottieCompositionAsState(composition = lottie)
     Card(modifier = Modifier
         .size(200.dp)
-        .background(White, RoundedCornerShape(5.dp)), colors = CardDefaults.cardColors(containerColor = White), shape = RoundedCornerShape(5.dp)){
-        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally){
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.7f)
-                .background(Green, RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, 0.dp, 0.dp)), horizontalArrangement = Arrangement.Center){
-             LottieAnimation(composition = lottie, progress = { progress })}
+        .background(White, RoundedCornerShape(5.dp)), colors = CardDefaults.cardColors(containerColor = White), shape = RoundedCornerShape(5.dp), elevation = CardDefaults.cardElevation(10.dp)) {
+        Column(
+            Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.7f)
+                    .background(
+                        Color.Transparent,
+                        RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, 0.dp, 0.dp)
+                    ), horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(painter = painterResource(id = R.drawable.check), contentDescription = "")
+
+            }
+                Text(
+                    msg.replaceFirstChar { it.uppercase() },
+                    fontWeight = FontWeight(500),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontFamily = FontFamily(
+                        Font(R.font.poppins_regular)
+                    )
+                )
 
 
-            Text(msg.replaceFirstChar { it.uppercase() }, fontWeight = FontWeight(600), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+            }
 
 
         }
 
-
     }
-
-}

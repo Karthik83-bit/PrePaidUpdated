@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,6 +55,8 @@ import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcard.utils.FilterOption
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.components.CustomAlertDialog
+import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.ui.theme.Resetcolor
@@ -98,8 +101,21 @@ fun CardManagementScreen(
         if (manageViewModel.HotListToggleState.value) {
             viewModel.isError.value=false
             manageViewModel.isError.value=false
-            rootNavController.navigate(Destination.VIEW_CARDS_SCREEN)
+            rootNavController.navigate(Destination.VIEW_CARDS_SCREEN){
+                popUpTo(Destination.VIEW_CARDS_SCREEN)
+            }
             manageViewModel.HotListToggleState.value=false
+        }
+        if(manageViewModel.isError.value){
+            AlertDialog(onDismissRequest = { /*TODO*/ }) {
+                CustomAlertDialog(errMsg = manageViewModel.errorMessage.value) {
+                    manageViewModel.isError.value=false
+                    manageViewModel.errorMessage.value=""
+                }
+            }
+        }
+        if(manageViewModel.isLoading.value){
+CustomLoader()
         }
         CustomScaffoldScreen(
             sheet = ResetPinToggleState,
@@ -133,7 +149,8 @@ fun CardManagementScreen(
                     FlipCard(
                         name = SDK_CONSTANTS.cardUser,
                         cardno = SDK_CONSTANTS.cardNumber,
-                        exp = SDK_CONSTANTS.expiryDate
+                        exp = SDK_CONSTANTS.expiryDate,
+                        viewModel = manageViewModel
                     ) {
                         manageViewModel.viewBalanceOtp.value =
                             !manageViewModel.viewBalanceOtp.value
@@ -260,10 +277,14 @@ fun CardManagementScreen(
                                     text = "Reset Pin",
                                     res = R.drawable.group_one
                                 ) {
-                                    manageViewModel.ResetPinToggleState.value =
-                                        !manageViewModel.ResetPinToggleState.value
 
-                                    ResetPinToggleState.value = !ResetPinToggleState.value
+                                    if(SDK_CONSTANTS.cardType.equals("GIFT")){
+                                        ResetPinOtpState.value=true
+                                    }
+                                    else{
+                                        ResetPinToggleState.value=true
+                                    }
+
 
                                 }
 
@@ -283,9 +304,9 @@ fun CardManagementScreen(
                                     res = R.drawable.group_three
                                 ) {
 
-                                    HotListToggleState.value = !HotListToggleState.value
-
-                                    onClick(HotListToggleState.value)
+//                                    HotListToggleState.value = !HotListToggleState.value
+//
+//                                    onClick(HotListToggleState.value)
 
                                 }
 

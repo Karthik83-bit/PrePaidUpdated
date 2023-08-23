@@ -146,11 +146,17 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
     }
 
     fun changeCardStatus(otp:String,status:String,onSucesss:(ChangeStatusResponseModel)->Unit){
-        handleFlow(changeCardStatus.invoke(otp,status), onLoading = {}, onSuccess = {
+        handleFlow(changeCardStatus.invoke(otp,status), onLoading = {
+                                                                    isLoading.value=it
+        }, onSuccess = {
+
             if(it!=null){
                 onSucesss(it)
             }
 
-        }, onFailure = {})
+        }, onFailure = {
+            isError.value=true
+            errorMessage.value=it
+        })
     }
 }

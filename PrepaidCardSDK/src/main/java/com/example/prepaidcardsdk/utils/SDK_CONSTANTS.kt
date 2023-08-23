@@ -13,4 +13,6 @@ object SDK_CONSTANTS {
      var isHotList:Boolean?=null
      var isBlock:Boolean?=null
      var isActive:Boolean?=null
+     var cardType:String?=null
+     var userId:String?=null
 }

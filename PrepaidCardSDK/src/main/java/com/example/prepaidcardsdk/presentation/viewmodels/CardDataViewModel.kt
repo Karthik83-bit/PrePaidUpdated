@@ -68,14 +68,15 @@ class CardDataViewModel @Inject constructor(
                     onComplete(it)
                     if (it != null) {
                         val enc_cardno=it.viewcardresponseWrapper.encryptedCard
-                        val cardno=EncryptDecrypt.decryptData(enc_cardno.toByteArray(Charsets.UTF_8), key = EncryptDecrypt.key)
-                        SDK_CONSTANTS.cardNumber=cardno
+                        val cardno= enc_cardno?.let { it1 -> EncryptDecrypt.decryptData(it1.toByteArray(Charsets.UTF_8), key = EncryptDecrypt.key) }
+                        SDK_CONSTANTS.cardNumber=cardno?:""
                         SDK_CONSTANTS.isBlock=it.viewcardresponseWrapper.isBlock
                         SDK_CONSTANTS.isActive=it.viewcardresponseWrapper.isActive
                         SDK_CONSTANTS.isHotList=it.viewcardresponseWrapper.isHotlist
                         SDK_CONSTANTS.isVirtual=it.viewcardresponseWrapper.isVirtual
                         SDK_CONSTANTS.cardUser=it.viewcardresponseWrapper.nameonCard
-                        SDK_CONSTANTS.expiryDate=it.viewcardresponseWrapper.expiryDate
+                        SDK_CONSTANTS.expiryDate= it.viewcardresponseWrapper.expiryDate.toString()
+                        SDK_CONSTANTS.cardType=it.viewcardresponseWrapper.cardType
                     }
 
                             },

@@ -19,7 +19,7 @@ import javax.inject.Inject
 class VerifyOTPViewModel @Inject constructor(val verifyOTPUseCase: VerifyOTPUseCase): ViewModel() {
 
     var verifyOtp= mutableStateOf("")
-    var mobilenum = mutableStateOf("")
+    var mobilenum = mutableStateOf("9128663078")
     var isLoading:MutableState<Boolean> = mutableStateOf(false)
     var isError:MutableState<Boolean> = mutableStateOf(false)
     var errorMessage:MutableState<String> = mutableStateOf("")
@@ -30,7 +30,7 @@ class VerifyOTPViewModel @Inject constructor(val verifyOTPUseCase: VerifyOTPUseC
     fun VerifyOtp(onSuccess: (VerifyOtpResp)->Unit) {
 
             handleFlow<VerifyOtpResp>(
-                response = verifyOTPUseCase.invoke(verifyOtpReq = VerifyOtpReq("9128663078", verifyOtp.value)),
+                response = verifyOTPUseCase.invoke(verifyOtpReq = VerifyOtpReq(mobilenum.value, verifyOtp.value)),
                 onLoading = { isLoading.value = it },
                 onFailure = {
                     isError.value = true

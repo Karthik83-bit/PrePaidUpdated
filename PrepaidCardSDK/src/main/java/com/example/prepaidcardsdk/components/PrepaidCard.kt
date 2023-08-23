@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
@@ -42,7 +41,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.R
@@ -67,7 +65,7 @@ enum class CardFace(val angle: Float) {
 }
 
 @Composable
-fun FlipCard(name: String, cardno: String, exp: String,viewBalance: () -> Unit) {
+fun FlipCard(name: String, cardno: String, exp: String,viewModel:ManageCardViewModel?,viewBalance: () -> Unit) {
 
     val cardfaceState= remember {
         mutableStateOf(CardFace.Front)
@@ -81,7 +79,7 @@ fun FlipCard(name: String, cardno: String, exp: String,viewBalance: () -> Unit) 
         )
     )
     val cont=LocalContext.current
-    
+
     Card(
 
     ){
@@ -94,10 +92,19 @@ AnimatedVisibility(visible = cardfaceState.value.angle<90f) {
 
         }
         .clickable {
-            cardfaceState.value = cardfaceState.value.next
+            if (viewModel != null) {
+                if (viewModel.cvvValue.value.isNotEmpty()) {
+                    cardfaceState.value = cardfaceState.value.next
+                }
+                else{
+                    viewModel.isError.value=true
+                    viewModel.errorMessage.value="Enable Cvv Toggle to view "
+                }
+
+            }
 
 
-        },cardno,name,exp){
+        },cardno,name,exp,viewModel){
 viewBalance()
 
     }
@@ -109,6 +116,8 @@ viewBalance()
                         rotationY = rotatiom.value
                     }
                     .clickable {
+
+
                         cardfaceState.value = cardfaceState.value.next
 
 
@@ -124,7 +133,14 @@ viewBalance()
 
 
 @Composable
-fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String,viewBalance:()->Unit) {
+fun PrepaidCard(
+    clickable: Modifier,
+    cardno: String,
+    name: String,
+    exp: String,
+    viewModel: ManageCardViewModel?,
+    viewBalance: () -> Unit
+) {
     val mask= remember {
         mutableStateOf(10.dp)
     }
@@ -136,18 +152,26 @@ fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String,v
     Card(
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(Resetcolor),
-        modifier = clickable
+        modifier = if(viewModel?.cvvValue?.value?.isNotEmpty() == true) {
+            clickable
 
 
-            .width(380.dp)
-            .height(250.dp)
-            .drawBehind {
+                .width(380.dp)
+                .height(250.dp)
+                .drawBehind {
 
-            },
+                }
+        } else {
+            Modifier
+                .width(380.dp)
+                .height(250.dp)
+                .drawBehind {
+
+                }
+        }
 
 
-
-        ) {
+    ) {
         Box(){
 
             Canvas(modifier = Modifier

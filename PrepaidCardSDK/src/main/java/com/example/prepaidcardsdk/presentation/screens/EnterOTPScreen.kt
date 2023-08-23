@@ -1,7 +1,9 @@
 package com.example.prepaidcard.screens
 
+import android.app.Activity
 import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -108,6 +110,8 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
         FocusRequester(),
         FocusRequester(),
     )
+    val activity= LocalContext.current as Activity
+    rootNavController.enableOnBackPressed(true)
 
 
     Scaffold(topBar = {
@@ -228,8 +232,12 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
                             success.value=true
                                 scope.launch {
                                     delay(2000)
+
 success.value=false
                                 }
+                            if(status.equals("active")){
+                                SDK_CONSTANTS.isActive=true
+                            }
                             viewModel.PauseCardToggleState.value=!viewModel.PauseCardToggleState.value
                             SDK_CONSTANTS.isBlock=viewModel.PauseCardToggleState.value
                             if(SDK_CONSTANTS.isActive==true){

@@ -74,6 +74,7 @@ import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
 import com.example.prepaidcardsdk.components.CustomSucessDialog
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
+import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -278,7 +279,12 @@ fun CustomScaffoldScreen(
                     value = manageViewModel.enterPin.value,
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text("Enetr PIN") },
-                    onValueChange = { manageViewModel.enterPin.value = it },
+                    onValueChange = {
+                        if(it.length<=4){
+                            manageViewModel.enterPin.value = it
+                        }
+
+                                    },
                     shape = RoundedCornerShape(2.dp),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.NumberPassword,
@@ -303,7 +309,10 @@ fun CustomScaffoldScreen(
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text("Enter PIN", modifier = Modifier.padding(0.dp)) },
                     onValueChange = {
-                        manageViewModel.reenterPin.value = it
+                        if(it.length<=4){
+                            manageViewModel.reenterPin.value = it
+                        }
+
                         if (it.length == 4 && !it.matches(manageViewModel.enterPin.value.toRegex())) {
                             isError.value = true
                             errStr.value = "PINS DONT MATCH"
@@ -339,7 +348,11 @@ fun CustomScaffoldScreen(
                         if (manageViewModel.enterPin.value.isEmpty() || manageViewModel.reenterPin.value.isEmpty()) {
                             isError.value = true
                             errStr.value = "FIELDS CANT BE EMPTY"
-                        } else {
+                        } else if(!manageViewModel.enterPin.value.matches(manageViewModel.enterPin.value.toRegex())) {
+                            isError.value = true
+                            errStr.value = "FIELDS DoesNOT match"
+                        }else
+                         {
                             isError.value = false
 
 
@@ -635,7 +648,15 @@ fun CustomScaffoldScreen(
                 manageViewModel.enterPin.value = ""
                 manageViewModel.reenterPin.value = ""
                 Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
+                if(it.status!="0"){
+                    successDialog.value=true
+                    sucessMsg.value=it.statusDesc
+
+                    manageViewModel.isError.value=true
+                    manageViewModel.errorMessage.value=it.statusDesc
+                }
             }
+
 
 
 
@@ -660,6 +681,8 @@ fun CustomScaffoldScreen(
                     manageViewModel.errorMessage.value = it.statusDesc
                 }
             }
+            manageViewModel.Otp.value=""
+
             cvv.value = false
 
         }
@@ -696,6 +719,10 @@ fun CustomScaffoldScreen(
         }
     }
     CustomSheetWrap(state = hotlistCardOtp, 800, delay = 1000) {
+//        if(SDK_CONSTANTS.cardType.equals("GIFT")){
+//            hotlistCardOtp.value=true
+//            manageViewModel.Otp.value=false
+//        }
         EnterOTPPinSheet(manageViewModel.Otp, { hotlistCardOtp.value = false }) {
             manageViewModel.changeCardStatus(manageViewModel.Otp.value, "hotlist") {
                 Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
@@ -704,6 +731,7 @@ fun CustomScaffoldScreen(
                 }
             }
             hotlistCardOtp.value = false
+            manageViewModel.Otp.value=""
 
         }
     }

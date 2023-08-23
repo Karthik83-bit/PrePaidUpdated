@@ -297,6 +297,8 @@ fun MpinScreen(rootNavController: NavHostController, viewModel: VerifyOTPViewMod
                     viewModel.VerifyOtp {
                         if (it.status == "0") {
                             rootNavController.navigate(Destination.VIEW_CARDS_SCREEN)
+                            viewModel. mobilenum.value=""
+                            viewModel.verifyOtp.value=""
                         }
                         else if(viewModel.verifyOtp.value == "") {
                             viewModel.isError.value =true
@@ -304,13 +306,13 @@ fun MpinScreen(rootNavController: NavHostController, viewModel: VerifyOTPViewMod
                             viewModel.destination.value = Destination.MPIN_SCREEN
                         }else
                          {
+
                            viewModel.isError.value = true
                              viewModel.errorMessage.value = it.statusDesc
                              viewModel.destination.value = Destination.MPIN_SCREEN
                         }
                     }
-                    viewModel. mobilenum.value=""
-                    viewModel.verifyOtp.value=""
+
                 },
                 shape = RoundedCornerShape(5.dp),
                 elevation = ButtonDefaults.buttonElevation(20.dp),

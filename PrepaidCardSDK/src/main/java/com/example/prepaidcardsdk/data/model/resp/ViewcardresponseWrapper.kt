@@ -8,11 +8,11 @@ import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 
 data class ViewcardresponseWrapper(
-    val cardRefId: String,
-    val cardType: String,
-    val encryptedCard: String,
+    val cardRefId: String?,
+    val cardType: String?,
+    val encryptedCard: String?,
     val encryptedCvv: Any,
-    val expiryDate: String,
+    val expiryDate: String?,
     val isActive: Boolean,
     val isBlock: Boolean,
     val isHotlist: Boolean,
