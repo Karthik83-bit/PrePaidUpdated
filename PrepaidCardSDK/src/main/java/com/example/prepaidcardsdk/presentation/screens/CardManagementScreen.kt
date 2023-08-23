@@ -67,32 +67,24 @@ fun CardManagementScreen(
     rootNavController: NavHostController,
     viewModel: GeneratePinViewModel,
     onClick: (state: Boolean) -> Unit = {},
-    manageViewModel: ManageCardViewModel
+    manageViewModel: ManageCardViewModel,
 ) {
-    val ReplaceToggleState =
-        manageViewModel.ReplaceToggleState
+    val ReplaceToggleState = manageViewModel.ReplaceToggleState
 
 
-    val CvvToggleState =
-        manageViewModel.CvvToggleState_d
+    val CvvToggleState = manageViewModel.CvvToggleState_d
 
-    val ResetPinToggleState =
-        manageViewModel.ResetPinToggleState_d
+    val ResetPinToggleState = manageViewModel.ResetPinToggleState_d
 
-    val PauseCardToggleState =
-        manageViewModel.PauseCardToggleState_d
+    val PauseCardToggleState = manageViewModel.PauseCardToggleState_d
 
-    val PauseCardOtpToggleState =
-        manageViewModel.PauseCardOtpState
+    val PauseCardOtpToggleState = manageViewModel.PauseCardOtpState
 
-    val HotListToggleState =
-        manageViewModel.HotListToggleState_d
+    val HotListToggleState = manageViewModel.HotListToggleState_d
 
-    val ResetPinOtpState =
-        manageViewModel.ResetPinOtpState
+    val ResetPinOtpState = manageViewModel.ResetPinOtpState
 
-    val DetailsState =
-       manageViewModel.DetailsState
+    val DetailsState = manageViewModel.DetailsState
 
 
 
@@ -100,24 +92,25 @@ fun CardManagementScreen(
         CustomTopBar {
             rootNavController.popBackStack()
         }
-    })
-    {
-        if(manageViewModel.HotListToggleState.value){
-            rootNavController.navigate(Destination.VIEW_CARDS_SCREEN){
-                popUpTo(Destination.VIEW_CARDS_SCREEN)
+    }) {
+        if (manageViewModel.HotListToggleState.value) {
+            rootNavController.navigate(Destination.VIEW_CARDS_SCREEN) {
+                popUpTo(Destination.CARD_MANAGEMENT_SCREEN) {
+                    inclusive = true
+                }
             }
         }
         CustomScaffoldScreen(
             sheet = ResetPinToggleState,
             resetPinOtp = ResetPinOtpState,
             blockCard = PauseCardToggleState,
-            blockCardOtp=PauseCardOtpToggleState,
+            blockCardOtp = PauseCardOtpToggleState,
             hotlist = HotListToggleState,
             hotlistCardOtp = manageViewModel.HotListOtpState,
             cvv = CvvToggleState,
             maskState = viewModel.mask,
             details = DetailsState,
-            manageViewModel=manageViewModel,
+            manageViewModel = manageViewModel,
             {
                 var editTextValue by remember { mutableStateOf("") }
                 var textFieldValue by remember { mutableStateOf("dbehera56@gmail.com") }
@@ -136,8 +129,13 @@ fun CardManagementScreen(
 
                     ) {
 
-                        FlipCard(name=SDK_CONSTANTS.cardUser,cardno=SDK_CONSTANTS.cardNumber,exp=SDK_CONSTANTS.expiryDate){
-                            manageViewModel.viewBalanceOtp.value=!manageViewModel.viewBalanceOtp.value
+                        FlipCard(
+                            name = SDK_CONSTANTS.cardUser,
+                            cardno = SDK_CONSTANTS.cardNumber,
+                            exp = SDK_CONSTANTS.expiryDate
+                        ) {
+                            manageViewModel.viewBalanceOtp.value =
+                                !manageViewModel.viewBalanceOtp.value
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
 
@@ -148,9 +146,9 @@ fun CardManagementScreen(
                                 modifier = Modifier.blur(manageViewModel.cvvMask.value)
                             )
                             Switch(
-                                checked =manageViewModel.CvvToggleState.value,
+                                checked = manageViewModel.CvvToggleState.value,
                                 onCheckedChange = {
-                                    CvvToggleState.value=it
+                                    CvvToggleState.value = it
 
                                 },
                                 colors = SwitchDefaults.colors(
@@ -207,7 +205,8 @@ fun CardManagementScreen(
                             ) {
                                 Column(horizontalAlignment = Alignment.Start) {
                                     Text(
-                                        "Card Statement", fontWeight = FontWeight(600),
+                                        "Card Statement",
+                                        fontWeight = FontWeight(600),
                                         fontSize = 20.sp,
                                         modifier = Modifier.padding(10.dp),
                                         fontFamily = FontFamily(Font(R.font.lato_bold))
@@ -222,16 +221,16 @@ fun CardManagementScreen(
                                             .fillMaxWidth()
                                             .padding(20.dp),
                                         horizontalArrangement = Arrangement.spacedBy(10.dp)
-                                    ) { CustomButton(
-                                        text = "SUBMIT",
-                                        buttonColor = lighttealGreen
                                     ) {
-                                        if (checkBoxState.value == "Last 10 Transaction") {
-                                            rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/none")
-                                        } else {
-                                            rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/${FilterOption.SelectDate}")
+                                        CustomButton(
+                                            text = "SUBMIT", buttonColor = lighttealGreen
+                                        ) {
+                                            if (checkBoxState.value == "Last 10 Transaction") {
+                                                rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/none")
+                                            } else {
+                                                rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/${FilterOption.SelectDate}")
+                                            }
                                         }
-                                    }
                                         CustomButton(text = "CANCEL", buttonColor = cancelGray) {
                                             rootNavController.popBackStack()
                                         }
@@ -260,10 +259,10 @@ fun CardManagementScreen(
                                         text = "Reset Pin",
                                         res = R.drawable.group_one
                                     ) {
-                                        manageViewModel.ResetPinToggleState.value=!manageViewModel.ResetPinToggleState.value
+                                        manageViewModel.ResetPinToggleState.value =
+                                            !manageViewModel.ResetPinToggleState.value
 
-                                        ResetPinToggleState.value =
-                                            !ResetPinToggleState.value
+                                        ResetPinToggleState.value = !ResetPinToggleState.value
 
                                     }
 
@@ -273,8 +272,7 @@ fun CardManagementScreen(
                                         res = R.drawable.group_two
                                     ) {
 //                                        manageViewModel.PauseCardToggleState.value=!manageViewModel.PauseCardToggleState.value
-                                        PauseCardToggleState.value =
-                                            !PauseCardToggleState.value
+                                        PauseCardToggleState.value = !PauseCardToggleState.value
                                         onClick(PauseCardToggleState.value)
                                     }
 
@@ -306,8 +304,7 @@ fun CardManagementScreen(
                             Box(
                                 Modifier
                                     .padding(
-                                        vertical = 10.dp,
-                                        horizontal = 10.dp
+                                        vertical = 10.dp, horizontal = 10.dp
                                     )
                                     .fillMaxSize()
                             ) {
@@ -323,9 +320,9 @@ fun CardManagementScreen(
                                     )
                                     ElevatedCard(
                                         modifier = Modifier.padding(
-                                            horizontal = 20.dp,
-                                            vertical = 10.dp
-                                        ), colors = CardDefaults.elevatedCardColors(cdback),
+                                            horizontal = 20.dp, vertical = 10.dp
+                                        ),
+                                        colors = CardDefaults.elevatedCardColors(cdback),
                                         elevation = CardDefaults.elevatedCardElevation(2.dp)
                                     ) {
                                         Column(
@@ -350,7 +347,8 @@ fun CardManagementScreen(
                                                     ),
                                                     textStyle = TextStyle(
                                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                        fontSize = 14.sp),
+                                                        fontSize = 14.sp
+                                                    ),
                                                     onValueChange = {
                                                         viewModel.username.value = it
                                                     },
@@ -392,7 +390,8 @@ fun CardManagementScreen(
                                                     ),
                                                     textStyle = TextStyle(
                                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                        fontSize = 14.sp),
+                                                        fontSize = 14.sp
+                                                    ),
                                                     onValueChange = {
                                                         viewModel.monthlyLimit.value = it
                                                     },
@@ -418,7 +417,8 @@ fun CardManagementScreen(
                                                     ),
                                                     textStyle = TextStyle(
                                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                        fontSize = 14.sp),
+                                                        fontSize = 14.sp
+                                                    ),
                                                     onValueChange = {
                                                         viewModel.cardLimit.value = it
                                                     },
@@ -464,8 +464,7 @@ fun CardManagementScreen(
                             }
                         } else {
                             Box(
-                                Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
+                                Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                             ) {
                                 Text(
                                     "ComingSoon...",

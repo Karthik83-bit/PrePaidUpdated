@@ -147,32 +147,32 @@ val cont= LocalContext.current
                     imeAction = ImeAction.Done
                 )
                 ){
-//                    OTPInput(textList =textlist , requestList =focusRequesterList )
-                    Row(){
-                        repeat(4){
-                            val char=when{
-                                it>=otpValue.value.length->"0"
-                                else->otpValue.value[it]
-                            }
-                            Column(
-                                Modifier
-                                    .width(60.dp)
-
-                                    .padding(horizontal = 10.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-
-                                Text(char.toString(), color =if(it>=otpValue.value.length) Color.Gray else Color.Black, fontWeight = if(it>=otpValue.value.length) FontWeight(300) else FontWeight(800))
-
-
-                                Row(
-                                    Modifier
-                                        .height(2.dp)
-                                        .fillMaxWidth()
-                                        .background(Color.Gray)){}
-
-
-                            }
-                        }
-                    }
+                    OTPInput(textList =textlist , requestList =focusRequesterList )
+//                    Row(){
+//                        repeat(4){
+//                            val char=when{
+//                                it>=otpValue.value.length->"0"
+//                                else->otpValue.value[it]
+//                            }
+//                            Column(
+//                                Modifier
+//                                    .width(60.dp)
+//
+//                                    .padding(horizontal = 10.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+//
+//                                Text(char.toString(), color =if(it>=otpValue.value.length) Color.Gray else Color.Black, fontWeight = if(it>=otpValue.value.length) FontWeight(300) else FontWeight(800))
+//
+//
+//                                Row(
+//                                    Modifier
+//                                        .height(2.dp)
+//                                        .fillMaxWidth()
+//                                        .background(Color.Gray)){}
+//
+//
+//                            }
+//                        }
+//                    }
 
 
                 }
@@ -184,6 +184,7 @@ val cont= LocalContext.current
                     Text("Remaining time : 0:36s",fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))), fontSize = 14.sp, color = Color.Gray)
                 }}
             ElevatedButton(onClick = {
+
                 rootNavController.navigate(Destination.VIEW_CARDS_SCREEN)
                                      }, shape = RoundedCornerShape(5.dp), elevation = ButtonDefaults.buttonElevation(20.dp), modifier = Modifier
                 .fillMaxWidth()

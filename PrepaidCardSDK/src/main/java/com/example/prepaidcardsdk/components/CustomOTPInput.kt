@@ -1,7 +1,9 @@
 package com.example.prepaidcardsdk.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 //import androidx.compose.foundation.layout.FlowColumnScopeInstance.align
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +16,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +32,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -40,6 +46,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.prepaidcardsdk.ui.theme.tealGreen
 import kotlinx.coroutines.delay
 
 
@@ -50,7 +57,7 @@ focusRequester: FocusRequester)
 BasicTextField(value = value, onValueChange = onValueChange, modifier = Modifier
     .padding(horizontal = 10.dp)
     .clip(RoundedCornerShape(8.dp))
-    .background(Gray)
+
     .wrapContentHeight()
     .focusRequester(focusRequester),
     maxLines = 1,
@@ -59,14 +66,24 @@ BasicTextField(value = value, onValueChange = onValueChange, modifier = Modifier
             modifier= Modifier
                 .width(50.dp)
                 .height(70.dp),
-            contentAlignment = Alignment.Center
+
+
         ){
-            it()
+Column(Modifier.fillMaxSize()) {
+    it()
+
+    Row(modifier = Modifier
+        .height(2.dp)
+        .fillMaxWidth()
+        .background(tealGreen)){}
+}
+
+
         }
     },
-    cursorBrush = SolidColor(Color.White),
+    cursorBrush = SolidColor(tealGreen),
 textStyle = TextStyle(
-    color = Color.White,
+    color = tealGreen,
     fontSize = 26.sp,
     fontWeight = FontWeight.Bold,
     textAlign = TextAlign.Center
@@ -86,30 +103,39 @@ requestList:List<FocusRequester>) {
 val focusRequester= LocalFocusManager.current
     val keyBoardController=LocalSoftwareKeyboardController.current
     val context= LocalContext.current
-    Surface(modifier = Modifier.fillMaxWidth(), color = Color.DarkGray){
+    Surface(modifier = Modifier.fillMaxWidth()){
 Box(
     modifier=Modifier.fillMaxSize()
 ){
-  Row(Modifier.padding(horizontal = 16.dp).padding(top=50.dp).align(Alignment.TopCenter)){
+  Row(
+      Modifier
+          .padding(horizontal = 16.dp)
+          .padding(top = 50.dp)
+          .align(Alignment.TopCenter)){
         for (i in textList.indices){
+            var check=false
             InputView(value = textList[i].value,
                 onValueChange = {
+
                     if(textList[i].value.text!=""){
                         if(it.text==""){
-
+check=true
                           textList[i].value= TextFieldValue("", selection = TextRange(0))
                            prevFocus(textList, requestList = requestList)
+
                         }
-                        return@InputView
+
+
                     }else{
-                        textList[i].value= TextFieldValue(
-                            text = it.text,
-                            selection = TextRange(it.text.length)
-                        )
+                        if(!check) {
+                            textList[i].value = TextFieldValue(
+                                text = it.text,
+                                selection = TextRange(it.text.length)
+                            )
 
 
-                        nextFocus(textList, requestList)
-
+                            nextFocus(textList, requestList)
+                        }
                     }
 
 
