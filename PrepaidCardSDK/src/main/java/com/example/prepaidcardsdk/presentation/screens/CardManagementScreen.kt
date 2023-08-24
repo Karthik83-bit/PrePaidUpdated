@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -298,7 +299,7 @@ fun CardManagementScreen(
 //                  oncancel()
 //                }
 //            }
-            if (manageViewModel.isLoading.value)
+            if (manageViewModel.isLoading.value||cardDataViewModel.isLoading.value)
             {
                 val rotate = remember {
                     mutableStateOf(false)
@@ -333,7 +334,7 @@ fun CardManagementScreen(
                     composition = animation,
                     progress = { progress },
                     modifier = Modifier
-                        .size(100.dp)
+                        .size(90.dp)
                         .rotate(rotat.value)
                 )
 
@@ -345,7 +346,7 @@ fun CardManagementScreen(
 //                }
             }
 
-            if (manageViewModel.isError.value){
+            if (manageViewModel.isError.value||cardDataViewModel.isError.value){
                 CustomSheetAlertDialog(errMsg = manageViewModel.errorMessage.value) {
                     oncancel()
                 }
@@ -438,7 +439,9 @@ fun CardManagementScreen(
                 ) {
 
                         Button(
-                            onClick = { onSubmit() },
+                            onClick = { onSubmit()
+
+                                      manageViewModel.Otp.value=""},
                             shape = RoundedCornerShape(5.dp),
                             modifier = Modifier
                                 .weight(1f)
@@ -452,6 +455,7 @@ fun CardManagementScreen(
                         Button(
                             onClick = {
                                 oncancel()
+                                manageViewModel.Otp.value=""
                             },
                             shape = RoundedCornerShape(5.dp),
                             modifier = Modifier
@@ -561,8 +565,15 @@ fun CardManagementScreen(
                     Switch(
                         checked = manageViewModel.cvvUI.value,
                         onCheckedChange = {
+                            if(manageViewModel.cvvValue.value.isEmpty()){
+                                manageViewModel.cvvOtpSheetState.value = true
+                            }else{
+                                manageViewModel.cvvUI.value=!manageViewModel.cvvUI.value
+                                manageViewModel.cardFace.value=if(manageViewModel.cardFace.value==CardFace.Front) CardFace.Back else CardFace.Front
 
-                            manageViewModel.cvvOtpSheetState.value = true
+                            }
+
+
 //                                if(manageViewModel.cvvValue.value.isEmpty()) {
 //                                    manageViewModel.CvvToggleState.value = it
 //                                }
@@ -656,7 +667,8 @@ fun CardManagementScreen(
                             }
                         }
                     }
-                } else if (manageViewModel.clickedState.value == "Managecard") {
+                } else if (manageViewModel.clickedState.value == "Managecard")
+                {
                     Box(
                         Modifier
                             .padding(vertical = 10.dp)
@@ -716,7 +728,8 @@ fun CardManagementScreen(
 
                         }
                     }
-                } else if (manageViewModel.clickedState.value == "Details") {
+                } else if (manageViewModel.clickedState.value == "Details")
+                {
 //                        DetailsState.value
                     Box(
                         Modifier
@@ -881,24 +894,52 @@ fun CardManagementScreen(
                         }
                     }
                 } else {
-                    Box(
-                        Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            "ComingSoon...",
-                            fontSize = 30.sp,
-                            fontWeight = FontWeight(700),
-                            fontFamily = FontFamily(
-                                listOf(Font(R.font.lato_bold))
-                            ),
-                            color = Color.Gray,
-                        )
+                    Column(){
+
+
+                        Box(
+                            Modifier
+                                .padding(vertical = 10.dp, horizontal = 10.dp)
+                                .fillMaxHeight(0.4f).fillMaxWidth()
+                        ) {
+                            Column(horizontalAlignment = Alignment.Start) {
+                                Text(
+                                    "Services",
+                                    fontWeight = FontWeight(600),
+                                    fontSize = 20.sp,
+                                    modifier = Modifier.padding(10.dp),
+                                    fontFamily = FontFamily(Font(R.font.lato_bold))
+                                )
+
+                                CustomCheckBox(manageViewModel.serviceRadioState, "Add Money")
+                                CustomCheckBox(manageViewModel.serviceRadioState, "Send Money")
+                                CustomCheckBox(
+                                    manageViewModel.serviceRadioState, "Order PhysicalCatd")
+                            }
+
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            CustomButton(
+                                text = "SUBMIT", buttonColor = lighttealGreen
+                            ) {
+
+                            }
+                            CustomButton(text = "CANCEL", buttonColor = cancelGray) {
+                                rootNavController.popBackStack()
+                            }
+
+                        }}
                     }
                 }
             }
 
         }
-    }
+
     if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value|| manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value||manageViewModel.cvvOtpSheetState.value )  {
         Box(
             Modifier
@@ -921,6 +962,8 @@ fun CardManagementScreen(
             manageViewModel.reenterPin.value=""
             manageViewModel.resetPinOtpSheetState.value=true
         }
+        manageViewModel.enterPin.value=""
+        manageViewModel.reenterPin.value=""
     }
     CustomSheetWrap(state = manageViewModel.resetPinOtpSheetState, delay = manageViewModel.delay.value, initOffset = 1000) {
         EnterOTPPinSheet(state = manageViewModel.Otp, oncancel = { manageViewModel.resetPinOtpSheetState.value=false })
@@ -937,23 +980,25 @@ fun CardManagementScreen(
         EnterOTPPinSheet(state = manageViewModel.Otp, oncancel = { manageViewModel.blockOtpSheetState.value=false })
         {
             manageViewModel.changeCardStatus(status = "block"){
+
                 if(it.status.equals("0")){
                     manageViewModel.blockCardUI.value=true
                 }
                 else{
                     manageViewModel.blockCardUI.value=false
                 }
+
             }
-
-
-            manageViewModel.blockOtpSheetState.value=false
             manageViewModel.Otp.value=""
+
+
+
         }
     }
+
     CustomSheetWrap(state = manageViewModel.cvvOtpSheetState, delay = manageViewModel.delay.value,initOffset = 1000) {
 
         EnterOTPPinSheet(state = manageViewModel.Otp, oncancel = { manageViewModel.cvvOtpSheetState.value=false
-            manageViewModel.cardFace.value=if(manageViewModel.cardFace.value==CardFace.Front) CardFace.Back else CardFace.Front
 
         })
         {
@@ -961,15 +1006,17 @@ fun CardManagementScreen(
             if(manageViewModel.cvvValue.value.isEmpty()) {
                 manageViewModel.viewCvv() {
                         if(it.status.equals("0")){
-                            manageViewModel.cvvUI.value=true
+
 
 
                         }
                 }
             }
+            manageViewModel.cvvUI.value=!manageViewModel.cvvUI.value
             manageViewModel.cardFace.value=if(manageViewModel.cardFace.value==CardFace.Front) CardFace.Back else CardFace.Front
 
-
+            manageViewModel.cvvOtpSheetState.value=false
+            manageViewModel.Otp.value=""
         }
     }
     CustomSheetWrap(state = manageViewModel.blockCardSheetState) {
@@ -981,19 +1028,26 @@ fun CardManagementScreen(
             manageViewModel.delay.value=1000
 
         }
+        manageViewModel.Otp.value=""
     }
     CustomSheetWrap(state = manageViewModel.viewBalanceOtpSheetState, delay = manageViewModel.delay.value,initOffset = 1000) {
 
-        EnterOTPPinSheet(state = manageViewModel.Otp, oncancel = { manageViewModel.viewBalanceOtp.value=false
-            manageViewModel.cardFace.value=if(manageViewModel.cardFace.value==CardFace.Front) CardFace.Back else CardFace.Front
+        EnterOTPPinSheet(state = manageViewModel.Otp, oncancel = { manageViewModel.viewBalanceOtpSheetState.value=false
+
 
         }){
             cardDataViewModel.viewCardData("181",SDK_CONSTANTS.cardNumber){
-
+                manageViewModel.cardDataMask.value=false
+                manageViewModel.viewBalanceOtpSheetState.value=false
+                manageViewModel.Otp.value=""
             }
+            manageViewModel.Otp.value=""
+
+
         }
 
     }
+
 
 }
 

@@ -154,10 +154,10 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
             Column(
                 Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                val animation by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.otp))
-                val progress by animateLottieCompositionAsState(composition = animation, iterations = LottieConstants.IterateForever)
+//                val animation by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.otp))
+//                val progress by animateLottieCompositionAsState(composition = animation, iterations = LottieConstants.IterateForever)
 
-                LottieAnimation(composition = animation, progress = { progress }, modifier = Modifier.size(100.dp) )
+//                LottieAnimation(composition = animation, progress = { progress }, modifier = Modifier.size(100.dp) )
                 Text(
                     text = "Enter OTP",
                     fontSize = 22.sp,
@@ -239,37 +239,40 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
 
                             else->""
                         }
-//                    viewModel.changeCardStatus(viewModel.Otp.value, status = status){
-//                        Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
-//                        if(it.status=="0"){
-//                            success.value=true
-//                                scope.launch {
-//                                    delay(2000)
-//success.value=false
-//                                }
-//                            SDK_CONSTANTS.isActive=true
-//                            viewModel.PauseCardToggleState.value=!viewModel.PauseCardToggleState.value
-//                            SDK_CONSTANTS.isBlock=viewModel.PauseCardToggleState.value
-//                            if(SDK_CONSTANTS.isActive==true){
-//
-//                                rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN){
-//                                    this.popUpTo(Destination.VIEW_CARDS_SCREEN)
-//                                }
-//                            }
-//                            else{
-//                                rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN){
-//                                    this.popUpTo(Destination.VIEW_CARDS_SCREEN)
-//                                }
-//                            }
-//
-//                        }
-//                        else{
-//                            viewModel.isError.value=true
-//                            viewModel.errorMessage.value=it.statusDesc
-//                            viewModel.navDest.value=Destination.VIEW_CARDS_SCREEN
-//                        }
-//
-//                    }
+                    viewModel.changeCardStatus(viewModel.Otp.value, status = status){
+                        Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+                        if(it.status=="0"){
+                            success.value=true
+                                scope.launch {
+                                    delay(2000)
+success.value=false
+                                }
+                            if(status=="active"){
+                                SDK_CONSTANTS.isActive=true
+                            }
+
+                           viewModel.blockCardUI.value=false
+                            SDK_CONSTANTS.isBlock=false
+                            if(SDK_CONSTANTS.isActive==true){
+
+                                rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN){
+                                    this.popUpTo(Destination.VIEW_CARDS_SCREEN)
+                                }
+                            }
+                            else{
+                                rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN){
+                                    this.popUpTo(Destination.VIEW_CARDS_SCREEN)
+                                }
+                            }
+
+                        }
+                        else{
+                            viewModel.isError.value=true
+                            viewModel.errorMessage.value=it.statusDesc
+                            viewModel.navDest.value=Destination.VIEW_CARDS_SCREEN
+                        }
+
+                    }
                     },
 
                     )

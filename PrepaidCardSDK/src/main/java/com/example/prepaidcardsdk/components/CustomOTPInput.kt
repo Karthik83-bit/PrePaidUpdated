@@ -125,18 +125,20 @@ check=true
 
                         }
 
-
+                        return@InputView
                     }else{
-                        if(!check) {
+
                             textList[i].value = TextFieldValue(
                                 text = it.text,
                                 selection = TextRange(it.text.length)
                             )
-
-
+                        if(!check) {
                             nextFocus(textList, requestList)
                         }
-                    }
+                        }
+
+
+
 
 
                 },

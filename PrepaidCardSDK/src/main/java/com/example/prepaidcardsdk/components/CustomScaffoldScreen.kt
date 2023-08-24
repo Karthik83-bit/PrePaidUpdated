@@ -127,6 +127,7 @@ fun CustomSheetWrap(
                     .fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = White),
                 shape = RoundedCornerShape(50.dp, topEnd = 50.dp, 0.dp, 0.dp)
+            , elevation = CardDefaults.cardElevation(30.dp)
 
             ) {
                 Box(

@@ -34,6 +34,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -56,6 +57,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
@@ -67,11 +69,13 @@ import com.example.prepaidcardsdk.ui.theme.gray_color
 import com.example.prepaidcardsdk.ui.theme.isuGreen
 import com.example.prepaidcardsdk.ui.theme.isuOrrange
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
+import com.example.prepaidcardsdk.ui.theme.tealGreen
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
+
 fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataViewModel)
 {
     val scrollState = rememberScrollState()
@@ -80,10 +84,15 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
     BackHandler {
         activity.finish()
     }
+Scaffold(topBar = { CustomTopBar {
+    activity.finish()
+}}) {
+
 
         Column(
             Modifier
-                .padding(16.dp)
+                .padding(it)
+                .padding(horizontal = 16.dp)
                 .fillMaxSize()
                 .verticalScroll(enabled = true, state = ScrollState(0))
 
@@ -160,20 +169,7 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                         fontSize = 22.sp
                     )
                 }
-                Row {
-                    Icon(
-                        painter = painterResource(id = R.drawable.baseline_add_circle_outline_24),
-                        contentDescription = "add",
-                        tint = lighttealGreen,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Text(
-                        text = "Featured",
-                        color = lighttealGreen,
-                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                        fontSize = 16.sp
-                    )
-                }
+
             }
 
 
@@ -189,9 +185,9 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                     LazyRow {
                         items(it) {
                             if (it.cardType.equals("GPR", true)) {
-                                OutlinedCard(
+                                Card(
                                     shape = RoundedCornerShape(10.dp),
-                                    elevation = CardDefaults.outlinedCardElevation(4.dp),
+                                    elevation = CardDefaults.outlinedCardElevation(14.dp),
                                     colors = CardDefaults.cardColors(
                                         Color.White
                                     ),
@@ -199,8 +195,8 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                 ) {
                                     Box(
                                         modifier = Modifier
-                                            .height(140.dp)
-                                            .width(250.dp)
+                                            .height(180.dp)
+                                            .width(300.dp)
                                             .clickable(onClick = {
                                                 if (it != null) {
                                                     SDK_CONSTANTS.cardRefId = it.cardRefId
@@ -296,17 +292,7 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                                 modifier = Modifier.fillMaxWidth()
                                             ) {
 
-                                                Text(
-                                                    text = "iServeU",
-                                                    color = isuGreen,
-                                                    fontSize = 18.sp,
-                                                    fontFamily = FontFamily(
-                                                        Font(R.font.inter_extra_bold)
-                                                    ),
-                                                    fontStyle = FontStyle.Italic,
-                                                    fontWeight = FontWeight.ExtraBold,
-
-                                                    )
+                                             Icon(painter = painterResource(id = R.drawable.bankitt), contentDescription = "",tint= isuGreen)
                                             }
                                         }
                                     }
@@ -317,9 +303,9 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                     LazyRow {
                         items(it) {
                             if (it.cardType.equals("GIFT", true)) {
-                                OutlinedCard(
+                                Card(
                                     shape = RoundedCornerShape(10.dp),
-                                    elevation = CardDefaults.outlinedCardElevation(4.dp),
+                                    elevation = CardDefaults.outlinedCardElevation(14.dp),
                                     colors = CardDefaults.cardColors(
                                         Color.White
                                     ),
@@ -395,8 +381,8 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                 ) {
                                     Box(
                                         modifier = Modifier
-                                            .height(140.dp)
-                                            .width(250.dp)
+                                            .height(180.dp)
+                                            .width(300.dp)
                                     ) {
                                         Column(
                                             Modifier.padding(20.dp),
@@ -422,16 +408,7 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                                             Spacer(modifier = Modifier.height(30.dp))
                                             Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
 
-                                                Text(
-                                                    text = "iServeU",
-                                                    color = isuOrrange,
-                                                    fontSize = 18.sp,
-                                                    fontFamily = FontFamily(
-                                                        Font(R.font.inter_extra_bold)
-                                                    ),
-                                                    fontStyle = FontStyle.Italic,
-                                                    fontWeight = FontWeight.ExtraBold
-                                                )
+                                                Icon(painter = painterResource(id = R.drawable.bankitt), contentDescription ="", tint = isuOrrange )
                                             }
 
                                         }
@@ -505,7 +482,7 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                     )
                 }
             }
-        }
+        }}
     }
 
 

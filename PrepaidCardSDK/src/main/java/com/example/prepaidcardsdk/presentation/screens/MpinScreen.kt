@@ -307,7 +307,11 @@ fun MpinScreen(rootNavController: NavHostController, viewModel: VerifyOTPViewMod
             }
             ElevatedButton(
                 onClick = {
+                    textlist.forEach {
+                        viewModel.verifyOtp.value=viewModel.verifyOtp.value+it.value.text
+                    }
                     viewModel.VerifyOtp {
+
                         if (it.status == "0") {
                             rootNavController.navigate(Destination.VIEW_CARDS_SCREEN)
                             viewModel. mobilenum.value=""

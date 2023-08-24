@@ -57,6 +57,7 @@ import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.ui.theme.HitextColor
 import com.example.prepaidcardsdk.ui.theme.Resetcolor
 import com.example.prepaidcardsdk.ui.theme.tealGreen
+import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 
 
 enum class CardFace(val angle: Float) {
@@ -188,8 +189,8 @@ fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String,a
                     .fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly) {
                 Spacer(modifier = Modifier.height(20.dp))
                 Column() {
-                    Text( if(mask.value==10.dp)name.replaceRange(0,name.length,"xxxxxx") else name, color = Color.White,style = TextStyle(letterSpacing = 5.sp, fontWeight = FontWeight(600)))
-                    Text(if(mask.value==10.dp)"${cardFormat(cardno)}" else cardSpaceFormat(cardno), color = Color.White, style = TextStyle(letterSpacing = 5.sp),fontWeight = FontWeight(600),)
+                    Text( if(manageCardViewModel.cardDataMask.value||SDK_CONSTANTS.cardUser.isEmpty())name.replaceRange(0,name.length,"xxxxxx") else name, color = Color.White,style = TextStyle(letterSpacing = 5.sp, fontWeight = FontWeight(800)))
+                    Text(if(manageCardViewModel.cardDataMask.value||SDK_CONSTANTS.cardNumber.isEmpty())"${cardFormat(cardno)}" else cardSpaceFormat(cardno), color = Color.White, style = TextStyle(letterSpacing = 7.sp),fontWeight = FontWeight(600), fontSize = 18.sp,)
 
                 }
                 OutlinedButton(
@@ -217,7 +218,7 @@ fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String,a
                 Row(horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier.fillMaxWidth()) {
                     Text("ValidThru", color = Color.White)
-                    Text(if(mask.value == 10.dp) exp.replaceRange(0, exp.length,"xxxx") else expFormater(exp), color = Color.White)
+                    Text(if(manageCardViewModel.cardDataMask.value) exp.replaceRange(0, exp.length,"xxxx") else expFormater(exp), color = Color.White)
                     Icon(
                         painter = painterResource(id = R.drawable.ic_call_answer,),
                         contentDescription = "",
@@ -243,7 +244,7 @@ fun cardFormat(cardno: String): String {
     if(cardno.isEmpty()){
         return " "
     }
-return cardno.replaceRange(0,16,"xxxx-xxxx-xxxx-xxxx ")
+return cardno.replaceRange(0,12,"xxxx-xxxx-xxxx- ")
 }
 
 @Composable
@@ -291,7 +292,7 @@ fun PrepaidCardBack(clickable: Modifier, manageCardViewModel: ManageCardViewMode
                     fontSize = 12.sp
                 )
                     Text(
-                        "xxxx",
+                        manageCardViewModel.cvvValue.value?:"",
                         fontSize = 14.sp,
                         modifier = Modifier
                             .graphicsLayer {

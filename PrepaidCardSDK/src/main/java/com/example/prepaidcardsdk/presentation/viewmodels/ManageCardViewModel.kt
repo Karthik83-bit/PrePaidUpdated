@@ -21,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCase,val viewCvvUseCase:ViewCvvUseCase,val changeCardStatus:ChangeCardStatusUseCase) :ViewModel(){
 
+    val cardDataMask: MutableState<Boolean> = mutableStateOf(true)
     val viewBalanceOtp: MutableState<Boolean> = mutableStateOf(false)
     var isLoading: MutableState<Boolean> = mutableStateOf(false)
 
@@ -36,8 +37,9 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
     var delay= mutableStateOf(500)
 
     val list = listOf<String>("LoadCard", "Managecard", "Statement", "Details")
+
     val clickedState =
-        mutableStateOf("")
+        mutableStateOf(list[0])
 
 
     var Otp=mutableStateOf("")
@@ -55,6 +57,10 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
     val cvvOtpSheetState=mutableStateOf(false)
     val blockOtpSheetState=mutableStateOf(false)
     val viewBalanceOtpSheetState= mutableStateOf(false)
+    val serviceRadioState: MutableState<String> =mutableStateOf("")
+
+
+
 //    val cautionSheetState= mutableStateOf(false)
 
 
@@ -136,9 +142,7 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
 
                 if (it != null) {
                     if(it.status=="0"){
-                        cardFace.value=if(cardFace.value==CardFace.Front){
-                            CardFace.Back
-                        }else CardFace.Back
+
 
 
                         cvvValue.value=EncryptDecrypt.decryptData(it.cvv.toByteArray(Charsets.UTF_8),EncryptDecrypt.key)
@@ -155,27 +159,32 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
                 }
 
         }, onFailure = {
+
             isError.value=true
                 errorMessage.value=""
         },
         onLoading = {
-            isLoading.value=true
+            isLoading.value=it
             isError.value=false
         })
     }
 
-    fun changeCardStatus(status:String,onSucesss:(ChangeStatusResponseModel)->Unit){
-        handleFlow(changeCardStatus.invoke(Otp.value,status), onLoading = {
+    fun changeCardStatus(otp:String=Otp.value,status:String,onSucesss:(ChangeStatusResponseModel)->Unit){
+        handleFlow(changeCardStatus.invoke(otp,status), onLoading = {
                                                                     isLoading.value=it
         }, onSuccess = {
 
             if(it!=null){
                 onSucesss(it)
+                blockOtpSheetState.value=false
+                Otp.value=""
             }
 
         }, onFailure = {
             isError.value=true
             errorMessage.value=it
+            blockOtpSheetState.value=false
+            Otp.value=""
         })
     }
 }

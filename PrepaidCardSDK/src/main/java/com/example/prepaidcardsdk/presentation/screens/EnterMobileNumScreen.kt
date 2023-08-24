@@ -228,9 +228,7 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
             }
 
             ElevatedButton(onClick = {
-                textlist.forEach {
-                    viewModel.mobilenum.value=it.value.text+viewModel.mobilenum.value
-                }
+
                 if(viewModel.mobilenum.value.length == 10){
                     rootNavController.navigate(Destination.MPIN_SCREEN)
                 }

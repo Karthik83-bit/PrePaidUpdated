@@ -37,7 +37,7 @@ fun CustomLoader (){
     LaunchedEffect(key1 = true, ){
         rotate.value=true
     }
-    val rotat=animateFloatAsState(targetValue = if(rotate.value)5f else -5f, animationSpec = infiniteRepeatable(animation = tween(500,0, easing = EaseInOut), repeatMode = RepeatMode.Reverse))
+    val rotat=animateFloatAsState(targetValue = if(rotate.value)5f else -5f, animationSpec = infiniteRepeatable(animation = tween(1000,0, easing = EaseInOut), repeatMode = RepeatMode.Reverse))
 
 
     val animation by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.cardscan))
