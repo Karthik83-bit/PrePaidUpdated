@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.prepaidcardsdk.data.model.req.CardDataRequestModel
 import com.example.prepaidcardsdk.data.model.req.ChangeStatusRequestModel
+import com.example.prepaidcardsdk.data.model.req.GenerateOTPReq
 import com.example.prepaidcardsdk.data.model.req.ResetPinRequestModel
 import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
 
@@ -13,6 +14,7 @@ import com.example.prepaidcardsdk.data.model.req.ViewCardDataReqModel
 import com.example.prepaidcardsdk.data.model.req.ViewCvvRequestModel
 import com.example.prepaidcardsdk.data.model.resp.CardDataByCustomerResp
 import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
+import com.example.prepaidcardsdk.data.model.resp.GenerateOTPResp
 import com.example.prepaidcardsdk.data.model.resp.ResetPinResponseModel
 import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
 import com.example.prepaidcardsdk.data.model.resp.VerifyOtpResp
@@ -104,7 +106,7 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
         url: String,
         requestModel: CardDataRequestModel
     ): Flow<NetworkResponse<CardDataByCustomerResp>> {
-        val reqBody = CardDataRequestModel(customerId = "181")
+        val reqBody = CardDataRequestModel(customerId = SDK_CONSTANTS.customerId)
         return handleFlowResponse(call = {
             apiService.cardDataByCustomer(url, reqBody)
         },{it})
@@ -127,6 +129,9 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
         return handleFlowResponse({apiService.verifyOtp(verifyOtpReq)},{it})
     }
 
+    override fun generateOtp(requestModel: GenerateOTPReq): Flow<NetworkResponse<GenerateOTPResp>> {
+        return handleFlowResponse({apiService.generateOtp(requestModel)},{it})
+    }
 
 
 }

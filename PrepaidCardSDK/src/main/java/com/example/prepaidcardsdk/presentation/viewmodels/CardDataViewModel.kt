@@ -42,7 +42,7 @@ class CardDataViewModel @Inject constructor(
             handleFlow<CardDataByCustomerResp>(
                 response = cardDataByCustomerUseCase.invoke(
                     "http://35.200.225.250:8080/cardissuer/cms/viewCarddataByCustomer",
-                    requestModel = CardDataRequestModel()
+                    requestModel = CardDataRequestModel(customerId = SDK_CONSTANTS.customerId)
                 ),
                 onLoading = { isLoading.value = it },
                 onFailure = {

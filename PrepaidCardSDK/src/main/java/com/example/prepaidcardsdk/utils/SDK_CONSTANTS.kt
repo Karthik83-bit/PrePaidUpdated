@@ -15,4 +15,7 @@ object SDK_CONSTANTS {
      var isBlock:Boolean?=null
      var isActive:Boolean?=null
      var availbalance:String =""
+     var expirytime:String =""
+     var params:String = ""
+    var customerId:String = ""
 }

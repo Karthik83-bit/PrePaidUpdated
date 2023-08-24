@@ -1,11 +1,13 @@
 package com.example.prepaidcardsdk.domain.repo
 
 import com.example.prepaidcardsdk.data.model.req.CardDataRequestModel
+import com.example.prepaidcardsdk.data.model.req.GenerateOTPReq
 import com.example.prepaidcardsdk.data.model.req.VerifyOtpReq
 import com.example.prepaidcardsdk.data.model.req.ViewCardDataReqModel
 import com.example.prepaidcardsdk.data.model.resp.CardDataByCustomerResp
 import com.example.prepaidcardsdk.data.model.resp.CardDataResponse
 import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
+import com.example.prepaidcardsdk.data.model.resp.GenerateOTPResp
 import com.example.prepaidcardsdk.data.model.resp.ResetPinResponseModel
 
 import com.example.prepaidcardsdk.data.model.resp.SetPinResponse
@@ -25,5 +27,6 @@ interface Repository {
 
     fun viewCvv(otp:String):Flow<NetworkResponse<ViewCvvResponseModel>>
     fun verifyOtp(requestModel: VerifyOtpReq):Flow<NetworkResponse<VerifyOtpResp>>
+    fun generateOtp(requestModel: GenerateOTPReq): Flow<NetworkResponse<GenerateOTPResp>>
 
 }
