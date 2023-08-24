@@ -72,32 +72,15 @@ import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataViewModel) {
+fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataViewModel)
+{
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val activity = LocalContext.current as Activity
     BackHandler {
         activity.finish()
     }
-    if (viewModel.isError.value) {
 
-        AlertDialog(onDismissRequest = { /*TODO*/ }) {
-            CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
-                viewModel.isError.value = false
-                if (viewModel.destination.value.isNotEmpty()) {
-                    rootNavController.navigate(viewModel.destination.value)
-                    viewModel.destination.value = ""
-                }
-            }
-        }
-
-    } else if (viewModel.isLoading.value) {
-        AlertDialog(onDismissRequest = { /*TODO*/ }) {
-            CustomLoader()
-        }
-
-
-    } else {
         Column(
             Modifier
                 .padding(16.dp)
@@ -105,6 +88,25 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
                 .verticalScroll(enabled = true, state = ScrollState(0))
 
         ) {
+            if (viewModel.isError.value) {
+
+                AlertDialog(onDismissRequest = { /*TODO*/ }) {
+                    CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
+                        viewModel.isError.value = false
+                        if (viewModel.destination.value.isNotEmpty()) {
+                            rootNavController.navigate(viewModel.destination.value)
+                            viewModel.destination.value = ""
+                        }
+                    }
+                }
+
+            } else if (viewModel.isLoading.value) {
+                AlertDialog(onDismissRequest = { /*TODO*/ }) {
+                    CustomLoader()
+                }
+
+
+            }
             @Composable
             fun CustomAlertDialogBox(error: MutableState<Boolean>, errMsg: String, dest: String) {
                 AlertDialog(onDismissRequest = { }) {
@@ -506,7 +508,7 @@ fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataVie
         }
     }
 
-}
+
 
 
 

@@ -226,6 +226,7 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
                 }
 
             }
+
             ElevatedButton(onClick = {
                 if(viewModel.mobilenum.value.length == 10){
                     rootNavController.navigate(Destination.MPIN_SCREEN)
@@ -247,7 +248,7 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
             }, shape = RoundedCornerShape(5.dp), elevation = ButtonDefaults.buttonElevation(20.dp), modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp), colors = ButtonDefaults.buttonColors(Color(0xff32DBDE))) {
-                Text("SUBMIT", fontFamily = FontFamily(listOf(Font(R.font.poppins_regular))))
+                Text("SEND OTP", fontFamily = FontFamily(listOf(Font(R.font.poppins_regular))))
             }
         }
 

@@ -53,7 +53,9 @@ import androidx.navigation.NavHostController
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
+import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.components.CustomOTPinp
+import com.example.prepaidcardsdk.components.OTPInput
 import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -146,8 +148,13 @@ fun MpinScreen(rootNavController: NavHostController, viewModel: VerifyOTPViewMod
                     AlertDialog(onDismissRequest = { }) {
                         CustomAlertDialog(viewModel.errorMessage.value){
                             viewModel.isError.value = false
+                            if(viewModel.destination.value.isNotEmpty()){
+                                rootNavController.navigate(viewModel.destination.value)
+                               viewModel.destination.value=""
 
-                            rootNavController.navigate(viewModel.destination.value)
+                                }
+
+
                             viewModel.errorMessage.value = ""
                             viewModel.destination.value = ""
                         }
@@ -205,6 +212,11 @@ fun MpinScreen(rootNavController: NavHostController, viewModel: VerifyOTPViewMod
 
                     }
                 }
+                if(viewModel.isLoading.value){
+                    AlertDialog(onDismissRequest = { /*TODO*/ }) {
+                        CustomLoader()
+                    }
+                }
 
             }
             Column(
@@ -221,66 +233,67 @@ fun MpinScreen(rootNavController: NavHostController, viewModel: VerifyOTPViewMod
 
             val cont = LocalContext.current
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                BasicTextField(
-                    value = viewModel.verifyOtp.value, onValueChange = {
-                        if (it.length <= 4) {
-                            viewModel.verifyOtp.value = it
-
-
-                    }
-
-
-                    }, keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.NumberPassword,
-                        imeAction = ImeAction.Done
-                    )
-                ) {
-//                    OTPInput(textList =textlist , requestList =focusRequesterList )
-                    Row {
-                        repeat(4) {
-                            val char = when {
-                                it >= viewModel.verifyOtp.value.length -> "0"
-                                else -> viewModel.verifyOtp.value[it]
-                            }
-                            Column(
-                                Modifier
-                                    .width(60.dp)
-
-                                    .padding(horizontal = 10.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-
-                                Text(
-                                    char.toString(),
-                                    color = if (it >= viewModel.verifyOtp.value.length) Color.Gray else Color.Black,
-                                    fontWeight = if (it >= viewModel.verifyOtp.value.length) FontWeight(
-                                        300
-                                    ) else FontWeight(800)
-                                )
-
-
-                                Row(
-                                    Modifier
-                                        .height(2.dp)
-                                        .fillMaxWidth()
-                                        .background(Color.Gray)
-                                ) {}
-
-
-                            }
-                        }
-                    }
-
-
-                }
+                OTPInput(textList = textlist, requestList = focusRequesterList)
+//                BasicTextField(
+//                    value = viewModel.verifyOtp.value, onValueChange = {
+//                        if (it.length <= 4) {
+//                            viewModel.verifyOtp.value = it
+//
+//
+//                    }
+//
+//
+//                    }, keyboardOptions = KeyboardOptions(
+//                        keyboardType = KeyboardType.NumberPassword,
+//                        imeAction = ImeAction.Done
+//                    )
+//                ) {
+////                    OTPInput(textList =textlist , requestList =focusRequesterList )
+//                    Row {
+//                        repeat(4) {
+//                            val char = when {
+//                                it >= viewModel.verifyOtp.value.length -> "0"
+//                                else -> viewModel.verifyOtp.value[it]
+//                            }
+//                            Column(
+//                                Modifier
+//                                    .width(60.dp)
+//
+//                                    .padding(horizontal = 10.dp),
+//                                horizontalAlignment = Alignment.CenterHorizontally,
+//                                verticalArrangement = Arrangement.spacedBy(6.dp)
+//                            ) {
+//
+//                                Text(
+//                                    char.toString(),
+//                                    color = if (it >= viewModel.verifyOtp.value.length) Color.Gray else Color.Black,
+//                                    fontWeight = if (it >= viewModel.verifyOtp.value.length) FontWeight(
+//                                        300
+//                                    ) else FontWeight(800)
+//                                )
+//
+//
+//                                Row(
+//                                    Modifier
+//                                        .height(2.dp)
+//                                        .fillMaxWidth()
+//                                        .background(Color.Gray)
+//                                ) {}
+//
+//
+//                            }
+//                        }
+//                    }
+//
+//
+//                }
                 Row(
                     Modifier
                         .fillMaxWidth()
                         .padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        "Generate New OTP",
+                        "Resend Otp",
                         fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
                         fontSize = 14.sp
                     )

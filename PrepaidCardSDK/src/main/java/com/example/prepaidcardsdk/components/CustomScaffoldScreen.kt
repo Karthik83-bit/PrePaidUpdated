@@ -72,16 +72,308 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.prepaidcard.utils.STRING
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
-import com.example.prepaidcardsdk.components.CustomSucessDialog
+//import com.example.prepaidcardsdk.components.CustomSucessDialog
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@Composable
+fun CustomSheetWrap(
+    state: MutableState<Boolean>,
+    initOffset: Int = 500,
+    delay: Int = 0,
+    cont: @Composable () -> Unit,
 
+    ) {
+//    if (manageViewModel.isError.value) {
+//        AlertDialog(onDismissRequest = { /*TODO*/ }) {
+//            CustomAlertDialog(errMsg = manageViewModel.errorMessage.value) {
+//                manageViewModel.isError.value = false
+//                manageViewModel.errorMessage.value = ""
+//            }
+//        }
+//
+//    }
+
+
+    Box(
+        Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+
+//        if (successDialog.value) {
+//            CustomSucessDialog(msg = sucessMsg.value) {}
+//        }
+
+
+
+        AnimatedVisibility(
+            visible = state.value,
+
+            enter = slideInVertically(animationSpec = tween(
+                1000,
+                delayMillis = delay,
+                easing = EaseInOut
+            ),
+                initialOffsetY = { initOffset }),
+            exit = slideOutVertically(
+                tween(1000, easing = EaseInOut),
+                targetOffsetY = { initOffset }),
+            modifier = Modifier.align(Alignment.BottomStart)
+        ) {
+            Card(
+                Modifier
+                    .fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = White),
+                shape = RoundedCornerShape(50.dp, topEnd = 50.dp, 0.dp, 0.dp)
+
+            ) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(30.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .padding(10.dp), contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        Modifier
+                            .fillMaxWidth(0.4f)
+                            .height(3.dp)
+                            .background(
+                                Gray,
+                                RoundedCornerShape(5.dp)
+                            )
+                    )
+                }
+                cont()
+
+            }
+
+
+        }
+    }
+}
+@Composable
+fun Sheet(
+    str: String,
+    hotlist: MutableState<Boolean>,
+    onCancel: () -> Unit,
+    onConirm: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            str, textAlign = TextAlign.Center, fontSize = 16.sp
+        )
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .background(White)
+                .padding(30.dp),
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            Button(
+                onClick = {
+                    onConirm()
+
+
+                },
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(45.dp)
+                    .width(156.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Cyan)
+
+            ) {
+                Text(text = "Yes", fontSize = 14.sp)
+            }
+            Button(
+                onClick = {
+                    onCancel()
+                },
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(45.dp)
+                    .width(156.dp),
+                colors = ButtonDefaults.buttonColors(Color(0xFFA09D9D))
+            ) {
+                Text("No")
+            }
+        }
+
+
+    }
+}
+
+//@Composable
+//fun ResetPinSheet(hotlist: MutableState<Boolean>) {
+//    var isError = remember {
+//        mutableStateOf(false)
+//    }
+//    var errStr = remember {
+//        mutableStateOf("")
+//    }
+//    Column(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(20.dp),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        Column(
+//            Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
+//        ) {
+//            if (isError.value) {
+//                Text(errStr.value, color = Red, fontWeight = FontWeight(700))
+//            }
+//            Text(
+//                text = "Generate Pin",
+//                fontSize = 22.sp,
+//                fontFamily = FontFamily(Font(R.font.lato_bold))
+//            )
+//            Spacer(modifier = Modifier.height(10.dp))
+//            Text(
+//                text = "Enter New PIN",
+//                fontSize = 14.sp,
+//                fontFamily = FontFamily(Font(R.font.lato_regular))
+//            )
+//            val intSrc = remember {
+//                MutableInteractionSource()
+//            }
+////                     OutlinedTextField(value = genPin.value, onValueChange = {genPin.value=it}, colors = OutlinedTextFieldDefaults.colors(disabledBorderColor =Color.Transparent ))
+////                BasicTextField(value =genPin.value , modifier = Modifier.fillMaxWidth().height(40.dp), enabled = true, interactionSource = intSrc, onValueChange = {genPin.value=it}){
+////                    TextFieldDefaults.TextFieldDecorationBox(
+////                        value =genPin.value,
+////                        innerTextField = { it },
+////                        enabled =true ,
+////                        singleLine = true,
+////                        visualTransformation = VisualTransformation.None ,
+////                        interactionSource =intSrc,
+////                        colors = TextFieldDefaults.textFieldColors(
+////                            backgroundColor = Gray,
+////                            textColor = Color.Black
+////                        ),
+////
+////
+////                    )
+////                }
+//            TextField(
+//                value = manageViewModel.enterPin.value,
+//                modifier = Modifier.fillMaxWidth(),
+//                placeholder = { Text("Enetr PIN") },
+//                onValueChange = { manageViewModel.enterPin.value = it },
+//                shape = RoundedCornerShape(2.dp),
+//                keyboardOptions = KeyboardOptions(
+//                    keyboardType = KeyboardType.NumberPassword,
+//                    imeAction = ImeAction.Done
+//                ),
+//                colors = TextFieldDefaults.textFieldColors(
+//
+//                    disabledIndicatorColor = Color.Transparent,
+//                    errorIndicatorColor = Color.Transparent,
+//                    focusedIndicatorColor = Color.Transparent,
+//                    unfocusedIndicatorColor = Color.Transparent
+//                )
+//            )
+//            Text(
+//                text = "Re-nter New PIN",
+//                fontSize = 14.sp,
+//                fontFamily = FontFamily(Font(R.font.lato_regular))
+//            )
+//            TextField(
+//                value = manageViewModel.reenterPin.value,
+//
+//                modifier = Modifier.fillMaxWidth(),
+//                placeholder = { Text("Enter PIN", modifier = Modifier.padding(0.dp)) },
+//                onValueChange = {
+//                    manageViewModel.reenterPin.value = it
+//                    if (it.length == 4 && !it.matches(manageViewModel.enterPin.value.toRegex())) {
+//                        isError.value = true
+//                        errStr.value = "PINS DONT MATCH"
+//                    } else {
+//                        isError.value = false
+//                    }
+//
+//                },
+//                shape = RoundedCornerShape(2.dp),
+//                keyboardOptions = KeyboardOptions(
+//                    keyboardType = KeyboardType.NumberPassword,
+//                    imeAction = ImeAction.Done
+//                ),
+//                colors = TextFieldDefaults.textFieldColors(
+//
+//                    disabledIndicatorColor = Color.Transparent,
+//                    errorIndicatorColor = Color.Transparent,
+//                    focusedIndicatorColor = Color.Transparent,
+//                    unfocusedIndicatorColor = Color.Transparent
+//                )
+//            )
+//        }
+//
+//
+//        Row(
+//            Modifier
+//                .fillMaxWidth()
+//                .padding(30.dp),
+//            horizontalArrangement = Arrangement.spacedBy(20.dp)
+//        ) {
+//            Button(
+//                onClick = {
+//                    if (manageViewModel.enterPin.value.isEmpty() || manageViewModel.reenterPin.value.isEmpty()) {
+//                        isError.value = true
+//                        errStr.value = "FIELDS CANT BE EMPTY"
+//                    } else {
+//                        isError.value = false
+//
+//
+//
+//
+//                        hotlist.value = !hotlist.value
+////                        manageViewModel.ResetPinToggleState.value=true
+//                        ResetPinOtp.value = !ResetPinOtp.value
+//                    }
+//                },
+//                shape = RoundedCornerShape(5.dp),
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .height(45.dp)
+//                    .width(156.dp),
+//                colors = ButtonDefaults.buttonColors(containerColor = Color.Cyan)
+//
+//
+//            ) {
+//                Text(text = "Submit", fontSize = 14.sp)
+//            }
+//            Button(
+//                onClick = {
+//                    hotlist.value = !hotlist.value
+//                },
+//                shape = RoundedCornerShape(5.dp),
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .height(45.dp)
+//                    .width(156.dp),
+//                colors = ButtonDefaults.buttonColors(Color(0xFFA09D9D))
+//            ) {
+//                Text("Cancel")
+//            }
+//        }
+//
+//
+//    }
+//}
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+
 fun CustomScaffoldScreen(
     sheet: MutableState<Boolean>,
     resetPinOtp: MutableState<Boolean>,
@@ -113,7 +405,7 @@ fun CustomScaffoldScreen(
     val HotlistCardOtp = hotlistCardOtp
     Box(
         Modifier.blur(
-            if (Sheet.value || ResetPinOtp.value || BlockCard.value || Hotlist.value||manageViewModel.CvvToggleState.value  ) {
+            if (Sheet.value || ResetPinOtp.value || BlockCard.value || Hotlist.value ) {
                 10.dp
             } else {
                 0.dp
@@ -122,7 +414,7 @@ fun CustomScaffoldScreen(
     ) {
 
         mainContent()
-        if (Sheet.value || ResetPinOtp.value || BlockCard.value || Hotlist.value ||manageViewModel.CvvToggleState.value) {
+        if (Sheet.value || ResetPinOtp.value || BlockCard.value || Hotlist.value ) {
             Box(
                 Modifier
                     .fillMaxSize()
@@ -131,7 +423,9 @@ fun CustomScaffoldScreen(
 
                     )
                     .pointerInput(null, null, {})
-            ) {}
+            ) {
+
+            }
         }
 
 
@@ -164,64 +458,7 @@ fun CustomScaffoldScreen(
 //        }
 //    }
 
-    @Composable
-    fun Sheet(
-        str: String,
-        hotlist: MutableState<Boolean>,
-        onCancel: () -> Unit,
-        onConirm: () -> Unit,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                str, textAlign = TextAlign.Center, fontSize = 16.sp
-            )
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .background(White)
-                    .padding(30.dp),
-                horizontalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                Button(
-                    onClick = {
-                        onConirm()
 
-
-                    },
-                    shape = RoundedCornerShape(5.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(45.dp)
-                        .width(156.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Cyan)
-
-                ) {
-                    Text(text = "Yes", fontSize = 14.sp)
-                }
-                Button(
-                    onClick = {
-                        onCancel()
-                    },
-                    shape = RoundedCornerShape(5.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(45.dp)
-                        .width(156.dp),
-                    colors = ButtonDefaults.buttonColors(Color(0xFFA09D9D))
-                ) {
-                    Text("No")
-                }
-            }
-
-
-        }
-    }
 
     @Composable
     fun ResetPinSheet(hotlist: MutableState<Boolean>) {
@@ -357,6 +594,7 @@ fun CustomScaffoldScreen(
                         .height(45.dp)
                         .width(156.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Cyan)
+
 
                 ) {
                     Text(text = "Submit", fontSize = 14.sp)
@@ -522,209 +760,135 @@ fun CustomScaffoldScreen(
     }
 
 
-    @Composable
-    fun CustomSheetWrap(
-        state: MutableState<Boolean>,
-        initOffset: Int = 500,
-        delay: Int = 0,
-        cont: @Composable () -> Unit,
 
-        ) {
-        if (manageViewModel.isError.value) {
-            AlertDialog(onDismissRequest = { /*TODO*/ }) {
-                CustomAlertDialog(errMsg = manageViewModel.errorMessage.value) {
-                    manageViewModel.isError.value = false
-                    manageViewModel.errorMessage.value = ""
-                }
-            }
-
-        }
-
-
-        Box(
-            Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-
-            if (successDialog.value) {
-                CustomSucessDialog(msg = sucessMsg.value) {}
-            }
-
-
-
-            AnimatedVisibility(
-                visible = state.value,
-
-                enter = slideInVertically(animationSpec = tween(
-                    1000,
-                    delayMillis = delay,
-                    easing = EaseInOut
-                ),
-                    initialOffsetY = { initOffset }),
-                exit = slideOutVertically(
-                    tween(1000, easing = EaseInOut),
-                    targetOffsetY = { initOffset }),
-                modifier = Modifier.align(Alignment.BottomStart)
-            ) {
-                Card(
-                    Modifier
-                        .fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = White),
-                    shape = RoundedCornerShape(50.dp, topEnd = 50.dp, 0.dp, 0.dp)
-
-                ) {
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(30.dp)
-                            .align(Alignment.CenterHorizontally)
-                            .padding(10.dp), contentAlignment = Alignment.Center
-                    ) {
-                        Box(
-                            Modifier
-                                .fillMaxWidth(0.4f)
-                                .height(3.dp)
-                                .background(
-                                    Gray,
-                                    RoundedCornerShape(5.dp)
-                                )
-                        )
-                    }
-                    cont()
-
-                }
-
-
-            }
-        }
-    }
 
     CustomSheetWrap(state = Sheet, 1000) {
         ResetPinSheet(hotlist = Sheet)
     }
 
-    CustomSheetWrap(state = hotlist) {
-        val string = if (manageViewModel.HotListToggleState.value) {
-            STRING.UNHOTLIST_CARD
-        } else {
-            STRING.HOTLIST_CARD
-        }
-        Sheet(str = string, hotlist = Hotlist, onCancel = {
-            Hotlist.value = !hotlist.value
-        }) {
-            hotlistCardOtp.value = !hotlistCardOtp.value
-            Hotlist.value = !hotlist.value
-        }
-    }
-    CustomSheetWrap(state = BlockCard) {
-        val string = if (manageViewModel.PauseCardToggleState.value) {
-            STRING.UNBLOCK_CARD
-        } else {
-            STRING.BLOCK_CARD
-        }
-        Sheet(str = string, hotlist = Hotlist, {
-            BlockCard.value = false
-        }) {
-            BlockCard.value = false
-            BlockCardOtp.value = true
-        }
-    }
-
-    CustomSheetWrap(state = ResetPinOtp, 800, delay=if(SDK_CONSTANTS.cardType.equals("GIFT"))0 else 1000) {
-        EnterOTPPinSheet(manageViewModel.Otp, { ResetPinOtp.value = !ResetPinOtp.value }) {
-            manageViewModel.resetPin() {
-                manageViewModel.enterPin.value = ""
-                manageViewModel.reenterPin.value = ""
-                Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
-            }
-
-
-
-            ResetPinOtp.value = false
-
-
-        }
-    }
-    CustomSheetWrap(manageViewModel.CvvToggleState, 800) {
-        EnterOTPPinSheet(manageViewModel.Otp, oncancel = { manageViewModel.CvvToggleState.value=!manageViewModel.CvvToggleState.value
-        cvv.value=!cvv.value}) {
-            if(manageViewModel.CvvToggleState.value==true){
-                if(manageViewModel.cvvValue.value.isEmpty())
-            manageViewModel.viewCvv(manageViewModel.Otp.value)
-            {
-                Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
-                if (it.status == "0") {
-                    successDialog.value = true
-                    sucessMsg.value = "Cvv Unmasked"
-
-                    scope.launch {
-                        successDialog.value = false
-                    }
-
-
-                } else {
-                    manageViewModel.isError.value = true
-                    manageViewModel.errorMessage.value = it.statusDesc
-                }
-
-
-            }}
-            else{
-                manageViewModel.cvvValue.value=""
-            }
-            cvv.value=true
-            manageViewModel.CvvToggleState.value=false
-
-
-
-
-        }
-    }
-
-    CustomSheetWrap(state = BlockCardOtp, 800, delay = 1000) {
-        EnterOTPPinSheet(manageViewModel.Otp, oncancel = {
-            BlockCardOtp.value = !BlockCardOtp.value
-        }) {
-            val status = if (manageViewModel.PauseCardToggleState.value == true) {
-                "unblock"
-            } else "block"
-            manageViewModel.changeCardStatus(manageViewModel.Otp.value, status) {
-                Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
-                if (it.status == "0") {
-                    manageViewModel.PauseCardToggleState.value =
-                        !manageViewModel.PauseCardToggleState.value
-                    successDialog.value = true
-                    sucessMsg.value = "Card sucessfully ${status}ed"
-                    scope.launch {
-                        delay(2000)
-                        successDialog.value = false
-                    }
-
-
-
-
-                } else {
-                    manageViewModel.errorMessage.value = it.statusDesc
-                    manageViewModel.isError.value = true
-                }
-            }
-            manageViewModel.Otp.value = ""
-            BlockCardOtp.value = false
-
-        }
-    }
-    CustomSheetWrap(state = hotlistCardOtp, 800, delay = 1000) {
-        EnterOTPPinSheet(manageViewModel.Otp, { hotlistCardOtp.value = false }) {
-            manageViewModel.changeCardStatus(manageViewModel.Otp.value, "hotlist") {
-                Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
-                if (it.status == "0") {
-                    manageViewModel.HotListToggleState.value = true
-                }
-            }
-            hotlistCardOtp.value = false
-
-        }
-    }
+//    CustomSheetWrap(state = hotlist) {
+//        val string = if (manageViewModel.HotListToggleState.value) {
+//            STRING.UNHOTLIST_CARD
+//        } else {
+//            STRING.HOTLIST_CARD
+//        }
+//        Sheet(str = string, hotlist = Hotlist, onCancel = {
+//            Hotlist.value = !hotlist.value
+//        }) {
+//            hotlistCardOtp.value = !hotlistCardOtp.value
+//            Hotlist.value = !hotlist.value
+//        }
+//    }
+//    CustomSheetWrap(state = BlockCard) {
+//        val string = if (manageViewModel.PauseCardToggleState.value) {
+//            STRING.UNBLOCK_CARD
+//        } else {
+//            STRING.BLOCK_CARD
+//        }
+//        Sheet(str = string, hotlist = Hotlist, {
+//            BlockCard.value = false
+//        }) {
+//            BlockCard.value = false
+//            BlockCardOtp.value = true
+//        }
+//    }
+//
+//    CustomSheetWrap(state = ResetPinOtp, 800, delay=if(SDK_CONSTANTS.cardType.equals("GIFT"))0 else 1000) {
+//        EnterOTPPinSheet(manageViewModel.Otp, { ResetPinOtp.value = !ResetPinOtp.value }) {
+//            manageViewModel.resetPin() {
+//                manageViewModel.enterPin.value = ""
+//                manageViewModel.reenterPin.value = ""
+//                manageViewModel.Otp.value =""
+//                Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
+//            }
+//
+//
+//
+//            ResetPinOtp.value = false
+//
+//
+//        }
+//    }
+//    CustomSheetWrap(manageViewModel.CvvToggleState, 800) {
+//        EnterOTPPinSheet(manageViewModel.Otp, oncancel = { manageViewModel.CvvToggleState.value=!manageViewModel.CvvToggleState.value
+//        cvv.value=!cvv.value}) {
+//            if(manageViewModel.CvvToggleState.value==true){
+//                if(manageViewModel.cvvValue.value.isEmpty())
+//            manageViewModel.viewCvv(manageViewModel.Otp.value)
+//            {
+//                Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
+//                if (it.status == "0") {
+//                    successDialog.value = true
+//                    sucessMsg.value = "Cvv Unmasked"
+//
+//                    scope.launch {
+//                        successDialog.value = false
+//                    }
+//
+//
+//                } else {
+//                    manageViewModel.isError.value = true
+//                    manageViewModel.errorMessage.value = it.statusDesc
+//                }
+//
+//
+//            }}
+//            else{
+//                manageViewModel.cvvValue.value=""
+//            }
+//            cvv.value=true
+//            manageViewModel.CvvToggleState.value=false
+//
+//
+//
+//
+//        }
+//    }
+//
+//    CustomSheetWrap(state = BlockCardOtp, 800, delay = 1000) {
+//        EnterOTPPinSheet(manageViewModel.Otp, oncancel = {
+//            BlockCardOtp.value = !BlockCardOtp.value
+//        }) {
+//            val status = if (manageViewModel.PauseCardToggleState.value == true) {
+//                "unblock"
+//            } else "block"
+//            manageViewModel.changeCardStatus(manageViewModel.Otp.value, status) {
+//                Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
+//                if (it.status == "0") {
+//                    manageViewModel.PauseCardToggleState.value =
+//                        !manageViewModel.PauseCardToggleState.value
+//                    successDialog.value = true
+//                    sucessMsg.value = "Card sucessfully ${status}ed"
+//                    scope.launch {
+//                        delay(2000)
+//                        successDialog.value = false
+//                    }
+//
+//
+//
+//
+//                } else {
+//                    manageViewModel.errorMessage.value = it.statusDesc
+//                    manageViewModel.isError.value = true
+//                }
+//            }
+//            manageViewModel.Otp.value = ""
+//            BlockCardOtp.value = false
+//
+//        }
+//    }
+//    CustomSheetWrap(state = hotlistCardOtp, 800, delay = 1000) {
+//        EnterOTPPinSheet(manageViewModel.Otp, { hotlistCardOtp.value = false }) {
+//            manageViewModel.changeCardStatus(manageViewModel.Otp.value, "hotlist") {
+//                Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
+//                if (it.status == "0") {
+//                    manageViewModel.HotListToggleState.value = true
+//                }
+//            }
+//            hotlistCardOtp.value = false
+//
+//        }
+//    }
 //    CustomSheetWrap(state = details, 800) {
 //        EnterOTPPinSheet(hotlist = details, maskState){
 //

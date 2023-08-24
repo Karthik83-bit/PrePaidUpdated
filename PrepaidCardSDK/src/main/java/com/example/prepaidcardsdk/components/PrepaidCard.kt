@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,11 +72,9 @@ enum class CardFace(val angle: Float) {
     abstract val next: CardFace
 }
 @Composable
-fun FlipCard(name: String, cardno: String, exp: String,avlbaln: String,viewModel:ManageCardViewModel?, viewBalance: () -> Unit) {
+fun FlipCard(name: String, cardno: String, exp: String,avlbaln: String,cardfaceState:MutableState<CardFace>, viewBalance: () -> Unit) {
 
-    val cardfaceState= remember {
-        mutableStateOf(CardFace.Front)
-    }
+
 //    if (viewModel != null) {
 //        if(viewModel.cvvValue.value.isNotEmpty()){
 //            cardfaceState.value = cardfaceState.value.next
@@ -195,16 +194,17 @@ fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String,a
                 }
                 OutlinedButton(
                     onClick = {
-                        if (buttonText == "View Details") {
-                            buttonText = "Available Balance:\n ${avlbaln}"
-                        }else{
-                            buttonText = "View Details"
-                        }
-                        mask.value=if(mask.value==0.dp){
-                            10.dp
-                        }else{
-                            0.dp
-                        }
+                        manageCardViewModel.viewBalanceOtpSheetState.value=true
+//                        if (buttonText == "View Details") {
+//                            buttonText = "Available Balance:\n ${avlbaln}"
+//                        }else{
+//                            buttonText = "View Details"
+//                        }
+//                        mask.value=if(mask.value==0.dp){
+//                            10.dp
+//                        }else{
+//                            0.dp
+//                        }
                     },
                     border = BorderStroke(1.dp, Color.White),
                     colors = ButtonDefaults.outlinedButtonColors(
@@ -240,6 +240,9 @@ fun cardSpaceFormat(cardno: String): String {
 }
 
 fun cardFormat(cardno: String): String {
+    if(cardno.isEmpty()){
+        return " "
+    }
 return cardno.replaceRange(0,16,"xxxx-xxxx-xxxx-xxxx ")
 }
 
@@ -288,7 +291,7 @@ fun PrepaidCardBack(clickable: Modifier, manageCardViewModel: ManageCardViewMode
                     fontSize = 12.sp
                 )
                     Text(
-                        manageCardViewModel.cvvValue.value,
+                        "xxxx",
                         fontSize = 14.sp,
                         modifier = Modifier
                             .graphicsLayer {

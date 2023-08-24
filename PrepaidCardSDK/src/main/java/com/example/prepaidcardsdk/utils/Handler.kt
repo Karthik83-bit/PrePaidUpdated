@@ -1,9 +1,13 @@
 package com.example.prepaidcardsdk.utils
 
 import android.annotation.SuppressLint
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ComposeCompilerApi
+import androidx.compose.runtime.rememberCoroutineScope
 import com.example.prepaidcard.utils.STRING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
@@ -59,11 +63,15 @@ private inline fun <T> Continuation<T>.resumeNormallyOrWithException(getter: () 
  * extracting the error according to the error code
  * **/
 @SuppressLint("LogNotTimber")
+
+
 fun <T, O> handleFlowResponse(
     call: suspend () -> Response<T>, mapFun: (it: T) -> O
 ): Flow<NetworkResponse<O>> {
+
     return flow {
         emit(NetworkResponse.Loading(true))
+        delay(1000)
         try {
             val response = call.invoke()
             if (response.isSuccessful) {

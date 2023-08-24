@@ -60,7 +60,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
             ViewCardsScreen(rootNavController, viewModel = hiltViewModel<CardDataViewModel>())
         }
         composable(Destination.CARD_MANAGEMENT_SCREEN){
-            CardManagementScreen(rootNavController, viewModel= hiltViewModel<GeneratePinViewModel>(),manageViewModel= hiltViewModel<ManageCardViewModel>() )
+            CardManagementScreen(rootNavController, viewModel= hiltViewModel<GeneratePinViewModel>(),manageViewModel= hiltViewModel<ManageCardViewModel>() , cardDataViewModel = hiltViewModel<CardDataViewModel>())
         }
         composable(Destination.MPIN_SCREEN){
             MpinScreen(rootNavController = rootNavController, viewModel= verifyOTPViewModel)

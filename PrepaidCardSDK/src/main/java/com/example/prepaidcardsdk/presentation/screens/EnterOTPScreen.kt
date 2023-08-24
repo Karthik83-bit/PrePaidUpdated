@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -41,11 +43,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavHostController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.prepaidcard.components.CustomButton
 import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
+import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.components.CustomOTPinp
 import com.example.prepaidcardsdk.components.OTPInput
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
@@ -131,6 +139,11 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
             }
 
         }
+        if(viewModel.isLoading.value){
+            AlertDialog(onDismissRequest = { /*TODO*/ }) {
+                CustomLoader()
+            }
+        }
         Column(
             modifier = Modifier
                 .padding(it)
@@ -141,6 +154,10 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
             Column(
                 Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+                val animation by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.otp))
+                val progress by animateLottieCompositionAsState(composition = animation, iterations = LottieConstants.IterateForever)
+
+                LottieAnimation(composition = animation, progress = { progress }, modifier = Modifier.size(100.dp) )
                 Text(
                     text = "Enter OTP",
                     fontSize = 22.sp,
@@ -222,37 +239,37 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
 
                             else->""
                         }
-                    viewModel.changeCardStatus(viewModel.Otp.value, status = status){
-                        Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
-                        if(it.status=="0"){
-                            success.value=true
-                                scope.launch {
-                                    delay(2000)
-success.value=false
-                                }
-                            SDK_CONSTANTS.isActive=true
-                            viewModel.PauseCardToggleState.value=!viewModel.PauseCardToggleState.value
-                            SDK_CONSTANTS.isBlock=viewModel.PauseCardToggleState.value
-                            if(SDK_CONSTANTS.isActive==true){
-
-                                rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN){
-                                    this.popUpTo(Destination.VIEW_CARDS_SCREEN)
-                                }
-                            }
-                            else{
-                                rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN){
-                                    this.popUpTo(Destination.VIEW_CARDS_SCREEN)
-                                }
-                            }
-
-                        }
-                        else{
-                            viewModel.isError.value=true
-                            viewModel.errorMessage.value=it.statusDesc
-                            viewModel.navDest.value=Destination.VIEW_CARDS_SCREEN
-                        }
-
-                    }
+//                    viewModel.changeCardStatus(viewModel.Otp.value, status = status){
+//                        Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+//                        if(it.status=="0"){
+//                            success.value=true
+//                                scope.launch {
+//                                    delay(2000)
+//success.value=false
+//                                }
+//                            SDK_CONSTANTS.isActive=true
+//                            viewModel.PauseCardToggleState.value=!viewModel.PauseCardToggleState.value
+//                            SDK_CONSTANTS.isBlock=viewModel.PauseCardToggleState.value
+//                            if(SDK_CONSTANTS.isActive==true){
+//
+//                                rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN){
+//                                    this.popUpTo(Destination.VIEW_CARDS_SCREEN)
+//                                }
+//                            }
+//                            else{
+//                                rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN){
+//                                    this.popUpTo(Destination.VIEW_CARDS_SCREEN)
+//                                }
+//                            }
+//
+//                        }
+//                        else{
+//                            viewModel.isError.value=true
+//                            viewModel.errorMessage.value=it.statusDesc
+//                            viewModel.navDest.value=Destination.VIEW_CARDS_SCREEN
+//                        }
+//
+//                    }
                     },
 
                     )

@@ -38,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.newui.components.CardFace
 import com.example.newui.components.FlipCard
 //import com.example.prepaidcard.R
 import com.example.prepaidcard.components.CustomCheckField
@@ -140,8 +141,12 @@ val context= LocalContext.current
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
+val state= remember {
+    mutableStateOf(CardFace.Front)
+}
+                FlipCard(SDK_CONSTANTS.cardUser, SDK_CONSTANTS.cardNumber, SDK_CONSTANTS.expiryDate, SDK_CONSTANTS.availbalance, cardfaceState = state)
 
-                FlipCard(SDK_CONSTANTS.cardUser, SDK_CONSTANTS.cardNumber, SDK_CONSTANTS.expiryDate, SDK_CONSTANTS.availbalance,null){
+                {
 
                 }
                 CustomCheckField(
