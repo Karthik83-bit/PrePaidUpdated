@@ -33,6 +33,7 @@ import com.example.prepaidcard.screens.ViewModel
 //import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.presentation.screens.EnterMobileNumScreen
+import com.example.prepaidcardsdk.presentation.screens.KycScreen
 import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
@@ -75,6 +76,9 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
         composable(Destination.CARD_ACTIVATION_SCREEN){
             CardActivationScreen(rootNavController,viewModel= hiltViewModel<CardActivationViewModel>())
 //            VerifyOTP(rootNavController)
+        }
+        composable(Destination.KYC_SCREEN){
+            KycScreen(rootNavController)
         }
         composable(Destination.TRANSACTION_STATEMENTS_HISTORY+"/{filter}", arguments = listOf(navArgument("filter"){type=
             NavType.StringType})){

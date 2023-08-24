@@ -46,6 +46,7 @@ class VerifyOTPViewModel @Inject constructor(val verifyOTPUseCase: VerifyOTPUseC
                         if(it!=null){
                             if(it.status.equals("0")){
                                 SDK_CONSTANTS.customerId = it.customerResponse.userId.toString()
+                                SDK_CONSTANTS.kycType = it.customerResponse.kycType
                             }
                         }
                     }

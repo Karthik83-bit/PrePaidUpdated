@@ -18,4 +18,5 @@ object SDK_CONSTANTS {
      var expirytime:String =""
      var params:String = ""
     var customerId:String = ""
+    var kycType:String =""
 }

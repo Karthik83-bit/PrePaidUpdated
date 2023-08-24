@@ -55,6 +55,7 @@ import androidx.navigation.NavHostController
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
+import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.data.model.req.VerifyOtpReq
 import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
@@ -115,6 +116,11 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
         FocusRequester(),
         FocusRequester(),
     )
+    if(viewModel.isLoading.value){
+        AlertDialog(onDismissRequest = { /*TODO*/ }) {
+            CustomLoader()
+        }
+    }
 
     Column(
         Modifier
