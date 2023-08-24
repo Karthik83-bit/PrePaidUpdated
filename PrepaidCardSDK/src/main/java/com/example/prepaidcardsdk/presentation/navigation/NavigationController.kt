@@ -32,7 +32,10 @@ import com.example.prepaidcard.screens.ViewModel
 //import com.example.prepaidcard.screens.VerifyOTP
 //import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.utils.Destination
+import com.example.prepaidcardsdk.presentation.screens.AddBene
 import com.example.prepaidcardsdk.presentation.screens.EnterMobileNumScreen
+import com.example.prepaidcardsdk.presentation.screens.SelectBeneficiary
+import com.example.prepaidcardsdk.presentation.screens.Transaction
 import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
@@ -46,7 +49,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
     NavHost(
         modifier = Modifier
             .fillMaxSize(),
-        navController = rootNavController, startDestination = Destination.ENTER_MOBILE_NUM_SCREEN){
+        navController = rootNavController, startDestination = Destination.MPIN_SCREEN){
 
         composable(Destination.APPLY_CARD_SCREEN){
             ApplyCardScreen(rootNavController,viewModel)
@@ -64,6 +67,16 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
         }
         composable(Destination.MPIN_SCREEN){
             MpinScreen(rootNavController = rootNavController, viewModel= verifyOTPViewModel)
+        }
+
+        composable(Destination.SELECT_BENE){
+            SelectBeneficiary(rootnavController = rootNavController)
+        }
+        composable(Destination.ADD_BENE){
+            AddBene(rootnavController = rootNavController)
+        }
+        composable(Destination.TRANSACTION){
+            Transaction(rootNavController)
         }
        /* composable(Destination.PAGE_ELEVEN){
             PageEleven(rootNavController)
