@@ -4,9 +4,12 @@ import android.app.Activity
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -74,7 +77,7 @@ import com.example.prepaidcardsdk.ui.theme.neon
 import com.example.prepaidcardsdk.ui.theme.tealGreen
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 
@@ -484,7 +487,7 @@ Scaffold(topBar = { CustomTopBar {
                         )
 
                         if (SDK_CONSTANTS.kycType == "min_kyc") {
-                            Text(text = "Your KYC is Pending, Please complete your KYC and proceed further", fontWeight = FontWeight.ExtraBold, modifier = Modifier.background(color = Color.Yellow.copy(0.1f)), color = neon)
+                            Text(text = "Your KYC is Pending, Please complete your KYC and proceed further", fontWeight = FontWeight.ExtraBold, modifier = Modifier.background(color = Color.Yellow.copy(0.1f)).basicMarquee(animationMode = MarqueeAnimationMode.Immediately, delayMillis = 0), color = neon)
                             Button(onClick = { rootNavController.navigate(Destination.KYC_SCREEN) }) {
                                Text(text = "KYC SCREEN")
                         }
