@@ -1,4 +1,4 @@
-package com.example.prepaidcard.screens
+package com.example.prepaidcardsdk.presentation.screens
 
 import android.app.Activity
 import android.os.Build

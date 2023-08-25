@@ -14,8 +14,8 @@ import androidx.navigation.navArgument
 import com.example.prepaidcard.screens.CardACtivationConfirmationScreen
 import com.example.prepaidcard.screens.ApplyCardScreen
 import com.example.prepaidcard.screens.CardActivationScreen
-import com.example.prepaidcard.screens.SetPinScreen
-import com.example.prepaidcard.screens.EnterOTPScreen
+import com.example.prepaidcardsdk.presentation.screens.SetPinScreen
+import com.example.prepaidcardsdk.presentation.screens.EnterOTPScreen
 import com.example.prepaidcard.screens.CardManagementScreen
 import com.example.prepaidcard.screens.Screen26
 import com.example.prepaidcard.screens.TransactionInfo

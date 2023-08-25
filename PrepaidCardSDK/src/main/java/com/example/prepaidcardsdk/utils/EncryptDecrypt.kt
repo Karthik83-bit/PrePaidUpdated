@@ -7,7 +7,7 @@ import java.util.Base64
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 
-object EncryptDecrypt {
+object  EncryptDecrypt {
     val key=   "ASDFGHJASHJKLQWEASDFGHJASHJKLQWE".toByteArray(StandardCharsets.UTF_8)
     @RequiresApi(Build.VERSION_CODES.O)
      fun decryptData(encryptedData: ByteArray, key: ByteArray): String {
