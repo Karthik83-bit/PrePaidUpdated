@@ -49,7 +49,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
-import com.example.prepaidcard.components.CustomSheetWrap
 //import com.example.prepaidcard.R
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
@@ -119,7 +118,7 @@ fun MpinScreen(rootNavController: NavHostController, viewModel: VerifyOTPViewMod
     Column(
         Modifier
             .fillMaxSize()
-            .padding()
+            .padding(20.dp)
             .verticalScroll(enabled = true, state = ScrollState(0)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -306,53 +305,45 @@ fun MpinScreen(rootNavController: NavHostController, viewModel: VerifyOTPViewMod
                     )
                 }
             }
+            ElevatedButton(
+                onClick = {
+                    textlist.forEach {
+                        viewModel.verifyOtp.value=viewModel.verifyOtp.value+it.value.text
+                    }
+                    viewModel.VerifyOtp {
 
+                        if (it.status == "0") {
+                            rootNavController.navigate(Destination.VIEW_CARDS_SCREEN)
+                            viewModel.verifyOtp.value=""
+                        }
+                        else if(viewModel.verifyOtp.value == "") {
+                            viewModel.isError.value =true
+                            viewModel.errorMessage.value ="Otp can't be blank."
+                            viewModel.destination.value = Destination.MPIN_SCREEN
+                        }else
+                         {
 
+                           viewModel.isError.value = true
+                             viewModel.errorMessage.value = it.statusDesc
+                             viewModel.destination.value = Destination.MPIN_SCREEN
+                             viewModel. mobilenum.value=""
+                             viewModel.verifyOtp.value=""
+                        }
+                    }
+
+                },
+                shape = RoundedCornerShape(5.dp),
+                elevation = ButtonDefaults.buttonElevation(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(Color(0xff32DBDE))
+            ) {
+                Text("VERIFY OTP", fontFamily = FontFamily(listOf(Font(R.font.poppins_regular))))
+            }
         }
 
 
 
-    }
-    CustomSheetWrap(state = remember {
-        mutableStateOf(true)
-    } )
-    {
-        ElevatedButton(
-            onClick = {
-                textlist.forEach {
-                    viewModel.verifyOtp.value=viewModel.verifyOtp.value+it.value.text
-                }
-                viewModel.VerifyOtp {
-
-                    if (it.status == "0") {
-                        rootNavController.navigate(Destination.VIEW_CARDS_SCREEN)
-                        viewModel. mobilenum.value=""
-                        viewModel.verifyOtp.value=""
-                    }
-                    else if(viewModel.verifyOtp.value == "") {
-                        viewModel.isError.value =true
-                        viewModel.errorMessage.value ="Otp can't be blank."
-                        viewModel.destination.value = Destination.MPIN_SCREEN
-                    }else
-                    {
-
-                        viewModel.isError.value = true
-                        viewModel.errorMessage.value = it.statusDesc
-                        viewModel.destination.value = Destination.MPIN_SCREEN
-                        viewModel. mobilenum.value=""
-                        viewModel.verifyOtp.value=""
-                    }
-                }
-
-            },
-            shape = RoundedCornerShape(5.dp),
-            elevation = ButtonDefaults.buttonElevation(20.dp),
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .height(50.dp),
-            colors = ButtonDefaults.buttonColors(Color(0xff32DBDE))
-        ) {
-            Text("VERIFY OTP", fontFamily = FontFamily(listOf(Font(R.font.poppins_regular))))
-        }
     }
 }

@@ -16,4 +16,8 @@ object SDK_CONSTANTS {
      var isActive:Boolean?=null
      var availbalance:String =""
  var isPinSet:Boolean?=null
+     var expirytime:String =""
+     var params:String = ""
+    var customerId:String = ""
+    var kycType:String =""
 }

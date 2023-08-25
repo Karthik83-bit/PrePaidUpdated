@@ -13,5 +13,6 @@ const val APPLY_CARD_SCREEN = "PageFourteen"
     const val TRANSACTION_INFO="TransactionInfo"
     const val MPIN_SCREEN="MPIN_1"
     const val ENTER_MOBILE_NUM_SCREEN = "EnterMobileNumScreen"
+    const val KYC_SCREEN ="KycScreen"
 
 }

@@ -33,6 +33,7 @@ import com.example.prepaidcard.screens.ViewModel
 //import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.presentation.screens.EnterMobileNumScreen
+import com.example.prepaidcardsdk.presentation.screens.KycScreen
 import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
@@ -46,7 +47,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
     NavHost(
         modifier = Modifier
             .fillMaxSize(),
-        navController = rootNavController, startDestination = Destination.CARD_MANAGEMENT_SCREEN){
+        navController = rootNavController, startDestination = Destination.ENTER_MOBILE_NUM_SCREEN){
 
         composable(Destination.APPLY_CARD_SCREEN){
             ApplyCardScreen(rootNavController,viewModel)
@@ -76,6 +77,9 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
             CardActivationScreen(rootNavController,viewModel= hiltViewModel<CardActivationViewModel>())
 //            VerifyOTP(rootNavController)
         }
+        composable(Destination.KYC_SCREEN){
+            KycScreen(rootNavController)
+        }
         composable(Destination.TRANSACTION_STATEMENTS_HISTORY+"/{filter}", arguments = listOf(navArgument("filter"){type=
             NavType.StringType})){
 
@@ -85,8 +89,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
 
 
             val viewModel= hiltViewModel<GeneratePinViewModel>()
-            val manageViewModel= hiltViewModel<ManageCardViewModel>()
-            SetPinScreen(rootNavController,viewModel,manageViewModel)
+            SetPinScreen(rootNavController,viewModel)
         }
         composable(Destination.ENTER_OTP_SCREEN){
             val viewModel= hiltViewModel<ManageCardViewModel>()

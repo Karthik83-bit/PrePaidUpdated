@@ -1,6 +1,9 @@
 package com.example.prepaidcardsdk.presentation.screens
 
 //import com.example.prepaidcard.R
+import android.os.Build
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -52,10 +55,12 @@ import androidx.navigation.NavHostController
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
+import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.data.model.req.VerifyOtpReq
 import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: VerifyOTPViewModel) {
@@ -111,6 +116,11 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
         FocusRequester(),
         FocusRequester(),
     )
+    if(viewModel.isLoading.value){
+        AlertDialog(onDismissRequest = { /*TODO*/ }) {
+            CustomLoader()
+        }
+    }
 
     Column(
         Modifier
@@ -228,23 +238,23 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
             }
 
             ElevatedButton(onClick = {
+                viewModel.sendOtp {
+                    if(it.status == "0"){
+                        rootNavController.navigate(Destination.MPIN_SCREEN)
+                        Toast.makeText(context, "OTP sent to the mobile number.", Toast.LENGTH_SHORT).show()
+                    }
+                     else if (viewModel.mobilenum.value == "") {
+                        viewModel.isError.value = true
+                        viewModel.errorMessage.value = "Mobile Number field can't be blank."
+                        viewModel.destination.value = Destination.ENTER_MOBILE_NUM_SCREEN
+                    } else if (viewModel.mobilenum.value.length <= 9) {
+                        viewModel.isError.value = true
+                        viewModel.errorMessage.value = "Enter a valid Mobile Number."
+                        viewModel.destination.value = Destination.ENTER_MOBILE_NUM_SCREEN
 
-                if(viewModel.mobilenum.value.length == 10){
-                    rootNavController.navigate(Destination.MPIN_SCREEN)
+                    }
+
                 }
-               else if (viewModel.mobilenum.value ==""){
-                    viewModel.isError.value = true
-                    viewModel.errorMessage.value = "Mobile Number field can't be blank."
-                    viewModel.destination.value = Destination.ENTER_MOBILE_NUM_SCREEN
-                }
-                else if(viewModel.mobilenum.value.length <= 9){
-                    viewModel.isError.value = true
-                    viewModel.errorMessage.value = "Enter a valid Mobile Number."
-                    viewModel.destination.value = Destination.ENTER_MOBILE_NUM_SCREEN
-
-                }
-
-
 
             }, shape = RoundedCornerShape(5.dp), elevation = ButtonDefaults.buttonElevation(20.dp), modifier = Modifier
                 .fillMaxWidth()
