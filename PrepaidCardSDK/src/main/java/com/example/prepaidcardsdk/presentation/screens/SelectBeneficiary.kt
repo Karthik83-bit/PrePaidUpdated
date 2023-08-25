@@ -102,17 +102,17 @@ fun SelectBeneficiary(rootnavController: NavHostController) {
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 OutlinedCard (modifier = Modifier.fillMaxWidth()){
-                    Icon(modifier = Modifier,
+                    Icon(modifier = Modifier.padding(6.dp),
                         painter = painterResource(id = R.drawable.person_pin),
                         contentDescription = "add person",
                         tint = tealGreen
                     )
                     Column {
-                        Text(
+                        Text(modifier =Modifier.padding(6.dp),
                             text = "PRATIK MOHANTY",
                             fontFamily = FontFamily(Font(R.font.poppins_black))
                         )
-                        Row(horizontalArrangement = Arrangement.SpaceAround) {
+                        Row(horizontalArrangement = Arrangement.SpaceAround,modifier = Modifier.padding(6.dp)) {
                             Text(
                                 text = "STATE BANK OF INDIA "
                             )
