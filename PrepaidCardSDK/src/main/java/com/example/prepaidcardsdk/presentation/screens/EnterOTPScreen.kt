@@ -1,5 +1,6 @@
 package com.example.prepaidcard.screens
 
+import android.app.Activity
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -28,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
@@ -35,6 +37,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -59,13 +62,14 @@ import com.example.prepaidcardsdk.components.OTPInput
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.ui.theme.Cultured
 import com.example.prepaidcardsdk.ui.theme.cancelGray
+import com.example.prepaidcardsdk.ui.theme.finocolor
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 import com.example.prepaidcardsdk.ui.theme.remainingTimeColor
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardViewModel) {
@@ -150,6 +154,8 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
                 .fillMaxSize()
                 .verticalScroll(enabled = true, state = ScrollState(0))
         ) {
+            val activity= LocalContext.current as Activity
+            val keyBoardcontroller=LocalSoftwareKeyboardController.current
 //            CustomTopBar {rootNavController.navigate(Destination.PAGE_FOURTY_ONE)}
             Column(
                 Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -170,7 +176,7 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
                     fontFamily = FontFamily(Font(R.font.lato_regular))
                 )
                 Row {
-                    OTPInput(textList =textlist , requestList = focusRequesterList)
+//                    OTPInput(textList =textlist , requestList = focusRequesterList)
                     OutlinedTextField(
                         value = viewModel.Otp.value,
                         enabled = true,
@@ -178,6 +184,11 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
                         onValueChange = {
                             if (it.length <= 4) {
                                 viewModel.Otp.value = it
+                            }
+                            if(it.length==4){
+                                if (keyBoardcontroller != null) {
+                                    keyBoardcontroller.hide()
+                                }
                             }
                         },
                         modifier = Modifier
@@ -218,7 +229,7 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
             ) {
                 CustomButton(
                     text = "SUBMIT",
-                    buttonColor = lighttealGreen,
+                    buttonColor = finocolor,
                     onClick = {
                         textlist.forEach {
                             viewModel.Otp.value=viewModel.Otp.value+it.value.text

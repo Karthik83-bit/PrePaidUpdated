@@ -24,6 +24,7 @@ import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.components.DropDownMenu
 
 import com.example.prepaidcardsdk.ui.theme.cancelGray
+import com.example.prepaidcardsdk.ui.theme.finocolor
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 
 open class ViewModel : ViewModel() {
@@ -73,7 +74,7 @@ fun ApplyCardScreen(
                     modifier = Modifier
                         .height(50.dp)
                         .weight(1f),
-                    buttonColor = lighttealGreen,
+                    buttonColor = finocolor,
                     onClick = {
 
                     },

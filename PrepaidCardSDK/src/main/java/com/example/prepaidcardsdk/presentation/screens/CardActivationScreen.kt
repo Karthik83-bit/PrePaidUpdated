@@ -156,7 +156,7 @@ val state= remember {
                 ) {
                     viewModel.cardActivationToggleState.value =
                         !viewModel.cardActivationToggleState.value
-                    if(SDK_CONSTANTS.isPinSet==true){
+                    if(SDK_CONSTANTS.isPinSet==true&& SDK_CONSTANTS.isVirtual==true){
                         rootNavController.navigate(Destination.ENTER_OTP_SCREEN)
                     }
                     else{

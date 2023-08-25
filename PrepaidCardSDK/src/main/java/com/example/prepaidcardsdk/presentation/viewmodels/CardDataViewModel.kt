@@ -1,6 +1,7 @@
 package com.example.prepaidcardsdk.presentation.viewmodels
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.material.Switch
 import androidx.compose.runtime.MutableState
@@ -36,6 +37,10 @@ class CardDataViewModel @Inject constructor(
     var errorMessage: MutableState<String> = mutableStateOf("")
     var cardList: MutableState<List<ViewcardresponseWrapperX>?> = mutableStateOf(emptyList())
     var destination:MutableState<String> =mutableStateOf(Destination.VIEW_CARDS_SCREEN)
+//    val useremail:MutableState<String> = mutableStateOf("")
+//    val mobilenumber:MutableState<String> = mutableStateOf("")
+//    val useremail:MutableState<String> = mutableStateOf("")
+//    val useremail:MutableState<String> = mutableStateOf("")
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun cardDataByCustomer() {
@@ -91,6 +96,7 @@ class CardDataViewModel @Inject constructor(
 
                                 val enc_cardno=it.viewcardresponseWrapper.encryptedCard
                                 val cardno= enc_cardno?.let { it1 -> EncryptDecrypt.decryptData(it1.toByteArray(Charsets.UTF_8), key = EncryptDecrypt.key) }
+                            Log.d("kcrd", "viewCardData: ${cardno}")
                                 SDK_CONSTANTS.cardNumber=cardno?:""
                                 SDK_CONSTANTS.isBlock=it.viewcardresponseWrapper.isBlock
                                 SDK_CONSTANTS.isActive=it.viewcardresponseWrapper.isActive

@@ -53,6 +53,7 @@ import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.ui.theme.cancelGray
+import com.example.prepaidcardsdk.ui.theme.finocolor
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -278,7 +279,7 @@ val pindontMatch=remember{
             ) {
                 CustomButton(
                     text = "SUBMIT",
-                    buttonColor = lighttealGreen,
+                    buttonColor = finocolor,
                     enable=!pindontMatch.value
                 ) {
                        rootNavController.navigate(Destination.ENTER_OTP_SCREEN){

@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -29,6 +30,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.SliderDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -36,6 +38,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -47,6 +51,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,6 +60,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -95,9 +101,12 @@ import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.ui.theme.Resetcolor
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.cdback
+import com.example.prepaidcardsdk.ui.theme.finocolor
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 import com.example.prepaidcardsdk.ui.theme.tealGreen
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.nio.file.WatchEvent
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -110,6 +119,19 @@ fun CardManagementScreen(
     onClick: (state: Boolean) -> Unit = {},
     manageViewModel: ManageCardViewModel,
 ) {
+    val scope = rememberCoroutineScope()
+    val sucess=remember{
+        mutableStateOf(false)
+    }
+    val sucessMsg=remember{
+        mutableStateOf("")
+    }
+    LaunchedEffect(key1 =sucess.value ){
+        scope.launch {
+            delay(2000)
+            sucess.value=false
+        }
+    }
 //    val ReplaceToggleState = manageViewModel.ReplaceToggleState
 //
 //
@@ -492,7 +514,7 @@ fun CardManagementScreen(
         }
 
     },   modifier=Modifier.blur(
-        if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value|| manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value||manageViewModel.cvvOtpSheetState.value ) {
+        if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value|| manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value||manageViewModel.cvvOtpSheetState.value ||manageViewModel.viewBalanceOtpSheetState.value) {
             10.dp
         } else {
             0.dp
@@ -530,7 +552,7 @@ fun CardManagementScreen(
                 .padding(it)
                 .fillMaxSize()
                 .background(
-                    color = if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value || manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value || manageViewModel.cvvOtpSheetState.value) {
+                    color = if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value || manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value || manageViewModel.cvvOtpSheetState.value||manageViewModel.viewBalanceOtpSheetState.value) {
                         Color.Black.copy(0.5f)
                     } else {
                         Color.White
@@ -540,7 +562,8 @@ fun CardManagementScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(enabled = true, state = ScrollState(0)).background(Color.LightGray)
+                    .verticalScroll(enabled = true, state = ScrollState(0))
+                    .background(Color.White)
                     ,
                 horizontalAlignment = Alignment.CenterHorizontally
 
@@ -587,9 +610,13 @@ fun CardManagementScreen(
 
                             },
                             colors = SwitchDefaults.colors(
-                                checkedTrackColor = Resetcolor,
+                                checkedTrackColor = finocolor,
                                 uncheckedIconColor = Resetcolor,
-                                uncheckedBorderColor = Resetcolor,
+                                uncheckedThumbColor = finocolor,
+                                uncheckedBorderColor = Color.Transparent,
+                                checkedBorderColor = Color.Transparent,
+                                disabledCheckedBorderColor = Color.Transparent,
+                                disabledUncheckedBorderColor = Color.Transparent,
                                 disabledUncheckedIconColor = Resetcolor
                             ),
                         )
@@ -660,7 +687,7 @@ fun CardManagementScreen(
                                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                                 ) {
                                     CustomButton(
-                                        text = "SUBMIT", buttonColor = lighttealGreen
+                                        text = "SUBMIT", buttonColor = finocolor
                                     ) {
                                         if (checkBoxState.value == "Last 10 Transaction") {
                                             rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/none")
@@ -692,7 +719,7 @@ fun CardManagementScreen(
                                     modifier = Modifier.padding(10.dp),
                                     fontFamily = FontFamily(Font(R.font.lato_bold))
                                 )
-                                if(SDK_CONSTANTS.cardType.equals("GIFT")){
+                                if(!SDK_CONSTANTS.cardType.equals("GIFT")){
                                     CustomCheckField(
                                         state = manageViewModel.resetPinUI,
                                         text =  if(SDK_CONSTANTS.isPinSet==true)"ResetPin" else "SetPin",
@@ -736,7 +763,7 @@ fun CardManagementScreen(
 
                             }
                         }
-                    } else if (manageViewModel.clickedState.value == "Details")
+                    } else if (manageViewModel.clickedState.value == "Usage")
                     {
 //                        DetailsState.value
                         Box(
@@ -750,7 +777,7 @@ fun CardManagementScreen(
                                 horizontalAlignment = Alignment.Start
                             ) {
                                 Text(
-                                    "Card Details",
+                                    "Usage",
                                     fontWeight = FontWeight(600),
                                     fontSize = 20.sp,
                                     modifier = Modifier.padding(10.dp),
@@ -769,133 +796,111 @@ fun CardManagementScreen(
                                     ) {
                                         Row(
                                             Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
                                         ) {
 
                                             Text(
-                                                text = "Email:",
+                                                text = "ATM",
                                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 12.sp
+                                                fontSize = 18.sp,
+                                                fontWeight = FontWeight(700),
                                             )
-                                            BasicTextField(
-                                                value = viewModel.username.value,
-                                                enabled = viewModel.mask.value != 10.dp,
-                                                keyboardOptions = KeyboardOptions(
-                                                    keyboardType = KeyboardType.Email,
-                                                    imeAction = ImeAction.Done
-                                                ),
-                                                textStyle = TextStyle(
-                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                    fontSize = 14.sp
-                                                ),
-                                                onValueChange = {
-                                                    viewModel.username.value = it
-                                                },
-                                                modifier = Modifier.blur(if(manageViewModel.cardDataMask.value)10.dp else 0.dp)
-                                            )
-                                        }
-                                        Row(
-                                            Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            Text(
-                                                text = "Mobile:",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 12.sp
-                                            )
-                                            Text(
-                                                text = "7978730692",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 14.sp,
-                                                modifier = Modifier.blur(viewModel.mask.value)
-                                            )
-                                        }
-                                        Row(
-                                            Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            Text(
-                                                text = "Monthly Limit:",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 12.sp
-                                            )
+                                            Spacer(modifier = Modifier.width(10.dp))
+                                            Column {
+                                                Row(modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(horizontal = 10.dp)
+                                                    .graphicsLayer {
+                                                        translationY = 40f
+                                                    }, horizontalArrangement = Arrangement.SpaceBetween){
+                                                    Text("0", fontWeight = FontWeight(700))
+                                                    Text("10000",fontWeight = FontWeight(700))
+                                                }
+                                                Slider(state = SliderState(initialValue = 500f,steps=100, initialOnValueChange = {
 
-                                            BasicTextField(
-                                                value = viewModel.monthlyLimit.value,
-                                                enabled = viewModel.mask.value != 10.dp,
-                                                keyboardOptions = KeyboardOptions(
-                                                    keyboardType = KeyboardType.Number,
-                                                    imeAction = ImeAction.Done
-                                                ),
-                                                textStyle = TextStyle(
-                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                    fontSize = 14.sp
-                                                ),
-                                                onValueChange = {
-                                                    viewModel.monthlyLimit.value = it
-                                                },
-                                                modifier = Modifier.blur(viewModel.mask.value)
-                                            )
-                                        }
-                                        Row(
-                                            Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            Text(
-                                                text = "Card Limit:",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 12.sp
-                                            )
+                                                }), colors = androidx.compose.material3.SliderDefaults.colors(
+                                                    thumbColor = finocolor,
+                                                    activeTrackColor = finocolor.copy(0.5f),
+                                                    disabledActiveTrackColor = Color.Gray
+                                                ))
+                                            }
 
-                                            BasicTextField(
-                                                value = viewModel.cardLimit.value,
-                                                enabled = viewModel.mask.value != 10.dp,
-                                                keyboardOptions = KeyboardOptions(
-                                                    keyboardType = KeyboardType.Number,
-                                                    imeAction = ImeAction.Done
-                                                ),
-                                                textStyle = TextStyle(
-                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                    fontSize = 14.sp
-                                                ),
-                                                onValueChange = {
-                                                    viewModel.cardLimit.value = it
-                                                },
-                                                modifier = Modifier.blur(viewModel.mask.value)
-                                            )
+
+
                                         }
                                         Row(
                                             Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
                                         ) {
+
                                             Text(
-                                                text = "KYC Status:",
+                                                text = "POS",
                                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 12.sp
+                                                fontSize = 18.sp,
+                                                fontWeight = FontWeight(700),
                                             )
-                                            Text(
-                                                text = "Completed",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 14.sp,
-                                                modifier = Modifier.blur(viewModel.mask.value)
-                                            )
+                                            Spacer(modifier = Modifier.width(20.dp))
+                                            Column {
+                                                Row(modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .graphicsLayer {
+                                                        translationY = 40f
+                                                    }, horizontalArrangement = Arrangement.SpaceBetween){
+                                                    Text("0", fontWeight = FontWeight(700))
+                                                    Text("10000",fontWeight = FontWeight(700))
+                                                }
+                                                Slider(state = SliderState(initialValue = 100f,steps=100, initialOnValueChange = {
+
+                                                }), colors = androidx.compose.material3.SliderDefaults.colors(
+                                                    thumbColor = finocolor,
+                                                    activeTrackColor = finocolor.copy(0.5f),
+                                                    disabledActiveTrackColor = Color.Gray
+                                                ))
+                                            }
+
+
+
                                         }
                                         Row(
                                             Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
                                         ) {
+
                                             Text(
-                                                text = "Card Status:",
+                                                text = "ECOM",
                                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 12.sp
+                                                fontSize = 18.sp,
+                                                fontWeight = FontWeight(700),
                                             )
-                                            Text(
-                                                text = "Active",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                fontSize = 14.sp,
-                                                modifier = Modifier.blur(viewModel.mask.value)
-                                            )
+                                            Spacer(modifier = Modifier.width(10.dp))
+
+                                            Column {
+                                                Row(modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .graphicsLayer {
+                                                        translationY = 40f
+                                                    }, horizontalArrangement = Arrangement.SpaceBetween){
+                                                    Text("0", fontWeight = FontWeight(700))
+                                                    Text("10000",fontWeight = FontWeight(700))
+                                                }
+
+                                                Slider(state = SliderState(initialValue = 200f,steps=100, initialOnValueChange = {
+
+                                                }), colors = androidx.compose.material3.SliderDefaults.colors(
+                                                    thumbColor = finocolor,
+                                                    activeTrackColor = finocolor.copy(0.5f),
+                                                    disabledActiveTrackColor = Color.Gray
+                                                ))
+                                            }
+
+
+
                                         }
+
+
                                     }
 
                                 }
@@ -921,8 +926,17 @@ fun CardManagementScreen(
                                         fontFamily = FontFamily(Font(R.font.lato_bold))
                                     )
 
-                                    CustomCheckBox(manageViewModel.serviceRadioState, "Add Money")
-                                    CustomCheckBox(manageViewModel.serviceRadioState, "Send Money")
+                                    if(!SDK_CONSTANTS.cardType.equals("GIFT",true)) {
+
+                                        CustomCheckBox(
+                                            manageViewModel.serviceRadioState,
+                                            "Add Money"
+                                        )
+                                        CustomCheckBox(
+                                            manageViewModel.serviceRadioState,
+                                            "Send Money"
+                                        )
+                                    }
                                     if(SDK_CONSTANTS.isVirtual == true) {
                                         CustomCheckBox(
                                             manageViewModel.serviceRadioState, "Order PhysicalCatd"
@@ -931,6 +945,10 @@ fun CardManagementScreen(
                                 }
 
                             }
+                            if(SDK_CONSTANTS.cardType.equals("GIFT",true) && SDK_CONSTANTS.isVirtual==false){
+
+                                Text("NO services Availabel for this card",color=Color.LightGray, modifier = Modifier.padding(start=10.dp))
+                            }else{
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -938,7 +956,7 @@ fun CardManagementScreen(
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
                                 CustomButton(
-                                    text = "SUBMIT", buttonColor = lighttealGreen
+                                    text = "SUBMIT", buttonColor = finocolor
                                 ) {
 
                                 }
@@ -946,7 +964,7 @@ fun CardManagementScreen(
                                     rootNavController.popBackStack()
                                 }
 
-                            }}
+                            }}}
                     }
                 }
 
@@ -983,6 +1001,16 @@ fun CardManagementScreen(
         {
 
             manageViewModel.resetPin {
+                if (it != null) {
+                    if(it.status=="0"){
+                        sucess.value=true
+                        sucessMsg.value="You have Sucessfully completed pin reset"
+                        SDK_CONSTANTS.isPinSet=true
+                    }
+                    else{
+                        SDK_CONSTANTS.isPinSet=false
+                    }
+                }
             Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
             }
 
@@ -994,6 +1022,12 @@ fun CardManagementScreen(
         EnterOTPPinSheet(state = manageViewModel.Otp, oncancel = { manageViewModel.blockOtpSheetState.value=false })
         {
             manageViewModel.changeCardStatus(status = "block"){
+                if (it != null) {
+                    if(it.status=="0"){
+                        sucess.value=true
+                        sucessMsg.value="SucessFully Blocked"
+                    }
+                }
                 Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
 
                 if(it.status.equals("0")){
@@ -1018,8 +1052,15 @@ fun CardManagementScreen(
         })
         {
 
+
             if(manageViewModel.cvvValue.value.isEmpty()) {
                 manageViewModel.viewCvv() {
+                    if (it != null) {
+                        if(it.status=="0"){
+                            sucess.value=true
+                            sucessMsg.value="Cvv sucessfully fetched"
+                        }
+                    }
                     Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
                         if(it.status.equals("0")){
 
@@ -1053,6 +1094,12 @@ fun CardManagementScreen(
 
         }){
             cardDataViewModel.viewCardData("181",SDK_CONSTANTS.cardNumber){
+                if (it != null) {
+                    if(it.status=="0"){
+                        sucess.value=true
+                        sucessMsg.value="Data sucessfully fetched"
+                    }
+                }
                 manageViewModel.cardDataMask.value=false
                 manageViewModel.viewBalanceOtpSheetState.value=false
                 manageViewModel.Otp.value=""
@@ -1061,6 +1108,28 @@ fun CardManagementScreen(
 
 
         }
+
+    }
+
+    CustomSheetWrap(state = sucess) {
+        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            val lottie by rememberLottieComposition(spec =LottieCompositionSpec.RawRes(R.raw.sucess)
+
+            )
+            val startAnim= remember{
+                mutableStateOf(false)
+            }
+
+            val progress by animateLottieCompositionAsState(composition = lottie)
+
+            Text(sucessMsg.value)
+
+            LottieAnimation(composition = lottie, progress = { progress }, modifier = Modifier
+                .height(150.dp)
+                .padding(0.dp))
+
+        }
+
 
     }
 

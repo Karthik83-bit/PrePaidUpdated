@@ -37,7 +37,7 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
     var navDest= mutableStateOf("")
     var delay= mutableStateOf(500)
 
-    val list = listOf<String>("Services", "Managecard", "Statement", "Details")
+    val list = listOf<String>("Services", "Managecard", "Statement", "Usage")
 
     val clickedState =
         mutableStateOf(list[0])
@@ -114,7 +114,8 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
 //
 //    val DetailsState =
 //        mutableStateOf(false)
-    val cvvValue= mutableStateOf("123")
+    val cvvValue= mutableStateOf("")
+
 
 
     fun resetPin(onSucess:(ResetPinResponseModel)->Unit){
@@ -145,7 +146,9 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
         handleFlow(viewCvvUseCase.invoke(Otp.value),
             onSuccess = {
 
+
                 if (it != null) {
+                    onSucesss(it)
                     if(it.status=="0"){
 
 

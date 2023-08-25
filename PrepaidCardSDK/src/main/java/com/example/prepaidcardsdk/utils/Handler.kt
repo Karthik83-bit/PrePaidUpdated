@@ -88,7 +88,7 @@ fun <T, O> handleFlowResponse(
                         try {
                             val jObjError = JSONObject(errorBody)
                             if (jObjError.has("apiComment")) {
-                                errorMsg = jObjError.getString("apiComment")
+                                errorMsg = jObjError.getString("apiComment\n")+"Please try again later"
                             }
                             if (jObjError.has("data")) {
                                 try {
@@ -98,19 +98,19 @@ fun <T, O> handleFlowResponse(
                                     }
                                 } catch (e: Exception) {
                                     if (jObjError.has("data")) {
-                                        errorMsg = jObjError.getString("data")
+                                        errorMsg = jObjError.getString("data")+"\nPlease try again later"
                                     }
                                 }
                             }
                             if (jObjError.has("transactionStatus")) {
-                                errorMsg = jObjError.getString("transactionStatus")
+                                errorMsg = jObjError.getString("transactionStatus")+"\nPlease try again later"
                             }
                             if (jObjError.has("message")) {
-                                errorMsg = jObjError.getString("message")
+                                errorMsg = jObjError.getString("message")+"\nPlease try again later"
                             }
-                            emit(NetworkResponse.Error(errorMsg))
+                            emit(NetworkResponse.Error(errorMsg+"\nPlease try again later"))
                         } catch (e: Exception) {
-                            emit(NetworkResponse.Error("UNKNOWN ERROR"))
+                            emit(NetworkResponse.Error("UNKNOWN ERROR"+"\nPlease try again later"))
                         }
                     }
                     response.code() == 401 -> {
@@ -119,22 +119,22 @@ fun <T, O> handleFlowResponse(
                             if (jObjError.has("fault")) {
                                 val faultError = jObjError.getJSONObject("fault")
                                 if (faultError.has("faultstring")) {
-                                    errorMsg = faultError.getString("faultstring")
+                                    errorMsg = faultError.getString("faultstring")+"\nPlease try again later"
                                 }
                             }
                             if (errorMsg.isNotEmpty()) {
                                 emit(NetworkResponse.Error(errorMsg))
                             } else {
-                                emit(NetworkResponse.Error(STRING.somethingWrongMsg))
+                                emit(NetworkResponse.Error(STRING.somethingWrongMsg+"\nPlease try again later"))
                             }
                         }catch (e:Exception){
-                            emit(NetworkResponse.Error("Invalid Client Id or Client Secret"))
+                            emit(NetworkResponse.Error("Invalid Client Id or Client Secret"+"\nPlease try again later"))
                         }
                     }
                     response.code() == 422 -> {
                         val jObjError = JSONObject(errorBody)
                         if (jObjError.has("message")) {
-                            errorMsg = jObjError.getString("message")
+                            errorMsg = jObjError.getString("message")+"\nPlease try again later"
                         }
                         if (errorMsg.isNotEmpty()) {
                             emit(NetworkResponse.Error(errorMsg))
@@ -147,16 +147,16 @@ fun <T, O> handleFlowResponse(
                         if (jObjError.has("fault")) {
                             val faultError = jObjError.getJSONObject("fault")
                             if (faultError.has("faultstring")) {
-                                errorMsg = faultError.getString("faultstring")
+                                errorMsg = faultError.getString("faultstring")+"\nPlease try again later"
                             }
                         }
                         if (jObjError.has("apiComment")) {
-                            errorMsg = jObjError.getString("apiComment")
+                            errorMsg = jObjError.getString("apiComment")+"\nPlease try again later"
                         }
                         if (errorMsg.isNotEmpty()) {
                             emit(NetworkResponse.Error(errorMsg))
                         } else {
-                            emit(NetworkResponse.Error("Something Went Wrong"))
+                            emit(NetworkResponse.Error("Something Went Wrong"+"\nPlease try again later"))
                         }
                     }
                     else -> {
@@ -165,19 +165,19 @@ fun <T, O> handleFlowResponse(
                             val jObjError = JSONObject(errorBody)
                             var errorMsg = ""
                             if (jObjError.has("message")) {
-                                errorMsg = jObjError.getString("message")
+                                errorMsg = jObjError.getString("message")+"\nPlease try again later"
                             }
                             if (jObjError.has("data")) {
-                                errorMsg = jObjError.getString("data")
+                                errorMsg = jObjError.getString("data")+"\nPlease try again later"
                             }
 
                             if (errorMsg.isNotEmpty()) {
                                 emit(NetworkResponse.Error(errorMsg))
                             } else {
-                                emit(NetworkResponse.Error(jObjError.toString()))
+                                emit(NetworkResponse.Error(jObjError.toString()+"\nPlease try again later"))
                             }
                         } catch (e: Exception) {
-                            emit(NetworkResponse.Error("UNKNOWN ERROR"))
+                            emit(NetworkResponse.Error("UNKNOWN ERROR"+"\nPlease try again later"))
                         }
                     }
                 }

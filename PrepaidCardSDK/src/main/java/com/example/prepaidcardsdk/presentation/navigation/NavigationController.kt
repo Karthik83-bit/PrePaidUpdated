@@ -89,7 +89,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
 
 
             val viewModel= hiltViewModel<GeneratePinViewModel>()
-            SetPinScreen(rootNavController,viewModel)
+            SetPinScreen(rootNavController,viewModel, manageViewModel = hiltViewModel<ManageCardViewModel>())
         }
         composable(Destination.ENTER_OTP_SCREEN){
             val viewModel= hiltViewModel<ManageCardViewModel>()

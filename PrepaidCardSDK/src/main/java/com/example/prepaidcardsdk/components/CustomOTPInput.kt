@@ -55,50 +55,91 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun InputView(value:TextFieldValue,onValueChange:(value:TextFieldValue)->Unit,
-focusRequester: FocusRequester)
-{
-BasicTextField(value = value, onValueChange = onValueChange, modifier = Modifier
-    .padding(horizontal = 10.dp)
-    .clip(RoundedCornerShape(8.dp))
+fun InputView(value:TextFieldValue,onValueChange:(value:TextFieldValue)->Unit,focusRequester: FocusRequester){
+    BasicTextField(value = value, onValueChange = onValueChange, modifier = Modifier
+        .padding(horizontal = 10.dp)
+        .clip(RoundedCornerShape(8.dp))
 
-    .wrapContentHeight()
-    .focusRequester(focusRequester),
-    maxLines = 1,
-    decorationBox = {
-        Card (
-            modifier= Modifier
-                .width(60.dp)
-                .height(70.dp)
-
-                ,
-            elevation = CardDefaults.cardElevation(70.dp)
+        .wrapContentHeight()
+        .focusRequester(focusRequester),
+        maxLines = 1,
+        decorationBox = {
+            Box (
+                modifier= Modifier
+                    .width(50.dp)
+                    .height(70.dp),
 
 
-        ){
-Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
-    it()
+                ){
+                Column(Modifier.fillMaxSize()) {
+                    it()
 
+                    Row(modifier = Modifier
+                        .height(2.dp)
+                        .fillMaxWidth()
+                        .background(tealGreen)){}
+                }
 
+            }
+        },
+        cursorBrush = SolidColor(tealGreen),
+        textStyle = TextStyle(
+            color = tealGreen,
+            fontSize = 26.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(onDone = null)
+    )
 }
-
-
-        }
-    },
-    cursorBrush = SolidColor(tealGreen),
-textStyle = TextStyle(
-    color = tealGreen,
-    fontSize = 26.sp,
-    fontWeight = FontWeight.Bold,
-    textAlign = TextAlign.Center
-),
-    keyboardOptions = KeyboardOptions(
-        keyboardType = KeyboardType.Number,
-        imeAction = ImeAction.Done
-    ),
-    keyboardActions = KeyboardActions(onDone = null)
-)
-}
+//fun InputView(value:TextFieldValue,onValueChange:(value:TextFieldValue)->Unit,
+//focusRequester: FocusRequester)
+//{
+//BasicTextField(value = value, onValueChange = onValueChange, modifier = Modifier
+//    .padding(horizontal = 10.dp)
+//    .clip(RoundedCornerShape(8.dp))
+//
+//    .wrapContentHeight()
+//    .focusRequester(focusRequester),
+//    maxLines = 1,
+//    decorationBox = {
+//        Card (
+//            modifier= Modifier
+//                .width(60.dp)
+//                .height(70.dp)
+//
+//                ,
+//            elevation = CardDefaults.cardElevation(70.dp)
+//
+//
+//        ){
+//Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
+//    it()
+//
+//
+//}
+//
+//
+//        }
+//    },
+//    cursorBrush = SolidColor(tealGreen),
+//textStyle = TextStyle(
+//    color = tealGreen,
+//    fontSize = 26.sp,
+//    fontWeight = FontWeight.Bold,
+//    textAlign = TextAlign.Center
+//),
+//    keyboardOptions = KeyboardOptions(
+//        keyboardType = KeyboardType.Number,
+//        imeAction = ImeAction.Done
+//    ),
+//    keyboardActions = KeyboardActions(onDone = null)
+//)
+//}
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -109,8 +150,9 @@ val focusRequester= LocalFocusManager.current
     val context= LocalContext.current
     Surface(modifier = Modifier.fillMaxWidth().background(Cyan)){
 Box(
-    modifier=Modifier.fillMaxSize().background(Red)
+    modifier=Modifier.fillMaxSize()
 ){
+    val keyBoardcontroller=LocalSoftwareKeyboardController.current
   Row(
       Modifier
           .padding(horizontal = 16.dp)
@@ -122,8 +164,14 @@ Box(
             InputView(value = textList[i].value,
                 onValueChange = {
 
+                    if(it.text.length==4){
 
+                        if (keyBoardcontroller != null) {
+                            keyBoardcontroller.hide()
+                        }
+                    }
                     if(textList[i].value.text!=""){
+
                         if(it.text==""){
 check=true
                           textList[i].value= TextFieldValue("", selection = TextRange(0))

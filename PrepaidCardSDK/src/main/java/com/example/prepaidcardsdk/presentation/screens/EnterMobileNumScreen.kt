@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.IconButton
@@ -27,11 +29,13 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,6 +45,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -52,12 +57,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.prepaidcard.components.CustomCheckBox
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
 import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.data.model.req.VerifyOtpReq
 import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
+import com.example.prepaidcardsdk.ui.theme.tealGreen
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -75,6 +82,13 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
 //    val bit = Bitmap.createBitmap(
 //        db!!.intrinsicWidth, db.intrinsicHeight, Bitmap.Config.ARGB_8888
 //    )
+    val showNum= remember {
+        mutableStateOf(false)
+    }
+    LaunchedEffect(key1 =true , ){
+        showNum.value=true
+
+    }
     val textlist=listOf(
         remember {
 
@@ -127,6 +141,36 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
             .fillMaxSize()
             .padding(20.dp)
             .verticalScroll(enabled = true, state = ScrollState(0)), horizontalAlignment = Alignment.CenterHorizontally){
+        if(showNum.value){val checkState= remember {
+            mutableStateOf(false)
+        }
+
+            AlertDialog(onDismissRequest = { /*TODO*/ }) {
+                Card(
+                    Modifier
+                        .height(100.dp)
+                        .fillMaxWidth(0.7f)) {
+                    Row(modifier = Modifier.fillMaxHeight(0.5f), verticalAlignment = Alignment.CenterVertically){
+                        Checkbox(checked = checkState.value, onCheckedChange ={
+                            checkState.value=true
+                            viewModel.mobilenum.value="9127866307"
+                            showNum.value=false
+                        } )
+                        Text("9127866307")
+                    }
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
+
+
+                    Button(onClick = { showNum.value=false }, shape = RoundedCornerShape(3.dp), colors = ButtonDefaults.buttonColors(
+                        tealGreen)) {
+                        Text("Manually input number")
+                    }
+                    }
+
+
+                }
+            }
+        }
         Spacer(modifier = Modifier.height(30.dp))
         Column(verticalArrangement = Arrangement.spacedBy(50.dp), horizontalAlignment = Alignment.CenterHorizontally){
             Box(contentAlignment = Alignment.Center){

@@ -34,6 +34,7 @@ import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.components.IconCustomButton
 
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.ui.theme.finocolor
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 
 @Composable
@@ -110,7 +111,7 @@ fun TransactionInfo(rootNavController: NavHostController) {
                             .fillMaxWidth()
                         , horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ){
-                        IconCustomButton(text = "Share", color = lighttealGreen , res= R.drawable.baseline_share_24, modifier = Modifier.weight(1f)) {
+                        IconCustomButton(text = "Share", color = finocolor , res= R.drawable.baseline_share_24, modifier = Modifier.weight(1f)) {
 
                         }
                         IconCustomButton(text = "Download", color = Color.LightGray, res=R.drawable.download, modifier = Modifier.weight(1f) ) {

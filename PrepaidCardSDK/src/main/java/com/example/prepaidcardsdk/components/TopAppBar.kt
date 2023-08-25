@@ -52,39 +52,40 @@ fun CustomTopBar(onBackPress: () -> Unit) {
                     )
             }
         }
-        Row(
-
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.message),
-                contentDescription = "message",
-                modifier = Modifier
-                    .background(
-                        Color(0xffDB8726), RoundedCornerShape(50)
-                    )
-                    .padding(7.dp)
-            )
-            Icon(
-                painter = painterResource(id = R.drawable.qr_code),
-                contentDescription = "qr_code",
-                modifier = Modifier
-                    .background(
-                        Transparent, RoundedCornerShape(50)
-                    )
-                    .padding(7.dp)
-            )
-
-            Icon(
-                painter = painterResource(id = R.drawable.notification),
-                contentDescription = "notification",
-                modifier = Modifier
-                    .background(
-                        Transparent, RoundedCornerShape(50)
-                    )
-                    .padding(7.dp)
-            )
-        }
+//        Row(
+//
+//            horizontalArrangement = Arrangement.spacedBy(5.dp),
+//            verticalAlignment = Alignment.CenterVertically
+//        )
+//        {
+//            Icon(
+//                painter = painterResource(id = R.drawable.message),
+//                contentDescription = "message",
+//                modifier = Modifier
+//                    .background(
+//                        Color(0xffDB8726), RoundedCornerShape(50)
+//                    )
+//                    .padding(7.dp)
+//            )
+//            Icon(
+//                painter = painterResource(id = R.drawable.qr_code),
+//                contentDescription = "qr_code",
+//                modifier = Modifier
+//                    .background(
+//                        Transparent, RoundedCornerShape(50)
+//                    )
+//                    .padding(7.dp)
+//            )
+//
+//            Icon(
+//                painter = painterResource(id = R.drawable.notification),
+//                contentDescription = "notification",
+//                modifier = Modifier
+//                    .background(
+//                        Transparent, RoundedCornerShape(50)
+//                    )
+//                    .padding(7.dp)
+//            )
+//        }
     }
 }
