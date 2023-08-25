@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.OutlinedTextField
@@ -100,8 +101,8 @@ fun SelectBeneficiary(rootnavController: NavHostController) {
                     .clickable { rootnavController.navigate(Destination.TRANSACTION) },
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                OutlinedCard {
-                    Icon(
+                OutlinedCard (modifier = Modifier.fillMaxWidth()){
+                    Icon(modifier = Modifier,
                         painter = painterResource(id = R.drawable.person_pin),
                         contentDescription = "add person",
                         tint = tealGreen
