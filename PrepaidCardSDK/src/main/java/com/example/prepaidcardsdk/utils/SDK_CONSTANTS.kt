@@ -15,4 +15,5 @@ object SDK_CONSTANTS {
      var isBlock:Boolean?=null
      var isActive:Boolean?=null
      var availbalance:String =""
+ var isPinSet:Boolean?=null
 }

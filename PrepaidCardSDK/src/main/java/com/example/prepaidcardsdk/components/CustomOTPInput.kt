@@ -2,6 +2,7 @@ package com.example.prepaidcardsdk.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 //import androidx.compose.foundation.layout.FlowColumnScopeInstance.align
@@ -31,7 +32,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Cyan
 import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
@@ -62,20 +66,20 @@ BasicTextField(value = value, onValueChange = onValueChange, modifier = Modifier
     .focusRequester(focusRequester),
     maxLines = 1,
     decorationBox = {
-        Box (
+        Card (
             modifier= Modifier
-                .width(50.dp)
-                .height(70.dp),
+                .width(60.dp)
+                .height(70.dp)
+
+                ,
+            elevation = CardDefaults.cardElevation(70.dp)
 
 
         ){
-Column(Modifier.fillMaxSize()) {
+Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
     it()
 
-    Row(modifier = Modifier
-        .height(2.dp)
-        .fillMaxWidth()
-        .background(tealGreen)){}
+
 }
 
 
@@ -103,19 +107,21 @@ requestList:List<FocusRequester>) {
 val focusRequester= LocalFocusManager.current
     val keyBoardController=LocalSoftwareKeyboardController.current
     val context= LocalContext.current
-    Surface(modifier = Modifier.fillMaxWidth()){
+    Surface(modifier = Modifier.fillMaxWidth().background(Cyan)){
 Box(
-    modifier=Modifier.fillMaxSize()
+    modifier=Modifier.fillMaxSize().background(Red)
 ){
   Row(
       Modifier
           .padding(horizontal = 16.dp)
           .padding(top = 50.dp)
+
           .align(Alignment.TopCenter)){
         for (i in textList.indices){
             var check=false
             InputView(value = textList[i].value,
                 onValueChange = {
+
 
                     if(textList[i].value.text!=""){
                         if(it.text==""){

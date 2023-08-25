@@ -8,6 +8,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -38,12 +41,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -92,11 +98,12 @@ fun FlipCard(name: String, cardno: String, exp: String,avlbaln: String,cardfaceS
     val cont=LocalContext.current
     
     Card(
-
+modifier = Modifier.padding(0.dp),
+        colors = CardDefaults.cardColors(Color.Transparent)
     ){
 
             if(cardfaceState.value.angle<90f){
-AnimatedVisibility(visible = cardfaceState.value.angle<90f) {
+AnimatedVisibility(visible = cardfaceState.value.angle<90f, modifier = Modifier.padding(0.dp)) {
     PrepaidCard(
         Modifier
             .graphicsLayer {
@@ -104,8 +111,6 @@ AnimatedVisibility(visible = cardfaceState.value.angle<90f) {
 
             }
             .clickable {
-
-
 
 
             },cardno,name,exp,avlbaln, manageCardViewModel = hiltViewModel<ManageCardViewModel>(), generatePinViewModel = hiltViewModel<GeneratePinViewModel>()){
@@ -142,60 +147,81 @@ fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String,a
     }
     var context = LocalContext.current
 
-    Card(
-        shape = RoundedCornerShape(5.dp),
-        colors = CardDefaults.cardColors(Resetcolor),
+
+
+    Box(
+
+//        colors = CardDefaults.cardColors(Resetcolor),
         modifier = clickable
 
 
-            .width(380.dp)
-            .height(250.dp)
+            .width(640.dp)
+            .height(290.dp)
+            .padding(0.dp)
             .drawBehind {
 
             },
-
+contentAlignment = Alignment.Center
 
 
         ) {
-        Box(){
 
-            Canvas(modifier = Modifier
+
+
+
+
+//            Canvas(modifier = Modifier
+//                .fillMaxWidth()
+//                .height(250.dp))
+//            {
+//
+//                drawCircle(
+//                    brush = Brush.horizontalGradient(listOf(  Resetcolor, tealGreen), startX = 0f, endX = 700f),
+//
+//                    radius = 900f,
+//                    center = Offset(x = 500f, y = 1150f)
+//                )
+//            }
+        Image(modifier = Modifier
+            .width(680.dp)
+            .height(280.dp)
+
+            .padding(top = 10.dp),painter = painterResource(id =com.example.prepaidcardsdk.R.drawable.whitcard), contentDescription = "", contentScale = ContentScale.FillWidth)
+        Image(modifier = Modifier.blur(1.dp)
+
+
+            .padding(top = 10.dp),painter = painterResource(id =com.example.prepaidcardsdk.R.drawable.bankitt), contentDescription = "", contentScale = ContentScale.FillWidth)
+
+        Card(modifier = Modifier
+        .width(640.dp)
+        .height(290.dp),
+        colors = CardDefaults.cardColors(Color.Transparent)
+      ) {
+//        Row(
+//            Modifier
+//
+//                .padding(0.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+////           Icon(painter = painterResource(id = R.drawable.ic_launcher_background),"", tint = Color.White )
+//
+//            Column() {
+//                Text("NSDL", color = Color.White)
+//                Text("PaymentsBank", color = Color.White, fontWeight = FontWeight(700))
+//            }
+//
+//            Text(text = "Valid in India Only", color = Color.Black,)
+//
+//        }
+        Spacer(modifier = Modifier.height(20.dp))
+        Column(
+            Modifier
                 .fillMaxWidth()
-                .height(250.dp)) {
-
-                drawCircle(
-                    brush = Brush.horizontalGradient(listOf(  Resetcolor, tealGreen), startX = 0f, endX = 700f),
-
-                    radius = 900f,
-                    center = Offset(x = 500f, y = 1150f)
-                )
-            }
-
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-//           Icon(painter = painterResource(id = R.drawable.ic_launcher_background),"", tint = Color.White )
-
-                Column() {
-                    Text("NSDL", color = Color.White)
-                    Text("PaymentsBank", color = Color.White, fontWeight = FontWeight(700))
-                }
-
-                Text(text = "Valid in India Only", color = Color.White,)
-
-            }
+                .fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly)
+        {
             Spacer(modifier = Modifier.height(20.dp))
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly) {
-                Spacer(modifier = Modifier.height(20.dp))
-                Column() {
-                    Text( if(manageCardViewModel.cardDataMask.value||SDK_CONSTANTS.cardUser.isEmpty())name.replaceRange(0,name.length,"xxxxxx") else name, color = Color.White,style = TextStyle(letterSpacing = 5.sp, fontWeight = FontWeight(800)))
-                    Text(if(manageCardViewModel.cardDataMask.value||SDK_CONSTANTS.cardNumber.isEmpty())"${cardFormat(cardno)}" else cardSpaceFormat(cardno), color = Color.White, style = TextStyle(letterSpacing = 7.sp),fontWeight = FontWeight(600), fontSize = 18.sp,)
 
-                }
-                OutlinedButton(
-                    onClick = {
-                        manageCardViewModel.viewBalanceOtpSheetState.value=true
+            OutlinedButton(
+                onClick = {
+                    manageCardViewModel.viewBalanceOtpSheetState.value=true
 //                        if (buttonText == "View Details") {
 //                            buttonText = "Available Balance:\n ${avlbaln}"
 //                        }else{
@@ -206,28 +232,40 @@ fun PrepaidCard(clickable: Modifier, cardno: String, name: String, exp: String,a
 //                        }else{
 //                            0.dp
 //                        }
-                    },
-                    border = BorderStroke(1.dp, Color.White),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = tealGreen
-                    )
+                },
+                border = BorderStroke(1.dp, Color.White),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = Color.LightGray.copy(0.3f)
+                )
 //                    enabled = manageCardViewModel.CvvToggleState.value
-                ) {
-                    Text(buttonText, color = Color.White, fontWeight = FontWeight(700), fontFamily = FontFamily.Monospace)
-                }
-                Row(horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier.fillMaxWidth()) {
-                    Text("ValidThru", color = Color.White)
-                    Text(if(manageCardViewModel.cardDataMask.value) exp.replaceRange(0, exp.length,"xxxx") else expFormater(exp), color = Color.White)
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_call_answer,),
-                        contentDescription = "",
-                        tint = Color.White,
-                    )
-                }
+            ) {
+                Text(buttonText, color = Color.Black, fontWeight = FontWeight(700), fontFamily = FontFamily.Monospace)
             }
+            Row(horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)) {
+                Column() {
+                    Text( if(manageCardViewModel.cardDataMask.value||SDK_CONSTANTS.cardUser.isEmpty())name.replaceRange(0,name.length,"Karthik") else name, color = Color.Black,style = TextStyle(letterSpacing = 5.sp, fontWeight = FontWeight(800)))
+//                    Text(if(manageCardViewModel.cardDataMask.value||SDK_CONSTANTS.cardNumber.isEmpty())"${cardFormat(cardno)}" else cardSpaceFormat(cardno), color = Color.Black, style = TextStyle(letterSpacing = 7.sp),fontWeight = FontWeight(600), fontSize = 18.sp,)
+                    Text(cardSpaceFormat("1234567812345678"), color = Color.Gray, style = TextStyle(letterSpacing = 4.sp),fontWeight = FontWeight(600), fontSize = 18.sp,
+                       fontFamily =  FontFamily(Font(com.example.prepaidcardsdk.R.font.poppins_regular))
+                    )
 
+
+                }
+                Column() {
+                    Text("VALID\nTHRU", color = Color.Black, fontFamily = FontFamily(Font(com.example.prepaidcardsdk.R.font.poppins_regular)))
+                    Text(if(manageCardViewModel.cardDataMask.value) exp.replaceRange(0, exp.length,"xxxx") else expFormater(exp), color = Color.Black)
+
+                }
+
+            }
         }
+    }
+
+
 
       }
 }
@@ -252,54 +290,61 @@ fun PrepaidCardBack(clickable: Modifier, manageCardViewModel: ManageCardViewMode
 
     Card(
         shape = RoundedCornerShape(5.dp),
-        colors = CardDefaults.cardColors(tealGreen),
+
         modifier = clickable
 
-            .width(380.dp)
-            .height(250.dp)
+            .width(640.dp)
+            .height(290.dp)
             .drawBehind {
 
             },
-
+        colors = CardDefaults.cardColors(Color.Transparent)
 
 
         ) {
-        Box {
+
+        Box (modifier = Modifier){
+            Image(modifier = Modifier
+                .width(680.dp)
+                .height(280.dp)
+
+                .padding(top = 10.dp),painter = painterResource(id =com.example.prepaidcardsdk.R.drawable.whitcard), contentDescription = "", contentScale = ContentScale.FillWidth)
+
             Canvas(modifier = Modifier
                 .height(50.dp)
-                .fillMaxWidth()) {
+                .fillMaxWidth()
+                .padding(40.dp)) {
 
                 drawRect(
-                    color = HitextColor,
-                    topLeft = Offset(x =0.dp.toPx(), y = 20.dp.toPx())
-                )
-                drawRect(
-                    color = Color.White,
-                    topLeft = Offset(x =200.dp.toPx(), y = 80.dp.toPx())
+                    color = Color.LightGray,
+                    topLeft = Offset(x =0.dp.toPx(), y = 20.dp.toPx()),
 
                 )
+
             }
-            Column (modifier = Modifier.padding(6.dp),
+
+            Column (modifier = Modifier
+                .width(360.dp)
+                .height(210.dp)
+                .padding(end = 56.dp)
+                .graphicsLayer {
+                    rotationY = 180f
+                },
                 verticalArrangement = Arrangement.spacedBy(40.dp)){
+                Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     text = "For Queries call 022653666377 / 08997734322 or mail us info@card.com",
-                    color = Color.White,
-                    modifier = Modifier.graphicsLayer {
-                        translationX = 10.dp.toPx()
-                    rotationX =180f
-                        rotationZ =180f
-                    },
-                    fontSize = 12.sp
+                    color = Color.Gray,
+
+                    fontSize = 12.sp, modifier = Modifier.padding(end = 40.dp)
+
                 )
                     Text(
-                        manageCardViewModel.cvvValue.value?:"",
+                        manageCardViewModel.cvvValue.value?:"123",
                         fontSize = 14.sp,
                         modifier = Modifier
                             .graphicsLayer {
-                                translationX = 200.dp.toPx()
 
-                                rotationX = 180f
-                                rotationZ = 180f
                             },
                         color = Color.Black
                     )

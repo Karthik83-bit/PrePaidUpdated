@@ -1,6 +1,7 @@
 package com.example.prepaidcardsdk.presentation.viewmodels
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +37,7 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
     var navDest= mutableStateOf("")
     var delay= mutableStateOf(500)
 
-    val list = listOf<String>("LoadCard", "Managecard", "Statement", "Details")
+    val list = listOf<String>("Services", "Managecard", "Statement", "Details")
 
     val clickedState =
         mutableStateOf(list[0])
@@ -113,7 +114,7 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
 //
 //    val DetailsState =
 //        mutableStateOf(false)
-    val cvvValue= mutableStateOf("")
+    val cvvValue= mutableStateOf("123")
 
 
     fun resetPin(onSucess:(ResetPinResponseModel)->Unit){
@@ -127,8 +128,12 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
             },
             onSuccess = {
                 if(it!=null){
+                    if(it.status=="0"){
+                        SDK_CONSTANTS.isPinSet=false
+                    }
                     onSucess(it)
                 }
+
 
             }
         )

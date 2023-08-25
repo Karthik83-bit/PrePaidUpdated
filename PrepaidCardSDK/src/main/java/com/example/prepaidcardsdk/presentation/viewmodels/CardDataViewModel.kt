@@ -2,6 +2,7 @@ package com.example.prepaidcardsdk.presentation.viewmodels
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.material.Switch
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
@@ -29,6 +30,7 @@ class CardDataViewModel @Inject constructor(
 
     ViewModel() {
 
+    val isBlocked=mutableStateOf(false)
     val isLoading = mutableStateOf(false)
     var isError: MutableState<Boolean> = mutableStateOf(false)
     var errorMessage: MutableState<String> = mutableStateOf("")
@@ -50,7 +52,25 @@ class CardDataViewModel @Inject constructor(
                     errorMessage.value = it
                 },
                 onSuccess = {
-                    cardList.value = it?.viewcardresponseWrapper
+                    if(it!=null){
+                        if(it.status=="0"){
+                            cardList.value = it?.viewcardresponseWrapper
+                        }
+                        else{
+                            isError.value=true
+                            errorMessage.value=
+                               it.statusDesc
+                        }
+
+                    }
+
+                    else{
+                        isError.value=true
+                        errorMessage.value=
+                            "Something Went Wrong"
+                    }
+
+
                 })
 
         }
@@ -78,8 +98,9 @@ class CardDataViewModel @Inject constructor(
                                 SDK_CONSTANTS.isVirtual=it.viewcardresponseWrapper.isVirtual
                                 SDK_CONSTANTS.cardUser=it.viewcardresponseWrapper.nameonCard
                                 SDK_CONSTANTS.expiryDate= it.viewcardresponseWrapper.expiryDate.toString()
-                                SDK_CONSTANTS.availbalance=it.viewcardresponseWrapper.balance
+                                SDK_CONSTANTS.availbalance= it.viewcardresponseWrapper?.balance?:""
                                 SDK_CONSTANTS.cardType=it.viewcardresponseWrapper.cardType
+                            SDK_CONSTANTS.isPinSet=it.viewcardresponseWrapper.isPINSet?:false
 
                         }
                         else{

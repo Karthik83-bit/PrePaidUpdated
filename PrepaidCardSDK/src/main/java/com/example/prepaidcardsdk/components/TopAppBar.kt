@@ -16,10 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 
 @Composable
 fun CustomTopBar(onBackPress: () -> Unit) {
@@ -27,7 +29,7 @@ fun CustomTopBar(onBackPress: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp)
-            .padding(end = 10.dp),
+            .padding(end = 10.dp).background(White),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

@@ -254,6 +254,11 @@ success.value=false
                            viewModel.blockCardUI.value=false
                             SDK_CONSTANTS.isBlock=false
                             if(SDK_CONSTANTS.isActive==true){
+                                if(SDK_CONSTANTS.isPinSet==true){
+                                    rootNavController.navigate(Destination.GENERATE_PIN_SCREEN){
+
+                                    }
+                                }
 
                                 rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN){
                                     this.popUpTo(Destination.VIEW_CARDS_SCREEN)

@@ -2,7 +2,6 @@ package com.example.prepaidcard.screens
 
 //import androidx.compose.material.TextFieldDefaults
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.prepaidcard.components.CustomTopBar
-import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Alignment
@@ -48,18 +46,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.navigation.compose.rememberNavController
 //import androidx.compose.material3.TextFieldDefaults
 import com.example.prepaidcard.components.CustomButton
+import com.example.prepaidcard.utils.Destination
 
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SetPinScreen(rootNavController: NavHostController, viewModel: GeneratePinViewModel) {
+fun SetPinScreen(
+    rootNavController: NavHostController,
+    viewModel: GeneratePinViewModel,
+    manageViewModel: ManageCardViewModel
+) {
 val pindontMatch=remember{
     mutableStateOf(false)
 }
@@ -278,7 +281,9 @@ val pindontMatch=remember{
                     buttonColor = lighttealGreen,
                     enable=!pindontMatch.value
                 ) {
-                        rootNavController.navigate(Destination.ENTER_OTP_SCREEN)
+                       rootNavController.navigate(Destination.ENTER_OTP_SCREEN){
+                           popUpTo(Destination.CARD_ACTIVATION_SCREEN)
+                       }
                 }
                 CustomButton(
                     text = "CANCEL",

@@ -21,7 +21,8 @@ data class ViewcardresponseWrapperX(
     val lastfourDigit: String?,
     val nameonCard: String?,
     val productName: String?,
-    val balance:String
+    val balance:String,
+    val isPINSet:Boolean?
 )
 @RequiresApi(Build.VERSION_CODES.O)
 fun ViewcardresponseWrapperX.toViewcardresponseWrapperDomain(): ViewcardresponseWrapperDomain {

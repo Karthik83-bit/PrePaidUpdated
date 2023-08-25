@@ -24,6 +24,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -79,7 +80,9 @@ Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween, h
         .fillMaxWidth()
         .fillMaxHeight(0.5f)
         .background(Red.copy(0.6f), RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, 0.dp, 0.dp)), horizontalArrangement = Arrangement.Center) {
-        LottieAnimation(composition = lottie, progress = { progress }, modifier = Modifier.size(1000.dp).rotate(rotat.value))
+        LottieAnimation(composition = lottie, progress = { progress }, modifier = Modifier
+            .size(1000.dp)
+            .rotate(rotat.value))
     }
     Text(errMsg.replaceFirstChar { it.uppercase() }, fontWeight = FontWeight(600), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
 
@@ -148,6 +151,109 @@ fun CustomSucessDialog(msg:String,onClick:()->Unit) {
 }
 }
 @Composable
+fun CustomBlockedAlertDialog(errMsg:String,onCancel:()->Unit,onClick:()->Unit) {
+    val lottie by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.cardblocked)
+
+    )
+    val startAnim= remember{
+        mutableStateOf(false)
+    }
+    val rotate= remember{
+        mutableStateOf(false)
+    }
+    LaunchedEffect(key1 = true, ){
+        rotate.value=true
+    }
+    val rotat= animateFloatAsState(targetValue = if(rotate.value)60f else -10f, animationSpec =   spring(0.3f,10f))
+
+
+    val progress by animateLottieCompositionAsState(composition = lottie, speed = 2f)
+    Card(modifier = Modifier
+        .width(200.dp)
+        .height(200.dp)
+        .background(White, RoundedCornerShape(5.dp)), colors = CardDefaults.cardColors(containerColor = White), shape = RoundedCornerShape(5.dp)){
+        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally){
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.6f)
+                .background(
+                    Red.copy(0.3f),
+                    RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, 0.dp, 0.dp)
+                ), horizontalArrangement = Arrangement.Center) {
+                LottieAnimation(composition = lottie, progress = { progress }, modifier = Modifier.size(4000.dp))
+            }
+            Text(errMsg.replaceFirstChar { it.uppercase() }, fontWeight = FontWeight(600), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
+    ElevatedButton(onClick = { onClick()}, colors = ButtonDefaults.buttonColors(containerColor = Red.copy(0.6f)), modifier = Modifier.defaultMinSize(minWidth = 100.dp, minHeight = 40.dp,), shape = RoundedCornerShape(4.dp)) {
+        Text("UNBLOCK", color = White, fontWeight = FontWeight(500))
+    }
+    ElevatedButton(onClick = { onCancel()},  elevation = ButtonDefaults.buttonElevation(30.dp),colors = ButtonDefaults.buttonColors(containerColor = White), modifier = Modifier.defaultMinSize(minWidth = 100.dp, minHeight = 40.dp,), shape = RoundedCornerShape(4.dp)) {
+        Text("REMIND LATER", color = Red, fontWeight = FontWeight(500))
+    }
+}
+
+
+        }
+
+
+    }
+
+
+    @Composable
+    fun CustomSucessDialog(msg:String,onClick:()->Unit) {
+        val lottie by rememberLottieComposition(
+            spec = LottieCompositionSpec.RawRes(R.raw.tr)
+
+        )
+        val startAnim = remember {
+            mutableStateOf(false)
+        }
+
+        val progress by animateLottieCompositionAsState(composition = lottie)
+        Card(
+            modifier = Modifier
+                .size(200.dp)
+                .background(White, RoundedCornerShape(5.dp)),
+            colors = CardDefaults.cardColors(containerColor = White),
+            shape = RoundedCornerShape(5.dp),
+            elevation = CardDefaults.cardElevation(10.dp)
+        ) {
+            Column(
+                Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.7f)
+                        .background(
+                            Color.Transparent,
+                            RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, 0.dp, 0.dp)
+                        ), horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(painter = painterResource(id = R.drawable.check), contentDescription = "")
+
+                }
+                Text(
+                    msg.replaceFirstChar { it.uppercase() },
+                    fontWeight = FontWeight(500),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontFamily = FontFamily(
+                        Font(R.font.poppins_regular)
+                    )
+                )
+
+
+            }
+
+
+        }
+
+    }
+}
+@Composable
 fun CustomSheetAlertDialog(errMsg:String,onClick:()->Unit) {
     val lottie by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.error)
 
@@ -173,8 +279,13 @@ fun CustomSheetAlertDialog(errMsg:String,onClick:()->Unit) {
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.5f)
-                .background(Red.copy(0.6f), RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, 0.dp, 0.dp)), horizontalArrangement = Arrangement.Center) {
-                LottieAnimation(composition = lottie, progress = { progress }, modifier = Modifier.size(1000.dp).rotate(rotat.value))
+                .background(
+                    Red.copy(0.6f),
+                    RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, 0.dp, 0.dp)
+                ), horizontalArrangement = Arrangement.Center) {
+                LottieAnimation(composition = lottie, progress = { progress }, modifier = Modifier
+                    .size(1000.dp)
+                    .rotate(rotat.value))
             }
             Text(errMsg.replaceFirstChar { it.uppercase() }, fontWeight = FontWeight(600), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
 

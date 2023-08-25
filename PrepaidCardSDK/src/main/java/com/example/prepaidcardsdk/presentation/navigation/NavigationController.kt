@@ -46,7 +46,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
     NavHost(
         modifier = Modifier
             .fillMaxSize(),
-        navController = rootNavController, startDestination = Destination.MPIN_SCREEN){
+        navController = rootNavController, startDestination = Destination.CARD_MANAGEMENT_SCREEN){
 
         composable(Destination.APPLY_CARD_SCREEN){
             ApplyCardScreen(rootNavController,viewModel)
@@ -85,7 +85,8 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
 
 
             val viewModel= hiltViewModel<GeneratePinViewModel>()
-            SetPinScreen(rootNavController,viewModel)
+            val manageViewModel= hiltViewModel<ManageCardViewModel>()
+            SetPinScreen(rootNavController,viewModel,manageViewModel)
         }
         composable(Destination.ENTER_OTP_SCREEN){
             val viewModel= hiltViewModel<ManageCardViewModel>()

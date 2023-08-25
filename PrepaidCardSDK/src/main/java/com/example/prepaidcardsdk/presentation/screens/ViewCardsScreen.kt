@@ -61,6 +61,7 @@ import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
+import com.example.prepaidcardsdk.components.CustomBlockedAlertDialog
 import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.data.model.resp.toViewcardresponseWrapperDomain
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
@@ -97,7 +98,26 @@ Scaffold(topBar = { CustomTopBar {
                 .verticalScroll(enabled = true, state = ScrollState(0))
 
         ) {
-            if (viewModel.isError.value) {
+            if(viewModel.isBlocked.value){
+                AlertDialog(onDismissRequest = { /*TODO*/ }) {
+                    CustomBlockedAlertDialog(errMsg = viewModel.errorMessage.value, onCancel = {
+                        viewModel.isBlocked.value=false
+                        viewModel.isError.value=false
+                        viewModel.errorMessage.value=""
+                    })
+                    {
+
+                            rootNavController.navigate(Destination.ENTER_OTP_SCREEN){
+
+
+                        }
+                        viewModel.isBlocked.value=false
+                        viewModel.isError.value=false
+                        viewModel.errorMessage.value=""
+                    }
+                }
+            }
+            else if (viewModel.isError.value) {
 
                 AlertDialog(onDismissRequest = { /*TODO*/ }) {
                     CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
@@ -113,6 +133,7 @@ Scaffold(topBar = { CustomTopBar {
                 AlertDialog(onDismissRequest = { /*TODO*/ }) {
                     CustomLoader()
                 }
+
 
 
             }
@@ -221,8 +242,12 @@ Scaffold(topBar = { CustomTopBar {
                                                                 //
                                                                 if (!hotlist) {
                                                                     if (isBlock) {
-                                                                        viewModel.isError.value =
+                                                                        viewModel.isBlocked.value =
                                                                             true
+                                                                        viewModel.destination.value =
+                                                                            Destination.ENTER_OTP_SCREEN
+//                                                                        viewModel.isError.value =
+//                                                                            true
                                                                         viewModel.errorMessage.value =
                                                                             "Card is Blocked"
                                                                         viewModel.destination.value =
@@ -231,6 +256,7 @@ Scaffold(topBar = { CustomTopBar {
 
                                                                     } else {
                                                                         if (isActive) {
+
                                                                             rootNavController.navigate(
                                                                                 Destination.CARD_MANAGEMENT_SCREEN
                                                                             )
@@ -335,7 +361,12 @@ Scaffold(topBar = { CustomTopBar {
 
                                                             if (!hotlist) {
                                                                 if (isBlock) {
-                                                                    viewModel.isError.value = true
+                                                                    viewModel.isBlocked.value =
+                                                                        true
+                                                                    viewModel.destination.value =
+                                                                        Destination.ENTER_OTP_SCREEN
+//                                                                        viewModel.isError.value =
+//                                                                            true
                                                                     viewModel.errorMessage.value =
                                                                         "Card is Blocked"
                                                                     viewModel.destination.value =
@@ -408,8 +439,9 @@ Scaffold(topBar = { CustomTopBar {
                                             Spacer(modifier = Modifier.height(30.dp))
                                             Row(horizontalArrangement = Arrangement.spacedBy(80.dp)) {
 
+
                                                 Icon(painter = painterResource(id = R.drawable.bankitt), contentDescription ="", tint = isuOrrange )
-                                            }
+                                               }
 
                                         }
                                     }
