@@ -36,8 +36,10 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.IconButton
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -84,6 +86,8 @@ import com.example.prepaidcardsdk.ui.theme.finocolor
 import com.example.prepaidcardsdk.ui.theme.gray_color
 import com.example.prepaidcardsdk.ui.theme.isuGreen
 import com.example.prepaidcardsdk.ui.theme.isuOrrange
+import com.example.prepaidcardsdk.ui.theme.light_finocolor
+//import com.example.prepaidcardsdk.ui.theme.light_isuOrrange
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 import com.example.prepaidcardsdk.ui.theme.neon
 import com.example.prepaidcardsdk.ui.theme.tealGreen
@@ -358,7 +362,7 @@ Scaffold(topBar = { CustomTopBar {
                                 shape = RoundedCornerShape(10.dp),
                                 elevation = CardDefaults.outlinedCardElevation(14.dp),
                                 colors = CardDefaults.cardColors(
-                                    Color.White
+                                    light_finocolor
                                 ),
                                 modifier = Modifier
                                     .padding(10.dp)
@@ -447,7 +451,8 @@ Scaffold(topBar = { CustomTopBar {
                                         Text(
                                             text = "Gift Card",
                                             fontFamily = FontFamily(Font(R.font.robot_medium)),
-                                            fontSize = 18.sp
+                                            fontSize = 18.sp,
+                                            color= Color.White
                                         )
 
                                         it.toViewcardresponseWrapperDomain().decryptedCard?.let { it1 ->
@@ -457,7 +462,7 @@ Scaffold(topBar = { CustomTopBar {
                                                     12,
                                                     "xxxx-xxxxx-xxxxx-"
                                                 ),
-                                                color = gray_color,
+                                                color = Color.LightGray,
                                                 modifier = Modifier.blur(0.dp),
                                             )
                                         }
@@ -472,7 +477,7 @@ Scaffold(topBar = { CustomTopBar {
                                             Icon(
                                                 painter = painterResource(id = R.drawable.bankitt),
                                                 contentDescription = "",
-                                                tint = isuOrrange
+                                                tint = Color.White
                                             )
                                             Text(
                                                 text = if (it.isVirtual) "Virtual" else "Physical",
@@ -588,7 +593,7 @@ Scaffold(topBar = { CustomTopBar {
                     )
                     ElevatedCard(
                         modifier = Modifier.padding(
-                            horizontal = 20.dp, vertical = 10.dp
+                            horizontal = 0.dp, vertical = 10.dp
                         ),
                         colors = CardDefaults.elevatedCardColors(cdback),
                         elevation = CardDefaults.elevatedCardElevation(2.dp)
@@ -714,6 +719,26 @@ Scaffold(topBar = { CustomTopBar {
                         }
 
                     }
+
+
+
+                    if (SDK_CONSTANTS.kycType == "min_kyc") {
+                        Text(text = "Your KYC is Pending, Please complete your KYC and proceed further", fontWeight = FontWeight.ExtraBold, modifier = Modifier
+                            .background(color = cdback)
+                            .basicMarquee(
+                                animationMode = MarqueeAnimationMode.Immediately,
+                                delayMillis = 0
+                            ), color = finocolor)
+                        Row(Modifier.fillMaxWidth().height(100.dp), horizontalArrangement = Arrangement.Center){
+                        ElevatedButton(onClick = { rootNavController.navigate(Destination.KYC_SCREEN) }, modifier = Modifier
+                            .size(70.dp)
+                            .background(
+                                Color.Transparent,
+                                RoundedCornerShape(50.dp)
+                            ), colors = ButtonDefaults.buttonColors(finocolor), elevation = ButtonDefaults.buttonElevation(10.dp)) {
+                            Icon(painter = painterResource(id = R.drawable.kyc), contentDescription = "",tint= Color.White)
+                        }
+                    }}
                 }
             }
         }

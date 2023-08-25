@@ -40,9 +40,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
@@ -58,12 +60,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.prepaidcard.components.CustomCheckBox
+import com.example.prepaidcard.components.CustomSheetWrap
+import com.example.prepaidcard.components.EnterOTPPinSheet
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
 import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.data.model.req.VerifyOtpReq
 import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
+import com.example.prepaidcardsdk.ui.theme.finocolor
+import com.example.prepaidcardsdk.ui.theme.light_finocolor
 import com.example.prepaidcardsdk.ui.theme.tealGreen
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 
@@ -135,12 +141,19 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
             CustomLoader()
         }
     }
+    if(viewModel.verifyOTPScaffoldState.value){
+        Box(Modifier.fillMaxSize().background(Color.Black.copy(0.2f)))
+    }
+
 
     Column(
         Modifier
             .fillMaxSize()
             .padding(20.dp)
-            .verticalScroll(enabled = true, state = ScrollState(0)), horizontalAlignment = Alignment.CenterHorizontally){
+            .blur(if(viewModel.verifyOTPScaffoldState.value)10.dp else 0.dp)
+            .verticalScroll(enabled = true, state = ScrollState(0)), horizontalAlignment = Alignment.CenterHorizontally)
+    {
+
         if(showNum.value){val checkState= remember {
             mutableStateOf(false)
         }
@@ -162,7 +175,7 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
 
 
                     Button(onClick = { showNum.value=false }, shape = RoundedCornerShape(3.dp), colors = ButtonDefaults.buttonColors(
-                        tealGreen)) {
+                        finocolor)) {
                         Text("Manually input number")
                     }
                     }
@@ -228,6 +241,7 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
                         AlertDialog(onDismissRequest = { }) {
                             CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
                                 viewModel.isError.value=false
+                                viewModel.verifyOTPScaffoldState.value=false
                             }
 //                            Card(Modifier.size(300.dp))
 //                            {
@@ -284,7 +298,7 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
             ElevatedButton(onClick = {
                 viewModel.sendOtp {
                     if(it.status == "0"){
-                        rootNavController.navigate(Destination.MPIN_SCREEN)
+                        viewModel.verifyOTPScaffoldState.value=true
                         Toast.makeText(context, "OTP sent to the mobile number.", Toast.LENGTH_SHORT).show()
                     }
                      else if (viewModel.mobilenum.value == "") {
@@ -302,12 +316,30 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
 
             }, shape = RoundedCornerShape(5.dp), elevation = ButtonDefaults.buttonElevation(20.dp), modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp), colors = ButtonDefaults.buttonColors(Color(0xff32DBDE))) {
+                .height(50.dp), colors = ButtonDefaults.buttonColors(finocolor)) {
                 Text("SEND OTP", fontFamily = FontFamily(listOf(Font(R.font.poppins_regular))))
             }
         }
 
 
+
+    }
+    CustomSheetWrap(state = viewModel.verifyOTPScaffoldState, color = light_finocolor) {
+        EnterOTPPinSheet(state = viewModel.verifyOtp, oncancel = { viewModel.verifyOTPScaffoldState.value=false}) {
+            viewModel.VerifyOtp {
+                if(it.status=="0"){
+                    rootNavController.navigate(Destination.VIEW_CARDS_SCREEN){
+                        popUpTo(Destination.ENTER_MOBILE_NUM_SCREEN)
+                    }
+                    viewModel.verifyOTPScaffoldState.value=false
+                }
+                else{
+                    viewModel.isError.value=true
+                    viewModel.errorMessage.value=it.statusDesc
+                }
+            }
+
+        }
 
     }
 }

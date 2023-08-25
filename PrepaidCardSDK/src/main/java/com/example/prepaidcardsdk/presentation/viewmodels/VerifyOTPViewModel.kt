@@ -27,6 +27,7 @@ class VerifyOTPViewModel @Inject constructor(val verifyOTPUseCase: VerifyOTPUseC
     var isError:MutableState<Boolean> = mutableStateOf(false)
     var errorMessage:MutableState<String> = mutableStateOf("")
     var destination:MutableState<String> =mutableStateOf("")
+    var verifyOTPScaffoldState:MutableState<Boolean> =mutableStateOf(false)
 
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -74,6 +74,7 @@ import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
 //import com.example.prepaidcardsdk.components.CustomSucessDialog
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
+import com.example.prepaidcardsdk.ui.theme.finocolor
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -83,7 +84,9 @@ fun CustomSheetWrap(
     state: MutableState<Boolean>,
     initOffset: Int = 500,
     delay: Int = 0,
+    color:Color=Color.White,
     cont: @Composable () -> Unit,
+
 
     ) {
 //    if (manageViewModel.isError.value) {
@@ -125,7 +128,7 @@ fun CustomSheetWrap(
             Card(
                 Modifier
                     .fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = White),
+                colors = CardDefaults.cardColors(containerColor = color),
                 shape = RoundedCornerShape(50.dp, topEnd = 50.dp, 0.dp, 0.dp)
             , elevation = CardDefaults.cardElevation(30.dp)
 
@@ -634,131 +637,7 @@ fun CustomScaffoldScreen(
     }
     if (ResetPinOtp.value) timer.start() else timer.cancel()
 
-    @Composable
-    fun EnterOTPPinSheet(state: MutableState<String>, oncancel: () -> Unit, onSubmit: () -> Unit) {
 
-        var textFieldSize by remember { mutableStateOf(Size.Zero) }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Column(
-                Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                val comt = LocalContext.current
-                Text(
-                    text = "Enter OTP",
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily(Font(R.font.lato_regular))
-                )
-                BasicTextField(
-                    value = state.value,
-                    onValueChange = {
-
-                        if (it.length <= 4) {
-                            state.value = it
-                        }
-
-
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done,
-                        keyboardType = KeyboardType.NumberPassword
-                    )
-                )
-
-                {
-
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        repeat(4) {
-
-                            val char = when {
-                                it >= state.value.length -> ""
-                                else -> state.value[it]
-                            }
-
-
-                            Card(
-                                Modifier
-                                    .padding(2.dp)
-                                    .size(50.dp),
-                                colors = CardDefaults.cardColors(LightGray),
-                                shape = RoundedCornerShape(5.dp),
-
-                                elevation = CardDefaults.cardElevation(10.dp)
-                            ) {
-
-                                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-
-                                    Text(
-                                        char.toString(),
-                                        textAlign = TextAlign.Center,
-                                        color = Black,
-                                        fontWeight = FontWeight(600)
-                                    )
-
-                                }
-                            }
-
-                        }
-                    }
-
-                }
-                Text(
-                    "Enter otp sent to your mobile",
-                    textAlign = TextAlign.Start,
-                    modifier = Modifier.fillMaxWidth(),
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily(Font(R.font.lato_regular))
-                )
-
-            }
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                horizontalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                Button(
-                    onClick = { onSubmit() },
-                    shape = RoundedCornerShape(5.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(45.dp)
-                        .width(156.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Cyan)
-
-                ) {
-                    Text(text = "Verify", fontSize = 14.sp)
-                }
-                Button(
-                    onClick = {
-                        oncancel()
-                    },
-                    shape = RoundedCornerShape(5.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(45.dp)
-                        .width(156.dp),
-                    colors = ButtonDefaults.buttonColors(Color(0xFFA09D9D))
-                ) {
-                    Text("Cancel")
-                }
-
-            }
-
-
-            Text("Remaining Time: ${txt.value}")
-
-
-        }
-    }
 
 
 
@@ -897,5 +776,133 @@ fun CustomScaffoldScreen(
 //    }
 
 
+}
+@Composable
+fun EnterOTPPinSheet(state: MutableState<String>, oncancel: () -> Unit, onSubmit: () -> Unit) {
+
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Column(
+            Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            val comt = LocalContext.current
+            Text(
+                text = "Enter OTP",
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(R.font.lato_regular)),
+                color= White
+            )
+            BasicTextField(
+                value = state.value,
+                onValueChange = {
+
+                    if (it.length <= 4) {
+                        state.value = it
+                    }
+
+
+                },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.NumberPassword
+                )
+            )
+
+            {
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    repeat(4) {
+
+                        val char = when {
+                            it >= state.value.length -> ""
+                            else -> state.value[it]
+                        }
+
+
+                        Card(
+                            Modifier
+                                .padding(2.dp)
+                                .size(50.dp),
+                            colors = CardDefaults.cardColors(White),
+                            shape = RoundedCornerShape(5.dp),
+
+                            elevation = CardDefaults.cardElevation(10.dp),
+
+                        ) {
+
+                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+
+                                Text(
+                                    char.toString(),
+                                    textAlign = TextAlign.Center,
+                                    color = Black,
+                                    fontWeight = FontWeight(600)
+                                )
+
+                            }
+                        }
+
+                    }
+                }
+
+            }
+            Text(
+                "Enter otp sent to your mobile",
+                textAlign = TextAlign.Start,
+                modifier = Modifier.fillMaxWidth(),
+                fontSize = 14.sp,
+                color= White,
+                fontFamily = FontFamily(Font(R.font.lato_regular))
+            )
+
+        }
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            Button(
+                onClick = { onSubmit() },
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(45.dp)
+                    .width(156.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+
+            ) {
+                Text(text = "Verify", fontSize = 14.sp, color = finocolor)
+            }
+            Button(
+                onClick = {
+                    oncancel()
+                },
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(45.dp)
+                    .width(156.dp),
+                colors = ButtonDefaults.buttonColors(Color(0xFFA09D9D))
+            ) {
+                Text("Cancel")
+            }
+
+        }
+
+
+
+
+
+    }
 }
 
