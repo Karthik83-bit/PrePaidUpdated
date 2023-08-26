@@ -31,6 +31,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.SliderDefaults
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -95,9 +96,11 @@ import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
 import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.components.CustomSheetAlertDialog
+import com.example.prepaidcardsdk.components.Timer
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.ui.theme.Resetcolor
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.cdback
@@ -118,6 +121,7 @@ fun CardManagementScreen(
     cardDataViewModel:CardDataViewModel,
     onClick: (state: Boolean) -> Unit = {},
     manageViewModel: ManageCardViewModel,
+    verifyViewModel: VerifyOTPViewModel
 ) {
     val scope = rememberCoroutineScope()
     val sucess=remember{
@@ -132,6 +136,40 @@ fun CardManagementScreen(
             sucess.value=false
         }
     }
+
+    var timer = remember {
+        mutableStateOf(5)
+    }
+    var showTimer = remember {
+        mutableStateOf(true)
+    }
+
+    Timer(timer, showTimer)
+
+    if (verifyViewModel.isError.value) {
+        AlertDialog(onDismissRequest = { }) {
+            CustomAlertDialog(verifyViewModel.errorMessage.value){
+                verifyViewModel.isError.value = false
+                if(verifyViewModel.destination.value.isNotEmpty()){
+                    rootNavController.navigate(verifyViewModel.destination.value)
+                    verifyViewModel.destination.value=""
+
+                }
+
+
+                verifyViewModel.errorMessage.value = ""
+                verifyViewModel.destination.value = ""
+            }
+
+        }
+    }
+    if(verifyViewModel.isLoading.value){
+        AlertDialog(onDismissRequest = { /*TODO*/ }) {
+            CustomLoader()
+        }
+    }
+
+
 //    val ReplaceToggleState = manageViewModel.ReplaceToggleState
 //
 //
@@ -499,12 +537,57 @@ fun CardManagementScreen(
                     }
 
 
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    if (timer.value == 0){
+                        Text(
+                            "Resend Otp",
+                            fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                            fontSize = 14.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.ExtraBold,
+                            modifier = Modifier.clickable { verifyViewModel.VerifyOtp {
 
-                Text("Remaining Time: ${"sec"}")}
+                                if (it.status == "0") {
+                                    rootNavController.navigate(Destination.VIEW_CARDS_SCREEN)
+                                    verifyViewModel.verifyOtp.value=""
+                                }
+                                else if(verifyViewModel.verifyOtp.value == "") {
+                                    verifyViewModel.isError.value =true
+                                    verifyViewModel.errorMessage.value ="Otp can't be blank."
+                                    verifyViewModel.destination.value = Destination.MPIN_SCREEN
+                                }else
+                                {
+                                    verifyViewModel.isError.value = true
+                                    verifyViewModel.errorMessage.value = it.statusDesc
+                                    verifyViewModel.destination.value = Destination.MPIN_SCREEN
+                                    verifyViewModel. mobilenum.value=""
+                                    verifyViewModel.verifyOtp.value=""
+                                }
+                            } }
+                        )
+                    }
+                    else {
+                        Text(
+                            "Resend Otp",
+                            fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                            fontSize = 14.sp
+                        )
+                    }
 
-
-
-
+                    if (showTimer.value) {
+                        Text(
+                            "Remaining time : " + timer.value,
+                            fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                            fontSize = 14.sp,
+                            color = Color.Gray
+                        )
+                    }
+                }
+            }
         }
     }
 

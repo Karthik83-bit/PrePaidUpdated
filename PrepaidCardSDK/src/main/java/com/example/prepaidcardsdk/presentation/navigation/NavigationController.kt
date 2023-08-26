@@ -61,7 +61,11 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
             ViewCardsScreen(rootNavController, viewModel = hiltViewModel<CardDataViewModel>())
         }
         composable(Destination.CARD_MANAGEMENT_SCREEN){
-            CardManagementScreen(rootNavController, viewModel= hiltViewModel<GeneratePinViewModel>(),manageViewModel= hiltViewModel<ManageCardViewModel>() , cardDataViewModel = hiltViewModel<CardDataViewModel>())
+            CardManagementScreen(rootNavController,
+                viewModel= hiltViewModel<GeneratePinViewModel>(),
+                manageViewModel= hiltViewModel<ManageCardViewModel>() ,
+                cardDataViewModel = hiltViewModel<CardDataViewModel>(),
+                verifyViewModel = verifyOTPViewModel)
         }
         composable(Destination.MPIN_SCREEN){
             MpinScreen(rootNavController = rootNavController, viewModel= verifyOTPViewModel)
@@ -93,7 +97,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
         }
         composable(Destination.ENTER_OTP_SCREEN){
             val viewModel= hiltViewModel<ManageCardViewModel>()
-            EnterOTPScreen(rootNavController,viewModel)
+            EnterOTPScreen(rootNavController,viewModel, verifyOTPViewModel)
         }
         composable(Destination.CARD_ACTIVATION_CONFIRM){
             CardACtivationConfirmationScreen(rootNavController)
