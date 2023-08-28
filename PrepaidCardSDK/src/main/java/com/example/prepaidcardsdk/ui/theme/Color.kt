@@ -22,6 +22,6 @@ val Pink80 = Color(0xFFEFB8C8)
 val tealGreen = Color(0xFF0A8990)
 val cdback = Color(0xFFF7F7F7)
 val neon = Color(0xFF39FF14)
-val finocolor = Color(0xFF46BAF0)
-val light_finocolor = Color(0xFF6EC5EE)
+val finocolor = Color(0xFF5BBEEC)
+val light_finocolor = Color(0xFF91D4F3)
 

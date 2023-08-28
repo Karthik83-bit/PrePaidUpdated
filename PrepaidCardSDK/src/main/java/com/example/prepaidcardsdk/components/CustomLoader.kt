@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.unit.dp
@@ -40,10 +41,10 @@ fun CustomLoader (){
     val rotat=animateFloatAsState(targetValue = if(rotate.value)5f else -5f, animationSpec = infiniteRepeatable(animation = tween(1000,0, easing = EaseInOut), repeatMode = RepeatMode.Reverse))
 
 
-    val animation by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.cardscan))
+    val animation by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.new_loader))
     val progress by animateLottieCompositionAsState(composition = animation, iterations = LottieConstants.IterateForever)
 
-            LottieAnimation(composition = animation, progress = { progress }, modifier = Modifier.size(100.dp).rotate(rotat.value) )
+            LottieAnimation(composition = animation, progress = { progress }, modifier = Modifier.size(900.dp).scale(2f) )
 
 
 }

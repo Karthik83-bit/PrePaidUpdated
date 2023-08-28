@@ -332,9 +332,13 @@ success.value=false
                             if(status=="active"){
                                 SDK_CONSTANTS.isActive=true
                             }
+                            else{
+                                SDK_CONSTANTS.isBlock=false
+                                viewModel.blockCardUI.value=false
+                            }
 
-                           viewModel.blockCardUI.value=false
-                            SDK_CONSTANTS.isBlock=false
+
+
                             if(SDK_CONSTANTS.isActive==true){
                                 if(SDK_CONSTANTS.isPinSet==true){
                                     rootNavController.navigate(Destination.GENERATE_PIN_SCREEN){
@@ -366,7 +370,11 @@ success.value=false
                 CustomButton(
                     text = "CANCEL",
                     buttonColor = cancelGray,
-                    onClick = {},
+                    onClick = {
+                              rootNavController.navigate(Destination.VIEW_CARDS_SCREEN){
+                                  popUpTo(Destination.VIEW_CARDS_SCREEN)
+                              }
+                    },
 
                     )
             }

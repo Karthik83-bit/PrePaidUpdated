@@ -40,6 +40,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -56,6 +58,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.core.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.prepaidcardsdk.domain.usecases.ResetPinUseCase
@@ -87,6 +90,7 @@ fun FlipCard(
     exp: String,
     avlbaln: String,
     cardfaceState: MutableState<CardFace>,
+    startanim:MutableState<Boolean>,
     viewBalance: () -> Unit,
 ) {
 
@@ -96,6 +100,28 @@ fun FlipCard(
 //            cardfaceState.value = cardfaceState.value.next
 //        }
 //    }
+
+    val rotate= animateFloatAsState(
+        targetValue = if(startanim.value)0f else 90f,
+        animationSpec = tween(
+            durationMillis = 1000,
+            easing = EaseInOut,
+        )
+    )
+    val scale= animateFloatAsState(
+        targetValue = if(startanim.value)1f else 1.3f,
+        animationSpec = tween(
+            durationMillis = 1000,
+            easing = EaseInOut,
+        )
+    )
+    val translate= animateFloatAsState(
+        targetValue = if(startanim.value)0f else 500f,
+        animationSpec = tween(
+            durationMillis = 1000,
+            easing = EaseInOut,
+        )
+    )
 
     val rotatiom = animateFloatAsState(
         targetValue = cardfaceState.value.angle,
@@ -107,7 +133,12 @@ fun FlipCard(
     val cont = LocalContext.current
 
     Card(
-        modifier = Modifier.padding(0.dp),
+        modifier = Modifier.zIndex(100f)
+            .rotate(rotate.value)
+            .scale(scale.value)
+            .graphicsLayer {
+                translationX =translate.value
+            },
         colors = CardDefaults.cardColors(Color.Transparent)
     ) {
 
