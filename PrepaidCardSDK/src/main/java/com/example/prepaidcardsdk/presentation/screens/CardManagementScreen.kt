@@ -1,11 +1,9 @@
-package com.example.prepaidcard.screens
+package com.example.prepaidcardsdk.presentation.screens
 
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.EaseOutBack
-import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
@@ -22,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -30,7 +27,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.SliderDefaults
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -60,11 +56,9 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -105,12 +99,9 @@ import com.example.prepaidcardsdk.ui.theme.Resetcolor
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.cdback
 import com.example.prepaidcardsdk.ui.theme.finocolor
-import com.example.prepaidcardsdk.ui.theme.lighttealGreen
-import com.example.prepaidcardsdk.ui.theme.tealGreen
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.nio.file.WatchEvent
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -141,7 +132,7 @@ fun CardManagementScreen(
         mutableStateOf(5)
     }
     var showTimer = remember {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
 
     Timer(timer, showTimer)
@@ -350,7 +341,7 @@ fun CardManagementScreen(
     }
     @Composable
     fun EnterOTPPinSheet(state: MutableState<String>, oncancel: () -> Unit, onSubmit: () -> Unit) {
-
+        showTimer.value = true
         var textFieldSize by remember { mutableStateOf(Size.Zero) }
         Column(
             modifier = Modifier
@@ -542,41 +533,23 @@ fun CardManagementScreen(
                         .fillMaxWidth()
                         .padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    if (timer.value == 0){
                         Text(
                             "Resend Otp",
                             fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
                             fontSize = 14.sp,
                             color = Color.Black,
                             fontWeight = FontWeight.ExtraBold,
-                            modifier = Modifier.clickable { verifyViewModel.VerifyOtp {
-
-                                if (it.status == "0") {
-                                    rootNavController.navigate(Destination.VIEW_CARDS_SCREEN)
-                                    verifyViewModel.verifyOtp.value=""
+                            modifier = Modifier.clickable (enabled = timer.value == 0){
+                                timer.value = 5
+                                verifyViewModel.sendOtp {
+                                if(it.status == "0"){
+                                        showTimer.value =! showTimer.value
+                                    Toast.makeText(context, "Otp sent Successfully ", Toast.LENGTH_SHORT).show()
+                                    verifyViewModel.verifyOtp.value =""
                                 }
-                                else if(verifyViewModel.verifyOtp.value == "") {
-                                    verifyViewModel.isError.value =true
-                                    verifyViewModel.errorMessage.value ="Otp can't be blank."
-                                    verifyViewModel.destination.value = Destination.MPIN_SCREEN
-                                }else
-                                {
-                                    verifyViewModel.isError.value = true
-                                    verifyViewModel.errorMessage.value = it.statusDesc
-                                    verifyViewModel.destination.value = Destination.MPIN_SCREEN
-                                    verifyViewModel. mobilenum.value=""
-                                    verifyViewModel.verifyOtp.value=""
-                                }
-                            } }
+                             }
+                            }
                         )
-                    }
-                    else {
-                        Text(
-                            "Resend Otp",
-                            fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
-                            fontSize = 14.sp
-                        )
-                    }
 
                     if (showTimer.value) {
                         Text(

@@ -142,7 +142,7 @@ Scaffold(topBar = { CustomTopBar {
                 CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
                     viewModel.isError.value = false
                     if (viewModel.destination.value.isNotEmpty()) {
-                        rootNavController.navigate(viewModel.destination.value)
+                        rootNavController.navigate(Destination.ENTER_MOBILE_NUM_SCREEN)
                         viewModel.destination.value = ""
                     }
                 }
