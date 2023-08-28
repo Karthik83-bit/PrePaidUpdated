@@ -55,10 +55,20 @@ fun AddBene(rootnavController: NavHostController){
         }
     ){
         Column (Modifier.padding(it)){
-            Row (Modifier.padding(10.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)){
-                Icon(painter = painterResource(id = R.drawable.add_person), contentDescription = "Select Beneficiary", tint = tealGreen)
-                Text(text = "Select Beneficiary", fontFamily = FontFamily(Font(R.font.poppins_black)), color = tealGreen)
+            Row(
+                Modifier.padding(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.account_circle),
+                    contentDescription = "New Beneficiary",
+                    tint = tealGreen
+                )
+                Text(
+                    text = "Add New Beneficiary",
+                    fontFamily = FontFamily(Font(R.font.poppins_black)),
+                    color = tealGreen
+                )
             }
             Column (verticalArrangement = Arrangement.SpaceEvenly) {
                 OutlinedTextField(
