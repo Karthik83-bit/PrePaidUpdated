@@ -9,6 +9,7 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,13 +31,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.SliderDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderState
@@ -57,12 +62,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -102,6 +111,7 @@ import com.example.prepaidcardsdk.ui.theme.Resetcolor
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.cdback
 import com.example.prepaidcardsdk.ui.theme.finocolor
+import com.example.prepaidcardsdk.ui.theme.light_finocolor
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 import com.example.prepaidcardsdk.ui.theme.tealGreen
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
@@ -132,6 +142,9 @@ fun CardManagementScreen(
             sucess.value=false
         }
     }
+    LaunchedEffect(key1 = true ){
+        manageViewModel.startanim.value=!manageViewModel.startanim.value
+    }
 //    val ReplaceToggleState = manageViewModel.ReplaceToggleState
 //
 //
@@ -151,7 +164,7 @@ fun CardManagementScreen(
     val context= LocalContext.current
 
     @Composable
-    fun ResetPinSheet(hotlist: MutableState<Boolean>,onSubmit:()->Unit) {
+    fun ResetPinSheet(hotlist: MutableState<Boolean>,color:Color= Color.White,onSubmit:()->Unit) {
         var isError = remember {
             mutableStateOf(false)
         }
@@ -174,13 +187,14 @@ fun CardManagementScreen(
                 Text(
                     text = "Generate Pin",
                     fontSize = 22.sp,
-                    fontFamily = FontFamily(Font(R.font.lato_bold))
+                    fontFamily = FontFamily(Font(R.font.lato_bold)), color = Color.White
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = "Enter New PIN",
                     fontSize = 14.sp,
-                    fontFamily = FontFamily(Font(R.font.lato_regular))
+                    fontFamily = FontFamily(Font(R.font.lato_regular)),
+                            color = Color.White
                 )
                 val intSrc = remember {
                     MutableInteractionSource()
@@ -219,13 +233,14 @@ fun CardManagementScreen(
                     disabledIndicatorColor = Color.Transparent,
                     errorIndicatorColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+                    containerColor = Color.White
                 )
                 )
                 Text(
                     text = "Re-nter New PIN",
                     fontSize = 14.sp,
-                    fontFamily = FontFamily(Font(R.font.lato_regular))
+                    fontFamily = FontFamily(Font(R.font.lato_regular)), color = Color.White
                 )
                 TextField(
                     value = manageViewModel.reenterPin.value,
@@ -252,7 +267,8 @@ fun CardManagementScreen(
                         disabledIndicatorColor = Color.Transparent,
                         errorIndicatorColor = Color.Transparent,
                         focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
+                        unfocusedIndicatorColor = Color.Transparent,
+                        containerColor = Color.White
                     )
                 )
             }
@@ -286,11 +302,11 @@ fun CardManagementScreen(
                         .weight(1f)
                         .height(45.dp)
                         .width(156.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Cyan)
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White)
 
 
                 ) {
-                    Text(text = "Submit", fontSize = 14.sp)
+                    Text(text = "Submit", fontSize = 14.sp,color= finocolor)
                 }
                 Button(
                     onClick = {
@@ -377,7 +393,10 @@ fun CardManagementScreen(
 
             if (manageViewModel.isError.value||cardDataViewModel.isError.value){
                 CustomSheetAlertDialog(errMsg = manageViewModel.errorMessage.value) {
+
                     oncancel()
+                    manageViewModel.isError.value=false
+                    cardDataViewModel.isError.value=false
                 }
             }else{
                 Column(
@@ -387,7 +406,8 @@ fun CardManagementScreen(
                     Text(
                         text = "Enter OTP",
                         fontSize = 14.sp,
-                        fontFamily = FontFamily(Font(R.font.lato_regular))
+                        fontFamily = FontFamily(Font(R.font.lato_regular)),
+                        color = Color.White
                     )
                     BasicTextField(
                         value = state.value,
@@ -424,7 +444,7 @@ fun CardManagementScreen(
                                     Modifier
                                         .padding(2.dp)
                                         .size(50.dp),
-                                    colors = CardDefaults.cardColors(Color.LightGray),
+                                    colors = CardDefaults.cardColors(Color.White),
                                     shape = RoundedCornerShape(5.dp),
 
                                     elevation = CardDefaults.cardElevation(10.dp)
@@ -454,6 +474,7 @@ fun CardManagementScreen(
                         textAlign = TextAlign.Start,
                         modifier = Modifier.fillMaxWidth(),
                         fontSize = 14.sp,
+                        color = Color.White,
                         fontFamily = FontFamily(Font(R.font.lato_regular))
                     )
 
@@ -476,10 +497,10 @@ fun CardManagementScreen(
                                 .weight(1f)
                                 .height(45.dp)
                                 .width(156.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.Cyan)
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.White)
 
                         ) {
-                            Text(text = "Verify", fontSize = 14.sp)
+                            Text(text = "Verify", fontSize = 14.sp,color= finocolor)
                         }
                         Button(
                             onClick = {
@@ -515,8 +536,10 @@ fun CardManagementScreen(
 
     },   modifier=Modifier.blur(
         if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value|| manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value||manageViewModel.cvvOtpSheetState.value ||manageViewModel.viewBalanceOtpSheetState.value) {
+
             10.dp
         } else {
+
             0.dp
         }
     ))
@@ -552,8 +575,8 @@ fun CardManagementScreen(
                 .padding(it)
                 .fillMaxSize()
                 .background(
-                    color = if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value || manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value || manageViewModel.cvvOtpSheetState.value||manageViewModel.viewBalanceOtpSheetState.value) {
-                        Color.Black.copy(0.5f)
+                    color = if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value || manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value || manageViewModel.cvvOtpSheetState.value || manageViewModel.viewBalanceOtpSheetState.value) {
+                        Color.LightGray.copy(0.5f)
                     } else {
                         Color.White
                     }
@@ -563,7 +586,7 @@ fun CardManagementScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(enabled = true, state = ScrollState(0))
-                    .background(Color.White)
+                    .background(Color.LightGray.copy(0.2f))
                     ,
                 horizontalAlignment = Alignment.CenterHorizontally
 
@@ -574,14 +597,27 @@ fun CardManagementScreen(
                         cardno = SDK_CONSTANTS.cardNumber,
                         exp = SDK_CONSTANTS.expiryDate,
                         avlbaln = SDK_CONSTANTS.availbalance,
-                        cardfaceState = manageViewModel.cardFace
+                        cardfaceState = manageViewModel.cardFace,
+                        manageViewModel.startanim
                     ) {
                         manageViewModel.viewBalanceOtp.value =
                             !manageViewModel.viewBalanceOtp.value
                     }
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-
-                        Text("CVV:", fontWeight = FontWeight(700))
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+                    Row(
+                        Modifier
+                            .height(50.dp)
+                            .background(
+                                light_finocolor,
+                                shape = RoundedCornerShape(topEnd = 50.dp, bottomEnd = 50.dp)
+                            ), verticalAlignment = Alignment.CenterVertically){
+                        Text("Balance: xxxxxx",color= Color.White,modifier=Modifier.padding(5.dp))
+                        Icon(painter = painterResource(id = R.drawable.baseline_monetization_on_24),"",tint= Color.White, modifier = Modifier.size(40.dp))
+                    }
+                        Spacer(modifier = Modifier.width(20.dp))
+                        Column(){
+                        Text("CVV:", fontWeight = FontWeight(700),color= Color.Gray)
 //                        Text(text=if(!CvvToggleState.value)"xxxx" else {
 //                            if( manageViewModel.cvvValue.value .isEmpty()){
 //                                "Fetching..."
@@ -591,9 +627,11 @@ fun CardManagementScreen(
 //                            }
 //                        })
 
+
                         Switch(
                             checked = manageViewModel.cvvUI.value,
                             onCheckedChange = {
+
                                 if(manageViewModel.cvvValue.value.isEmpty()){
                                     manageViewModel.cvvOtpSheetState.value = true
                                 }else{
@@ -609,26 +647,32 @@ fun CardManagementScreen(
 
 
                             },
+                            thumbContent = {
+                                           Box(modifier=Modifier.size(50.dp)){} }
+
+                            ,
                             colors = SwitchDefaults.colors(
                                 checkedTrackColor = finocolor,
                                 uncheckedIconColor = Resetcolor,
                                 uncheckedThumbColor = finocolor,
-                                uncheckedBorderColor = Color.Transparent,
+                                uncheckedBorderColor = Color.LightGray,
                                 checkedBorderColor = Color.Transparent,
                                 disabledCheckedBorderColor = Color.Transparent,
                                 disabledUncheckedBorderColor = Color.Transparent,
-                                disabledUncheckedIconColor = Resetcolor
+                                disabledUncheckedIconColor = Resetcolor, uncheckedTrackColor = Color.White
                             ),
-                        )
+                        )}
 
                     }
 
                 }
 
 
+Spacer(modifier = Modifier.height(10.dp))
 
-
-                Card(modifier=Modifier.fillMaxSize(), colors = CardDefaults.cardColors(Color.White), shape = RoundedCornerShape(topStart = 25.dp, topEnd =25.dp  ), elevation = CardDefaults.cardElevation(20.dp)) {
+               Card(modifier=Modifier.fillMaxHeight(1f), colors = CardDefaults.cardColors(
+                    Color.White), shape = RoundedCornerShape(topStart = 25.dp, topEnd =25.dp  ), elevation = CardDefaults.cardElevation(20.dp),
+                    ) {
 
                     Row(
                         Modifier
@@ -641,11 +685,19 @@ fun CardManagementScreen(
                             Text(
                                 s,
                                 Modifier.clickable { manageViewModel.clickedState.value = s },
-                                color = if (s != manageViewModel.clickedState.value) Resetcolor else {
-                                    Color(0xFFDB8726)
+                                color = if (s != manageViewModel.clickedState.value) Color.LightGray else {
+                                    finocolor
                                 },
-                                fontWeight = FontWeight(600)
+                                fontWeight = FontWeight(
+                                    if (s != manageViewModel.clickedState.value) 600 else {
+                                        800
+                                    }
+                                    )
+                            , fontSize =  if (s != manageViewModel.clickedState.value) 15.sp else {
+                                    18.sp
+                                }, fontFamily = FontFamily(Font(R.font.poppins_regular))
                             )
+
                             if (index != manageViewModel.list.size - 1) {
                                 Spacer(
                                     modifier = Modifier
@@ -656,9 +708,7 @@ fun CardManagementScreen(
                             }
                         }
                     }
-                    val checkBoxState = remember {
-                        mutableStateOf("")
-                    }
+
 
 
                     if (manageViewModel.clickedState.value == "Statement") {
@@ -678,28 +728,28 @@ fun CardManagementScreen(
                                 val checkList =
                                     listOf<String>("Last 10 Transaction", "Transaction History")
                                 checkList.forEach {
-                                    CustomCheckBox(checkBoxState, it)
+                                    CustomCheckBox(manageViewModel.checkBoxState, it)
                                 }
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(20.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                                ) {
-                                    CustomButton(
-                                        text = "SUBMIT", buttonColor = finocolor
-                                    ) {
-                                        if (checkBoxState.value == "Last 10 Transaction") {
-                                            rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/none")
-                                        } else {
-                                            rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/${FilterOption.SelectDate}")
-                                        }
-                                    }
-                                    CustomButton(text = "CANCEL", buttonColor = cancelGray) {
-                                        rootNavController.popBackStack()
-                                    }
-
-                                }
+//                                Row(
+//                                    modifier = Modifier
+//                                        .fillMaxWidth()
+//                                        .padding(20.dp),
+//                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+//                                ) {
+//                                    CustomButton(
+//                                        text = "SUBMIT", buttonColor = finocolor
+//                                    ) {
+//                                        if ( checkBoxState.value == "Last 10 Transaction") {
+//                                            rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/none")
+//                                        } else {
+//                                            rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/${FilterOption.SelectDate}")
+//                                        }
+//                                    }
+//                                    CustomButton(text = "CANCEL", buttonColor = cancelGray) {
+//                                        rootNavController.popBackStack()
+//                                    }
+//
+//                                }
                             }
                         }
                     } else if (manageViewModel.clickedState.value == "Managecard")
@@ -812,18 +862,65 @@ fun CardManagementScreen(
                                                     .fillMaxWidth()
                                                     .padding(horizontal = 10.dp)
                                                     .graphicsLayer {
-                                                        translationY = 40f
+                                                        translationY = 30f
                                                     }, horizontalArrangement = Arrangement.SpaceBetween){
-                                                    Text("0", fontWeight = FontWeight(700))
-                                                    Text("10000",fontWeight = FontWeight(700))
+                                                    Text("0", fontWeight = FontWeight(900),fontSize = 10.sp, color = finocolor)
+                                                    Text("10000",fontWeight = FontWeight(900), fontSize = 10.sp, color =finocolor)
                                                 }
-                                                Slider(state = SliderState(initialValue = 500f,steps=100, initialOnValueChange = {
+                                                val slidervalue= remember{mutableStateOf(0f)}
 
-                                                }), colors = androidx.compose.material3.SliderDefaults.colors(
+                                                Slider(state = SliderState(initialValue = slidervalue.value,steps=20, initialOnValueChange = {
+                                                                                                                                              slidervalue.value=it
+
+                                                },), thumb ={Column()
+                                                {
+
+                                                    Box(
+                                                        Modifier
+                                                            .size(30.dp)
+                                                            .background(
+                                                                finocolor, RoundedCornerShape(50.dp)
+                                                            ), contentAlignment = Alignment.Center
+                                                    ) {
+
+                                                        Box(
+                                                            Modifier
+                                                                .size(20.dp)
+                                                                .background(
+                                                                    Color.White,
+                                                                    RoundedCornerShape(50.dp)
+                                                                )
+                                                        )
+
+                                                    }
+                                                }
+                                                }, track = {
+
+                                                            Row(
+                                                                Modifier
+                                                                    .height(10.dp)
+                                                                    .fillMaxWidth()
+                                                                    .padding(horizontal = 2.dp)
+                                                                    .background(
+                                                                        finocolor,
+                                                                        RoundedCornerShape(10.dp)
+                                                                    ), verticalAlignment = Alignment.CenterVertically){
+                                                                Box(
+                                                                    Modifier
+                                                                        .height(7.dp)
+                                                                        .padding(horizontal = 2.dp)
+                                                                        .fillMaxWidth(it.value)
+                                                                        .background(
+                                                                            Color.White,
+                                                                            RoundedCornerShape(10.dp)
+                                                                        ))
+                                                            }
+                                                },colors = androidx.compose.material3.SliderDefaults.colors(
                                                     thumbColor = finocolor,
                                                     activeTrackColor = finocolor.copy(0.5f),
                                                     disabledActiveTrackColor = Color.Gray
-                                                ))
+                                                )
+                                                )
                                             }
 
 
@@ -848,16 +945,63 @@ fun CardManagementScreen(
                                                     .graphicsLayer {
                                                         translationY = 40f
                                                     }, horizontalArrangement = Arrangement.SpaceBetween){
-                                                    Text("0", fontWeight = FontWeight(700))
-                                                    Text("10000",fontWeight = FontWeight(700))
+                                                    Text("0", fontWeight = FontWeight(900),fontSize = 10.sp, color = finocolor)
+                                                    Text("10000",fontWeight = FontWeight(900), fontSize = 10.sp, color =finocolor)
                                                 }
-                                                Slider(state = SliderState(initialValue = 100f,steps=100, initialOnValueChange = {
+                                                val slidervalue= remember{mutableStateOf(0f)}
 
-                                                }), colors = androidx.compose.material3.SliderDefaults.colors(
+                                                Slider(state = SliderState(initialValue = slidervalue.value,steps=20, initialOnValueChange = {
+                                                    slidervalue.value=it
+
+                                                },), thumb ={Column()
+                                                {
+
+                                                    Box(
+                                                        Modifier
+                                                            .size(30.dp)
+                                                            .background(
+                                                                finocolor, RoundedCornerShape(50.dp)
+                                                            ), contentAlignment = Alignment.Center
+                                                    ) {
+
+                                                        Box(
+                                                            Modifier
+                                                                .size(20.dp)
+                                                                .background(
+                                                                    Color.White,
+                                                                    RoundedCornerShape(50.dp)
+                                                                )
+                                                        )
+
+                                                    }
+                                                }
+                                                }, track = {
+
+                                                    Row(
+                                                        Modifier
+                                                            .height(10.dp)
+                                                            .fillMaxWidth()
+                                                            .padding(horizontal = 2.dp)
+                                                            .background(
+                                                                finocolor,
+                                                                RoundedCornerShape(10.dp)
+                                                            ), verticalAlignment = Alignment.CenterVertically){
+                                                        Box(
+                                                            Modifier
+                                                                .height(7.dp)
+                                                                .padding(horizontal = 2.dp)
+                                                                .fillMaxWidth(it.value)
+                                                                .background(
+                                                                    Color.White,
+                                                                    RoundedCornerShape(10.dp)
+                                                                ))
+                                                    }
+                                                },colors = androidx.compose.material3.SliderDefaults.colors(
                                                     thumbColor = finocolor,
                                                     activeTrackColor = finocolor.copy(0.5f),
                                                     disabledActiveTrackColor = Color.Gray
-                                                ))
+                                                )
+                                                )
                                             }
 
 
@@ -883,17 +1027,63 @@ fun CardManagementScreen(
                                                     .graphicsLayer {
                                                         translationY = 40f
                                                     }, horizontalArrangement = Arrangement.SpaceBetween){
-                                                    Text("0", fontWeight = FontWeight(700))
-                                                    Text("10000",fontWeight = FontWeight(700))
+                                                    Text("0", fontWeight = FontWeight(900),fontSize = 10.sp, color = finocolor)
+                                                    Text("10000",fontWeight = FontWeight(900), fontSize = 10.sp, color =finocolor)
                                                 }
+                                                val slidervalue= remember{mutableStateOf(0f)}
 
-                                                Slider(state = SliderState(initialValue = 200f,steps=100, initialOnValueChange = {
+                                                Slider(state = SliderState(initialValue = slidervalue.value,steps=20, initialOnValueChange = {
+                                                    slidervalue.value=it
 
-                                                }), colors = androidx.compose.material3.SliderDefaults.colors(
+                                                },), thumb ={Column()
+                                                {
+
+                                                    Box(
+                                                        Modifier
+                                                            .size(30.dp)
+                                                            .background(
+                                                                finocolor, RoundedCornerShape(50.dp)
+                                                            ), contentAlignment = Alignment.Center
+                                                    ) {
+
+                                                        Box(
+                                                            Modifier
+                                                                .size(20.dp)
+                                                                .background(
+                                                                    Color.White,
+                                                                    RoundedCornerShape(50.dp)
+                                                                )
+                                                        )
+
+                                                    }
+                                                }
+                                                }, track = {
+
+                                                    Row(
+                                                        Modifier
+                                                            .height(10.dp)
+                                                            .fillMaxWidth()
+                                                            .padding(horizontal = 2.dp)
+                                                            .background(
+                                                                finocolor,
+                                                                RoundedCornerShape(10.dp)
+                                                            ), verticalAlignment = Alignment.CenterVertically){
+                                                        Box(
+                                                            Modifier
+                                                                .height(7.dp)
+                                                                .padding(horizontal = 2.dp)
+                                                                .fillMaxWidth(it.value)
+                                                                .background(
+                                                                    Color.White,
+                                                                    RoundedCornerShape(10.dp)
+                                                                ))
+                                                    }
+                                                },colors = androidx.compose.material3.SliderDefaults.colors(
                                                     thumbColor = finocolor,
                                                     activeTrackColor = finocolor.copy(0.5f),
                                                     disabledActiveTrackColor = Color.Gray
-                                                ))
+                                                )
+                                                )
                                             }
 
 
@@ -918,13 +1108,7 @@ fun CardManagementScreen(
                                     .fillMaxWidth()
                             ) {
                                 Column(horizontalAlignment = Alignment.Start) {
-                                    Text(
-                                        "Services",
-                                        fontWeight = FontWeight(600),
-                                        fontSize = 20.sp,
-                                        modifier = Modifier.padding(10.dp),
-                                        fontFamily = FontFamily(Font(R.font.lato_bold))
-                                    )
+
 
                                     if(!SDK_CONSTANTS.cardType.equals("GIFT",true)) {
 
@@ -945,40 +1129,110 @@ fun CardManagementScreen(
                                 }
 
                             }
-                            if(SDK_CONSTANTS.cardType.equals("GIFT",true) && SDK_CONSTANTS.isVirtual==false){
-
-                                Text("NO services Availabel for this card",color=Color.LightGray, modifier = Modifier.padding(start=10.dp))
-                            }else{
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 20.dp),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
-                                CustomButton(
-                                    text = "SUBMIT", buttonColor = finocolor
-                                ) {
-
-                                }
-                                CustomButton(text = "CANCEL", buttonColor = cancelGray) {
-                                    rootNavController.popBackStack()
-                                }
-
-                            }}}
+//                            if(SDK_CONSTANTS.cardType.equals("GIFT",true) && SDK_CONSTANTS.isVirtual==false){
+//
+//                                Text("NO services Availabel for this card",color=Color.LightGray, modifier = Modifier.padding(start=10.dp))
+//                            }else
+//                            {
+//                            Row(
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(horizontal = 20.dp),
+//                                horizontalArrangement = Arrangement.SpaceEvenly
+//                            ) {
+//                                CustomButton(
+//                                    text = "SUBMIT", buttonColor = finocolor
+//                                ) {
+//
+//                                }
+//                                CustomButton(text = "CANCEL", buttonColor = cancelGray) {
+//                                    rootNavController.popBackStack()
+//                                }
+//
+//                            }}
+                                                 }
                     }
                 }
 
                 }
             }
 
+        CustomSheetWrap(state = mutableStateOf(manageViewModel.clickedState.value.equals("Statement")), ) {
+            if(SDK_CONSTANTS.cardType.equals("GIFT",true) && SDK_CONSTANTS.isVirtual==false){
+
+                Text("NO services Availabel for this card",color=Color.LightGray, modifier = Modifier.padding(start=10.dp))
+            }else
+            {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ElevatedButton(onClick = {
+
+                            if (manageViewModel.checkBoxState.value == "Last 10 Transaction") {
+                                rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/none")
+                            } else {
+                                rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/${FilterOption.SelectDate}")
+                            }
+
+                    }, colors= ButtonDefaults.elevatedButtonColors(
+                        finocolor), shape= RoundedCornerShape(5.dp), modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("PROCEED", color= Color.White, fontSize = 25.sp, fontFamily = FontFamily(
+                            Font(R.font.poppins_regular)
+                        ))
+                    }
+
+
+
+
+
+                }}
         }
+
+        CustomSheetWrap(state = mutableStateOf(manageViewModel.clickedState.value.equals("Services")), ) {
+            if(SDK_CONSTANTS.cardType.equals("GIFT",true) && SDK_CONSTANTS.isVirtual==false){
+
+                Text("NO services Availabel for this card",color=Color.LightGray, modifier = Modifier.padding(start=10.dp))
+            }else
+            {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ElevatedButton(onClick = { /*TODO*/ }, colors= ButtonDefaults.elevatedButtonColors(
+                        finocolor), shape= RoundedCornerShape(5.dp), modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("PROCEED", color= Color.White, fontSize = 25.sp, fontFamily = FontFamily(
+                            Font(R.font.poppins_regular)
+                        ))
+                    }
+
+
+
+
+
+                }}
+        }
+
+
+
+    }
 
     if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value|| manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value||manageViewModel.cvvOtpSheetState.value )  {
         Box(
             Modifier
                 .fillMaxSize()
                 .background(
-                    Color.Black.copy(0.5f)
+                    Color.LightGray.copy(0.2f)
 
                 )
                 .pointerInput(null, null, {})
@@ -987,16 +1241,16 @@ fun CardManagementScreen(
         }
     }
 
-    CustomSheetWrap(state =manageViewModel.resetPinSheetState, initOffset = 2000 ) {
+    CustomSheetWrap(state =manageViewModel.resetPinSheetState, initOffset = 2000 , color = light_finocolor) {
 //            Sheet("", manageViewModel.cvvUI, {}) {}
-        ResetPinSheet(hotlist = manageViewModel.resetPinSheetState){
+        ResetPinSheet(hotlist = manageViewModel.resetPinSheetState, color = light_finocolor){
             manageViewModel.resetPinSheetState.value=false
             manageViewModel.enterPin.value=""
             manageViewModel.reenterPin.value=""
             manageViewModel.resetPinOtpSheetState.value=true
         }
     }
-    CustomSheetWrap(state = manageViewModel.resetPinOtpSheetState, delay = manageViewModel.delay.value, initOffset = 1000) {
+    CustomSheetWrap(state = manageViewModel.resetPinOtpSheetState, delay = manageViewModel.delay.value, initOffset = 1000, color = if(manageViewModel.isError.value) Red.copy(0.6f)else light_finocolor) {
         EnterOTPPinSheet(state = manageViewModel.Otp, oncancel = { manageViewModel.resetPinOtpSheetState.value=false })
         {
 
@@ -1006,26 +1260,42 @@ fun CardManagementScreen(
                         sucess.value=true
                         sucessMsg.value="You have Sucessfully completed pin reset"
                         SDK_CONSTANTS.isPinSet=true
+                        manageViewModel.resetPinOtpSheetState.value=false
+                        manageViewModel.Otp.value=""
                     }
                     else{
+                        manageViewModel.isError.value=true
+                        manageViewModel.errorMessage.value=it.statusDesc
                         SDK_CONSTANTS.isPinSet=false
+
+                        manageViewModel.Otp.value=""
                     }
+                }else{
+                    manageViewModel.isError.value=true
+                    manageViewModel.errorMessage.value=it.statusDesc
+                    manageViewModel.Otp.value=""
                 }
             Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
             }
 
-            manageViewModel.resetPinOtpSheetState.value=false
-            manageViewModel.Otp.value=""
+
         }
     }
-    CustomSheetWrap(state = manageViewModel.blockOtpSheetState, delay = manageViewModel.delay.value,initOffset = 1000) {
+    CustomSheetWrap(state = manageViewModel.blockOtpSheetState, delay = manageViewModel.delay.value,initOffset = 1000, color =if(manageViewModel.isError.value) Red.copy(0.6f)else light_finocolor) {
         EnterOTPPinSheet(state = manageViewModel.Otp, oncancel = { manageViewModel.blockOtpSheetState.value=false })
         {
-            manageViewModel.changeCardStatus(status = "block"){
+            val stat=if(SDK_CONSTANTS.isBlock==true){
+                "unblock"
+            }
+            else{
+                "block"
+            }
+            manageViewModel.changeCardStatus(status = stat){
                 if (it != null) {
                     if(it.status=="0"){
                         sucess.value=true
-                        sucessMsg.value="SucessFully Blocked"
+                        sucessMsg.value="SucessFully ${stat}ed"
+                        manageViewModel.blockOtpSheetState.value=false
                     }
                 }
                 Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
@@ -1034,7 +1304,9 @@ fun CardManagementScreen(
                     manageViewModel.blockCardUI.value=true
                 }
                 else{
-                    manageViewModel.blockCardUI.value=false
+                    manageViewModel.isError.value=true
+                    manageViewModel.errorMessage.value=it.statusDesc
+
                 }
 
             }
@@ -1045,7 +1317,7 @@ fun CardManagementScreen(
         }
     }
 
-    CustomSheetWrap(state = manageViewModel.cvvOtpSheetState, delay = manageViewModel.delay.value,initOffset = 1000) {
+    CustomSheetWrap(state = manageViewModel.cvvOtpSheetState, delay = manageViewModel.delay.value,initOffset = 1000,color= if(manageViewModel.isError.value) Red.copy(0.6f) else light_finocolor) {
 
         EnterOTPPinSheet(state = manageViewModel.Otp, oncancel = { manageViewModel.cvvOtpSheetState.value=false
 
@@ -1059,8 +1331,17 @@ fun CardManagementScreen(
                         if(it.status=="0"){
                             sucess.value=true
                             sucessMsg.value="Cvv sucessfully fetched"
+                            manageViewModel.cvvOtpSheetState.value=false
+                            manageViewModel.cvvUI.value=!manageViewModel.cvvUI.value
+                            manageViewModel.cardFace.value=if(manageViewModel.cardFace.value==CardFace.Front) CardFace.Back else CardFace.Front
+
+                        }
+                        else{
+                            manageViewModel.isError.value=true
+                            manageViewModel.errorMessage.value=it.statusDesc
                         }
                     }
+                    manageViewModel.Otp.value=""
                     Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
                         if(it.status.equals("0")){
 
@@ -1069,15 +1350,19 @@ fun CardManagementScreen(
                         }
                 }
             }
-            manageViewModel.cvvUI.value=!manageViewModel.cvvUI.value
-            manageViewModel.cardFace.value=if(manageViewModel.cardFace.value==CardFace.Front) CardFace.Back else CardFace.Front
 
-            manageViewModel.cvvOtpSheetState.value=false
-            manageViewModel.Otp.value=""
+
+
+
         }
     }
-    CustomSheetWrap(state = manageViewModel.blockCardSheetState) {
-        Sheet(str = STRING.BLOCK_CARD, hotlist = manageViewModel.blockCardSheetState, onCancel = {
+   CustomSheetWrap(state = manageViewModel.blockCardSheetState) {
+       val msg=if(SDK_CONSTANTS.isBlock==true){
+           STRING.UNBLOCK_CARD
+       }else{
+           STRING.BLOCK_CARD
+       }
+        Sheet(str = msg, hotlist = manageViewModel.blockCardSheetState, onCancel = {
             manageViewModel.blockCardSheetState.value=!manageViewModel.blockCardSheetState.value
         }) {
             manageViewModel.blockCardSheetState.value=!manageViewModel.blockCardSheetState.value
@@ -1087,7 +1372,7 @@ fun CardManagementScreen(
         }
         manageViewModel.Otp.value=""
     }
-    CustomSheetWrap(state = manageViewModel.viewBalanceOtpSheetState, delay = manageViewModel.delay.value,initOffset = 1000) {
+    CustomSheetWrap(state = manageViewModel.viewBalanceOtpSheetState, delay = manageViewModel.delay.value,initOffset = 1000, color = light_finocolor) {
 
         EnterOTPPinSheet(state = manageViewModel.Otp, oncancel = { manageViewModel.viewBalanceOtpSheetState.value=false
 
@@ -1098,11 +1383,21 @@ fun CardManagementScreen(
                     if(it.status=="0"){
                         sucess.value=true
                         sucessMsg.value="Data sucessfully fetched"
+                        manageViewModel.cardDataMask.value=false
+                        manageViewModel.viewBalanceOtpSheetState.value=false
+                        manageViewModel.Otp.value=""
+                    }
+                    else{
+                        manageViewModel.isError.value=true
+                        manageViewModel.errorMessage.value=it.statusDesc
+                        manageViewModel.Otp.value=""
                     }
                 }
-                manageViewModel.cardDataMask.value=false
-                manageViewModel.viewBalanceOtpSheetState.value=false
-                manageViewModel.Otp.value=""
+                else{
+                    manageViewModel.isError.value=true
+                    manageViewModel.errorMessage.value="Something Went Wrong"
+                }
+
             }
             manageViewModel.Otp.value=""
 

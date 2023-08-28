@@ -3,8 +3,12 @@ package com.example.prepaidcardsdk.presentation.viewmodels
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import com.example.newui.components.CardFace
 import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
@@ -60,7 +64,8 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
     val viewBalanceOtpSheetState= mutableStateOf(false)
     val serviceRadioState: MutableState<String> =mutableStateOf("")
 
-
+    val startanim=
+        mutableStateOf(false)
 
 //    val cautionSheetState= mutableStateOf(false)
 
@@ -115,6 +120,9 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
 //    val DetailsState =
 //        mutableStateOf(false)
     val cvvValue= mutableStateOf("")
+    val checkBoxState =
+        mutableStateOf("")
+
 
 
 
@@ -169,29 +177,44 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
         }, onFailure = {
 
             isError.value=true
-                errorMessage.value=""
+                errorMessage.value=it
         },
         onLoading = {
             isLoading.value=it
-            isError.value=false
+
         })
     }
 
     fun changeCardStatus(otp:String=Otp.value,status:String,onSucesss:(ChangeStatusResponseModel)->Unit){
+
         handleFlow(changeCardStatus.invoke(otp,status), onLoading = {
                                                                     isLoading.value=it
         }, onSuccess = {
 
             if(it!=null){
-                onSucesss(it)
-                blockOtpSheetState.value=false
-                Otp.value=""
+                if(it.status=="0") {
+                    onSucesss(it)
+
+                    if (status.equals("block")) {
+                        SDK_CONSTANTS.isBlock = true
+                        blockOtpSheetState.value = false
+                    } else {
+                        SDK_CONSTANTS.isBlock = false
+                    }
+
+                    Otp.value = ""
+                }
+                else{
+                    isError.value=true
+                    errorMessage.value=it.statusDesc
+
+                }
             }
 
         }, onFailure = {
             isError.value=true
             errorMessage.value=it
-            blockOtpSheetState.value=false
+
             Otp.value=""
         })
     }

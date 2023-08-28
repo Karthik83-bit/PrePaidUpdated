@@ -84,6 +84,7 @@ fun CustomSheetWrap(
     state: MutableState<Boolean>,
     initOffset: Int = 500,
     delay: Int = 0,
+    modifier:Modifier=Modifier,
     color:Color=Color.White,
     cont: @Composable () -> Unit,
 
@@ -130,7 +131,7 @@ fun CustomSheetWrap(
                     .fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = color),
                 shape = RoundedCornerShape(50.dp, topEnd = 50.dp, 0.dp, 0.dp)
-            , elevation = CardDefaults.cardElevation(30.dp)
+            , elevation = CardDefaults.cardElevation(50.dp)
 
             ) {
                 Box(
@@ -145,7 +146,7 @@ fun CustomSheetWrap(
                             .fillMaxWidth(0.4f)
                             .height(3.dp)
                             .background(
-                                Gray,
+                                White,
                                 RoundedCornerShape(5.dp)
                             )
                     )

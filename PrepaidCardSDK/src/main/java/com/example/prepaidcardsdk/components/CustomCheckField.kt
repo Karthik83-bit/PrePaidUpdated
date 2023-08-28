@@ -1,9 +1,12 @@
 package com.example.prepaidcard.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
@@ -31,6 +34,8 @@ import com.example.prepaidcardsdk.ui.theme.Resetcolor
 
 import com.example.prepaidcardsdk.ui.theme.Cultured
 import com.example.prepaidcardsdk.ui.theme.HitextColor
+import com.example.prepaidcardsdk.ui.theme.finocolor
+import com.example.prepaidcardsdk.ui.theme.light_finocolor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,18 +85,32 @@ fun CustomCheckField( state:MutableState<Boolean>,text:String,res:Int,onSwitch:(
 
             Switch(
                 checked = state.value,
-                modifier = Modifier.padding(end=10.dp),
+                modifier = Modifier.padding(end=10.dp).size(70.dp),
                 onCheckedChange = {
 
 
                     onSwitch()
 
                 },
+                thumbContent = {
+                               Box(Modifier.size(50.dp).width(70.dp))
+                },
                 colors = SwitchDefaults.colors(
-                    checkedTrackColor = Resetcolor,
-                    uncheckedIconColor = Resetcolor,
-                    uncheckedBorderColor = Resetcolor,
-                    disabledUncheckedIconColor = Resetcolor
+                    checkedTrackColor = light_finocolor,
+                    uncheckedIconColor = light_finocolor,
+                    uncheckedThumbColor = light_finocolor,
+                    disabledUncheckedThumbColor = light_finocolor,
+                    checkedThumbColor = Color.White,
+
+                    disabledUncheckedIconColor = light_finocolor,
+                    checkedIconColor = Color.White,
+                    uncheckedBorderColor = Color.LightGray.copy(0.5f),
+                    disabledCheckedBorderColor = Color.Transparent,
+                    checkedBorderColor =Color.Transparent ,
+                    disabledUncheckedBorderColor = Color.Transparent,
+                    uncheckedTrackColor = Color.White.copy(0.5f)
+
+
                 ),
             )
         }

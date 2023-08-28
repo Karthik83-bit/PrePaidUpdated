@@ -71,7 +71,7 @@ fun <T, O> handleFlowResponse(
 
     return flow {
         emit(NetworkResponse.Loading(true))
-        delay(1000)
+        delay(2000)
         try {
             val response = call.invoke()
             if (response.isSuccessful) {

@@ -318,7 +318,8 @@ Scaffold(topBar = { CustomTopBar {
                                         Text(
                                             text = "Prepaid Card",
                                             fontFamily = FontFamily(Font(R.font.robot_medium)),
-                                            fontSize = 18.sp
+                                            fontSize = 18.sp,
+                                            color = finocolor
                                         )
                                         it.toViewcardresponseWrapperDomain().decryptedCard?.let { it1 ->
                                             Text(
@@ -341,7 +342,7 @@ Scaffold(topBar = { CustomTopBar {
                                             Icon(
                                                 painter = painterResource(id = R.drawable.bankitt),
                                                 contentDescription = "",
-                                                tint = isuGreen
+                                                tint = finocolor
                                             )
                                             Text(
                                                 text = if (it.isVirtual) "Virtual" else "Physical",
@@ -462,7 +463,7 @@ Scaffold(topBar = { CustomTopBar {
                                                     12,
                                                     "xxxx-xxxxx-xxxxx-"
                                                 ),
-                                                color = Color.LightGray,
+                                                color = gray_color,
                                                 modifier = Modifier.blur(0.dp),
                                             )
                                         }
@@ -481,7 +482,7 @@ Scaffold(topBar = { CustomTopBar {
                                             )
                                             Text(
                                                 text = if (it.isVirtual) "Virtual" else "Physical",
-                                                color = Color.LightGray,
+                                                color = gray_color,
                                                 fontFamily = FontFamily(Font(R.font.poppins_regular))
                                             )
                                         }

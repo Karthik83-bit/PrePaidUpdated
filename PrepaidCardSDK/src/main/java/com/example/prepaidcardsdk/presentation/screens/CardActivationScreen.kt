@@ -144,7 +144,10 @@ val context= LocalContext.current
 val state= remember {
     mutableStateOf(CardFace.Front)
 }
-                FlipCard(SDK_CONSTANTS.cardUser, SDK_CONSTANTS.cardNumber, SDK_CONSTANTS.expiryDate, SDK_CONSTANTS.availbalance, cardfaceState = state)
+                FlipCard(SDK_CONSTANTS.cardUser, SDK_CONSTANTS.cardNumber, SDK_CONSTANTS.expiryDate, SDK_CONSTANTS.availbalance, cardfaceState = state,
+                    remember {
+                        mutableStateOf(false)
+                    })
 
                 {
 
