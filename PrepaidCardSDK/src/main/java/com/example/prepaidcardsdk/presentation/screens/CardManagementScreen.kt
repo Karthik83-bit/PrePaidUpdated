@@ -7,7 +7,6 @@ import androidx.compose.animation.core.EaseOutBack
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,8 +28,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.material.SliderDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -39,7 +36,6 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderState
@@ -60,17 +56,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Red
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -87,14 +79,11 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.newui.components.CardFace
 import com.example.newui.components.FlipCard
-
-import com.example.prepaidcard.components.CustomButton
 import com.example.prepaidcard.components.CustomCheckBox
 import com.example.prepaidcard.components.CustomCheckField
 import com.example.prepaidcard.components.CustomSheetWrap
 import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.components.Sheet
-
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcard.utils.FilterOption
 import com.example.prepaidcard.utils.STRING
@@ -102,16 +91,15 @@ import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
 import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.components.CustomSheetAlertDialog
+import com.example.prepaidcardsdk.components.Timer
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.ui.theme.Resetcolor
-import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.cdback
 import com.example.prepaidcardsdk.ui.theme.finocolor
 import com.example.prepaidcardsdk.ui.theme.light_finocolor
-import com.example.prepaidcardsdk.ui.theme.lighttealGreen
-import com.example.prepaidcardsdk.ui.theme.tealGreen
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -125,6 +113,7 @@ fun CardManagementScreen(
     cardDataViewModel:CardDataViewModel,
     onClick: (state: Boolean) -> Unit = {},
     manageViewModel: ManageCardViewModel,
+    verifyViewModel: VerifyOTPViewModel
 ) {
     val scope = rememberCoroutineScope()
     val sucess=remember{
@@ -142,11 +131,6 @@ fun CardManagementScreen(
     LaunchedEffect(key1 = true ){
         manageViewModel.startanim.value=!manageViewModel.startanim.value
     }
-    var showTimer = remember {
-        mutableStateOf(false)
-    }
-
-    Timer(timer, showTimer)
 
     if (verifyViewModel.isError.value) {
         AlertDialog(onDismissRequest = { }) {
@@ -355,6 +339,14 @@ fun CardManagementScreen(
     }
     @Composable
     fun EnterOTPPinSheet(state: MutableState<String>, oncancel: () -> Unit, onSubmit: () -> Unit) {
+
+        val timer = remember {
+            mutableStateOf(5)
+        }
+        val showTimer = remember {
+            mutableStateOf(false)
+        }
+        Timer(timer, showTimer)
         showTimer.value = true
         var textFieldSize by remember { mutableStateOf(Size.Zero) }
         Column(
@@ -867,7 +859,8 @@ Spacer(modifier = Modifier.height(10.dp))
 
                             }
                         }
-                    } else if (manageViewModel.clickedState.value == "Usage")
+                    }
+                    else if (manageViewModel.clickedState.value == "Usage")
                     {
 //                        DetailsState.value
                         Box(
@@ -901,7 +894,7 @@ Spacer(modifier = Modifier.height(10.dp))
                                         Row(
                                             Modifier.fillMaxWidth(),
                                             horizontalArrangement = Arrangement.SpaceBetween,
-                                        verticalAlignment = Alignment.CenterVertically
+                                            verticalAlignment = Alignment.CenterVertically
                                         ) {
 
                                             Text(
@@ -924,7 +917,7 @@ Spacer(modifier = Modifier.height(10.dp))
                                                 val slidervalue= remember{mutableStateOf(0f)}
 
                                                 Slider(state = SliderState(initialValue = slidervalue.value,steps=20, initialOnValueChange = {
-                                                                                                                                              slidervalue.value=it
+                                                    slidervalue.value=it
 
                                                 },), thumb ={Column()
                                                 {
@@ -950,25 +943,25 @@ Spacer(modifier = Modifier.height(10.dp))
                                                 }
                                                 }, track = {
 
-                                                            Row(
-                                                                Modifier
-                                                                    .height(10.dp)
-                                                                    .fillMaxWidth()
-                                                                    .padding(horizontal = 2.dp)
-                                                                    .background(
-                                                                        finocolor,
-                                                                        RoundedCornerShape(10.dp)
-                                                                    ), verticalAlignment = Alignment.CenterVertically){
-                                                                Box(
-                                                                    Modifier
-                                                                        .height(7.dp)
-                                                                        .padding(horizontal = 2.dp)
-                                                                        .fillMaxWidth(it.value)
-                                                                        .background(
-                                                                            Color.White,
-                                                                            RoundedCornerShape(10.dp)
-                                                                        ))
-                                                            }
+                                                    Row(
+                                                        Modifier
+                                                            .height(10.dp)
+                                                            .fillMaxWidth()
+                                                            .padding(horizontal = 2.dp)
+                                                            .background(
+                                                                finocolor,
+                                                                RoundedCornerShape(10.dp)
+                                                            ), verticalAlignment = Alignment.CenterVertically){
+                                                        Box(
+                                                            Modifier
+                                                                .height(7.dp)
+                                                                .padding(horizontal = 2.dp)
+                                                                .fillMaxWidth(it.value)
+                                                                .background(
+                                                                    Color.White,
+                                                                    RoundedCornerShape(10.dp)
+                                                                ))
+                                                    }
                                                 },colors = androidx.compose.material3.SliderDefaults.colors(
                                                     thumbColor = finocolor,
                                                     activeTrackColor = finocolor.copy(0.5f),
@@ -1054,7 +1047,8 @@ Spacer(modifier = Modifier.height(10.dp))
                                                     thumbColor = finocolor,
                                                     activeTrackColor = finocolor.copy(0.5f),
                                                     disabledActiveTrackColor = Color.Gray
-                                                ))
+                                                )
+                                                )
                                             }
 
 
@@ -1108,7 +1102,30 @@ Spacer(modifier = Modifier.height(10.dp))
                                                                 )
                                                         )
 
-                                                }), colors = androidx.compose.material3.SliderDefaults.colors(
+                                                    }
+                                                }
+                                                }, track = {
+
+                                                    Row(
+                                                        Modifier
+                                                            .height(10.dp)
+                                                            .fillMaxWidth()
+                                                            .padding(horizontal = 2.dp)
+                                                            .background(
+                                                                finocolor,
+                                                                RoundedCornerShape(10.dp)
+                                                            ), verticalAlignment = Alignment.CenterVertically){
+                                                        Box(
+                                                            Modifier
+                                                                .height(7.dp)
+                                                                .padding(horizontal = 2.dp)
+                                                                .fillMaxWidth(it.value)
+                                                                .background(
+                                                                    Color.White,
+                                                                    RoundedCornerShape(10.dp)
+                                                                ))
+                                                    }
+                                                },colors = androidx.compose.material3.SliderDefaults.colors(
                                                     thumbColor = finocolor,
                                                     activeTrackColor = finocolor.copy(0.5f),
                                                     disabledActiveTrackColor = Color.Gray
@@ -1128,37 +1145,40 @@ Spacer(modifier = Modifier.height(10.dp))
                         }
                     } else
                     {
-                        Column(){
+                        Box(){
+                            Column(modifier = Modifier
+                                .height(400.dp)
+                                .verticalScroll(ScrollState(0), enabled = true)){
 
 
-                            Box(
-                                Modifier
-                                    .padding(vertical = 10.dp, horizontal = 10.dp)
-                                    .fillMaxHeight(0.4f)
-                                    .fillMaxWidth()
-                            ) {
-                                Column(horizontalAlignment = Alignment.Start) {
+                                Box(
+                                    Modifier
+                                        .padding(vertical = 10.dp, horizontal = 10.dp)
+                                        .fillMaxHeight(0.4f)
+                                        .fillMaxWidth()
+                                ) {
+                                    Column(horizontalAlignment = Alignment.Start) {
 
 
-                                    if(!SDK_CONSTANTS.cardType.equals("GIFT",true)) {
+                                        if(!SDK_CONSTANTS.cardType.equals("GIFT",true)) {
 
-                                        CustomCheckBox(
-                                            manageViewModel.serviceRadioState,
-                                            "Add Money"
-                                        )
-                                        CustomCheckBox(
-                                            manageViewModel.serviceRadioState,
-                                            "Send Money"
-                                        )
+                                            CustomCheckBox(
+                                                manageViewModel.serviceRadioState,
+                                                "Add Money"
+                                            )
+                                            CustomCheckBox(
+                                                manageViewModel.serviceRadioState,
+                                                "Send Money"
+                                            )
+                                        }
+                                        if(SDK_CONSTANTS.isVirtual == true) {
+                                            CustomCheckBox(
+                                                manageViewModel.serviceRadioState, "Order PhysicalCatd"
+                                            )
+                                        }
                                     }
-                                    if(SDK_CONSTANTS.isVirtual == true) {
-                                        CustomCheckBox(
-                                            manageViewModel.serviceRadioState, "Order PhysicalCatd"
-                                        )
-                                    }
+
                                 }
-
-                            }
 //                            if(SDK_CONSTANTS.cardType.equals("GIFT",true) && SDK_CONSTANTS.isVirtual==false){
 //
 //                                Text("NO services Availabel for this card",color=Color.LightGray, modifier = Modifier.padding(start=10.dp))
@@ -1180,96 +1200,30 @@ Spacer(modifier = Modifier.height(10.dp))
 //                                }
 //
 //                            }}
-                                                 }
-                    }
-                }
-
-                }
-            }
-
-        CustomSheetWrap(state = mutableStateOf(manageViewModel.clickedState.value.equals("Statement")), ) {
-            if(SDK_CONSTANTS.cardType.equals("GIFT",true) && SDK_CONSTANTS.isVirtual==false){
-
-                Text("NO services Availabel for this card",color=Color.LightGray, modifier = Modifier.padding(start=10.dp))
-            }else
-            {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(60.dp)
-                        .padding(horizontal = 20.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    ElevatedButton(onClick = {
-
-                            if (manageViewModel.checkBoxState.value == "Last 10 Transaction") {
-                                rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/none")
-                            } else {
-                                rootNavController.navigate(Destination.TRANSACTION_STATEMENTS_HISTORY + "/${FilterOption.SelectDate}")
                             }
-
-                    }, colors= ButtonDefaults.elevatedButtonColors(
-                        finocolor), shape= RoundedCornerShape(5.dp), modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("PROCEED", color= Color.White, fontSize = 25.sp, fontFamily = FontFamily(
-                            Font(R.font.poppins_regular)
-                        ))
+                        }
                     }
+               }
 
-
-
-
-
-                }}
+            }
         }
-
-        CustomSheetWrap(state = mutableStateOf(manageViewModel.clickedState.value.equals("Services")), ) {
-            if(SDK_CONSTANTS.cardType.equals("GIFT",true) && SDK_CONSTANTS.isVirtual==false){
-
-                Text("NO services Availabel for this card",color=Color.LightGray, modifier = Modifier.padding(start=10.dp))
-            }else
-            {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(60.dp)
-                        .padding(horizontal = 20.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    ElevatedButton(onClick = { /*TODO*/ }, colors= ButtonDefaults.elevatedButtonColors(
-                        finocolor), shape= RoundedCornerShape(5.dp), modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("PROCEED", color= Color.White, fontSize = 25.sp, fontFamily = FontFamily(
-                            Font(R.font.poppins_regular)
-                        ))
-                    }
-
-
-
-
-
-                }}
-        }
-
 
 
     }
 
-    if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value|| manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value||manageViewModel.cvvOtpSheetState.value )  {
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(
-                    Color.Black.copy(0.5f)
-
-                )
-                .pointerInput(null, null, {})
-        ) {
-
-        }
-    }
+//    if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value|| manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value||manageViewModel.cvvOtpSheetState.value )  {
+//        Box(
+//            Modifier
+//                .fillMaxSize()
+//                .background(
+//                    Color.LightGray.copy(0.2f)
+//
+//                )
+//                .pointerInput(null, null, {})
+//        ) {
+//
+//        }
+//    }
 
     CustomSheetWrap(state =manageViewModel.resetPinSheetState, initOffset = 2000 , color = light_finocolor) {
 //            Sheet("", manageViewModel.cvvUI, {}) {}
@@ -1305,7 +1259,7 @@ Spacer(modifier = Modifier.height(10.dp))
                     manageViewModel.errorMessage.value=it.statusDesc
                     manageViewModel.Otp.value=""
                 }
-            Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+                Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
             }
 
 
@@ -1373,11 +1327,11 @@ Spacer(modifier = Modifier.height(10.dp))
                     }
                     manageViewModel.Otp.value=""
                     Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
-                        if(it.status.equals("0")){
+                    if(it.status.equals("0")){
 
 
 
-                        }
+                    }
                 }
             }
 
@@ -1386,12 +1340,12 @@ Spacer(modifier = Modifier.height(10.dp))
 
         }
     }
-   CustomSheetWrap(state = manageViewModel.blockCardSheetState) {
-       val msg=if(SDK_CONSTANTS.isBlock==true){
-           STRING.UNBLOCK_CARD
-       }else{
-           STRING.BLOCK_CARD
-       }
+    CustomSheetWrap(state = manageViewModel.blockCardSheetState) {
+        val msg=if(SDK_CONSTANTS.isBlock==true){
+            STRING.UNBLOCK_CARD
+        }else{
+            STRING.BLOCK_CARD
+        }
         Sheet(str = msg, hotlist = manageViewModel.blockCardSheetState, onCancel = {
             manageViewModel.blockCardSheetState.value=!manageViewModel.blockCardSheetState.value
         }) {
@@ -1413,11 +1367,21 @@ Spacer(modifier = Modifier.height(10.dp))
                     if(it.status=="0"){
                         sucess.value=true
                         sucessMsg.value="Data sucessfully fetched"
+                        manageViewModel.cardDataMask.value=false
+                        manageViewModel.viewBalanceOtpSheetState.value=false
+                        manageViewModel.Otp.value=""
+                    }
+                    else{
+                        manageViewModel.isError.value=true
+                        manageViewModel.errorMessage.value=it.statusDesc
+                        manageViewModel.Otp.value=""
                     }
                 }
-                manageViewModel.cardDataMask.value=false
-                manageViewModel.viewBalanceOtpSheetState.value=false
-                manageViewModel.Otp.value=""
+                else{
+                    manageViewModel.isError.value=true
+                    manageViewModel.errorMessage.value="Something Went Wrong"
+                }
+
             }
             manageViewModel.Otp.value=""
 
@@ -1450,6 +1414,3 @@ Spacer(modifier = Modifier.height(10.dp))
 
 
 }
-
-
-
