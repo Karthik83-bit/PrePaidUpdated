@@ -14,12 +14,12 @@ import androidx.navigation.navArgument
 import com.example.prepaidcard.screens.CardACtivationConfirmationScreen
 import com.example.prepaidcard.screens.ApplyCardScreen
 import com.example.prepaidcard.screens.CardActivationScreen
-import com.example.prepaidcard.screens.SetPinScreen
-import com.example.prepaidcard.screens.EnterOTPScreen
+import com.example.prepaidcardsdk.presentation.screens.EnterOTPScreen
 import com.example.prepaidcard.screens.CardManagementScreen
 import com.example.prepaidcard.screens.Screen26
 import com.example.prepaidcard.screens.TransactionInfo
 import com.example.prepaidcard.screens.MpinScreen
+import com.example.prepaidcard.screens.SetPinScreen
 import com.example.prepaidcard.screens.ViewModel
 //import com.example.prepaidcard.screens.PageFourteen
 //import com.example.prepaidcard.screens.PageFourty
@@ -61,7 +61,11 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
             ViewCardsScreen(rootNavController, viewModel = hiltViewModel<CardDataViewModel>())
         }
         composable(Destination.CARD_MANAGEMENT_SCREEN){
-            CardManagementScreen(rootNavController, viewModel= hiltViewModel<GeneratePinViewModel>(),manageViewModel= hiltViewModel<ManageCardViewModel>() , cardDataViewModel = hiltViewModel<CardDataViewModel>())
+            CardManagementScreen(rootNavController,
+                viewModel= hiltViewModel<GeneratePinViewModel>(),
+                manageViewModel= hiltViewModel<ManageCardViewModel>() ,
+                cardDataViewModel = hiltViewModel<CardDataViewModel>(),
+                verifyViewModel = verifyOTPViewModel)
         }
         composable(Destination.MPIN_SCREEN){
             MpinScreen(rootNavController = rootNavController, viewModel= verifyOTPViewModel)
@@ -93,7 +97,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
         }
         composable(Destination.ENTER_OTP_SCREEN){
             val viewModel= hiltViewModel<ManageCardViewModel>()
-            EnterOTPScreen(rootNavController,viewModel)
+            EnterOTPScreen(rootNavController,viewModel, verifyOTPViewModel)
         }
         composable(Destination.CARD_ACTIVATION_CONFIRM){
             CardACtivationConfirmationScreen(rootNavController)

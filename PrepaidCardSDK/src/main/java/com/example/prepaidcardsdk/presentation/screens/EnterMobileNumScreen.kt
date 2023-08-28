@@ -161,26 +161,36 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
             AlertDialog(onDismissRequest = { /*TODO*/ }) {
                 Card(
                     Modifier
-                        .height(100.dp)
+                        .height(140.dp)
                         .fillMaxWidth(0.7f)) {
-                    Row(modifier = Modifier.fillMaxHeight(0.5f), verticalAlignment = Alignment.CenterVertically){
-                        Checkbox(checked = checkState.value, onCheckedChange ={
+                    Row(modifier = Modifier.fillMaxHeight(0.3f), verticalAlignment = Alignment.CenterVertically){
+                        Checkbox(
+                            checked = checkState.value,
+                            onCheckedChange ={
                             checkState.value=true
                             viewModel.mobilenum.value="9127866307"
                             showNum.value=false
-                        } )
+                        }
+                        )
                         Text("9127866307")
                     }
+                    Row(modifier = Modifier.fillMaxHeight(0.3f), verticalAlignment = Alignment.CenterVertically){
+                        Checkbox(
+                            checked = checkState.value,
+                            onCheckedChange ={
+                                checkState.value=true
+                                viewModel.mobilenum.value="9128663078"
+                                showNum.value=false
+                            }
+                        )
+                        Text("9128663078")
+                    }
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
-
-
                     Button(onClick = { showNum.value=false }, shape = RoundedCornerShape(3.dp), colors = ButtonDefaults.buttonColors(
                         finocolor)) {
                         Text("Manually input number")
+                        }
                     }
-                    }
-
-
                 }
             }
         }

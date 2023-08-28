@@ -1,4 +1,4 @@
-package com.example.prepaidcard.screens
+package com.example.prepaidcardsdk.presentation.screens
 
 import android.app.Activity
 import android.os.Build
@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material.OutlinedTextField
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,6 +42,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,7 +61,9 @@ import com.example.prepaidcardsdk.components.CustomAlertDialog
 import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.components.CustomOTPinp
 import com.example.prepaidcardsdk.components.OTPInput
+import com.example.prepaidcardsdk.components.Timer
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.ui.theme.Cultured
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.finocolor
@@ -72,7 +76,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardViewModel) {
+fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardViewModel, verifyViewModel: VerifyOTPViewModel) {
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
     var context = LocalContext.current
     var success= remember {
@@ -121,6 +125,37 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
         FocusRequester(),
     )
 
+    var timer = remember {
+        mutableStateOf(5)
+    }
+    var showTimer = remember {
+        mutableStateOf(true)
+    }
+
+    Timer(timer, showTimer)
+
+    if (verifyViewModel.isError.value) {
+        AlertDialog(onDismissRequest = { }) {
+            CustomAlertDialog(verifyViewModel.errorMessage.value){
+                verifyViewModel.isError.value = false
+                if(verifyViewModel.destination.value.isNotEmpty()){
+                    rootNavController.navigate(verifyViewModel.destination.value)
+                    verifyViewModel.destination.value=""
+
+                }
+
+
+                verifyViewModel.errorMessage.value = ""
+                verifyViewModel.destination.value = ""
+            }
+
+        }
+    }
+    if(verifyViewModel.isLoading.value){
+        AlertDialog(onDismissRequest = { /*TODO*/ }) {
+            CustomLoader()
+        }
+    }
 
     Scaffold(topBar = {
         CustomTopBar {
@@ -206,19 +241,55 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
                         )
                     )
                 }
-                Row {
-                    Text(
-                        text = "0:30s",
-                        fontSize = 14.sp,
-                        fontFamily = FontFamily(Font(R.font.lato_regular)),
-                        color = lighttealGreen
-                    )
-                    Text(
-                        text = "Remaining time",
-                        fontSize = 14.sp,
-                        fontFamily = FontFamily(Font(R.font.lato_regular)),
-                        color = remainingTimeColor
-                    )
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    if (timer.value == 0){
+                        Text(
+                            "Resend Otp",
+                            fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                            fontSize = 14.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.ExtraBold,
+                            modifier = Modifier.clickable { verifyViewModel.VerifyOtp {
+
+                                if (it.status == "0") {
+                                    rootNavController.navigate(Destination.VIEW_CARDS_SCREEN)
+                                    verifyViewModel.verifyOtp.value=""
+                                }
+                                else if(verifyViewModel.verifyOtp.value == "") {
+                                    verifyViewModel.isError.value =true
+                                    verifyViewModel.errorMessage.value ="Otp can't be blank."
+                                    verifyViewModel.destination.value = Destination.MPIN_SCREEN
+                                }else
+                                {
+                                    verifyViewModel.isError.value = true
+                                    verifyViewModel.errorMessage.value = it.statusDesc
+                                    verifyViewModel.destination.value = Destination.MPIN_SCREEN
+                                    verifyViewModel. mobilenum.value=""
+                                    verifyViewModel.verifyOtp.value=""
+                                }
+                            } }
+                        )
+                    }
+                    else {
+                        Text(
+                            "Resend Otp",
+                            fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                            fontSize = 14.sp
+                        )
+                    }
+
+                    if (showTimer.value) {
+                        Text(
+                            "Remaining time : " + timer.value,
+                            fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                            fontSize = 14.sp,
+                            color = Color.Gray
+                        )
+                    }
                 }
             }
             Row(
