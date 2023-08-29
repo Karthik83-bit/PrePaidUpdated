@@ -34,20 +34,23 @@ import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.presentation.screens.EnterMobileNumScreen
 import com.example.prepaidcardsdk.presentation.screens.KycScreen
+import com.example.prepaidcardsdk.presentation.viewmodels.BeneficiaryViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.screens.ViewCardsScreen
+import com.prepaid_service_app.presentation.screens.AddBene
+import com.prepaid_service_app.presentation.screens.beneSelectScreen
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun NavigationController(rootNavController:NavHostController, viewModel: ViewModel, verifyOTPViewModel: VerifyOTPViewModel = hiltViewModel()){
+fun NavigationController(rootNavController:NavHostController, viewModel: ViewModel, verifyOTPViewModel: VerifyOTPViewModel = hiltViewModel(), beneficiaryViewModel: BeneficiaryViewModel = hiltViewModel()){
     NavHost(
         modifier = Modifier
             .fillMaxSize(),
-        navController = rootNavController, startDestination = Destination.ENTER_MOBILE_NUM_SCREEN){
+        navController = rootNavController, startDestination = Destination.SELECT_BENE){
 
         composable(Destination.APPLY_CARD_SCREEN){
             ApplyCardScreen(rootNavController,viewModel)
@@ -70,12 +73,12 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
         composable(Destination.MPIN_SCREEN){
             MpinScreen(rootNavController = rootNavController, viewModel= verifyOTPViewModel)
         }
-       /* composable(Destination.PAGE_ELEVEN){
-            PageEleven(rootNavController)
+        composable(Destination.SELECT_BENE){
+            beneSelectScreen(rootnavController = rootNavController, beneficiaryViewModel)
         }
-        composable(Destination.PAGE_EIGHTEEN){
-            PageEighteen(rootNavController)
-        }*/
+        composable(Destination.ADD_BENE){
+            AddBene(rootnavController = rootNavController, beneficiaryViewModel)
+        }
 
         composable(Destination.CARD_ACTIVATION_SCREEN){
             CardActivationScreen(rootNavController,viewModel= hiltViewModel<CardActivationViewModel>())
