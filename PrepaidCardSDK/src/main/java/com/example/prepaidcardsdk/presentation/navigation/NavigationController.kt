@@ -50,7 +50,7 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
     NavHost(
         modifier = Modifier
             .fillMaxSize(),
-        navController = rootNavController, startDestination = Destination.SELECT_BENE){
+        navController = rootNavController, startDestination = Destination.ENTER_MOBILE_NUM_SCREEN){
 
         composable(Destination.APPLY_CARD_SCREEN){
             ApplyCardScreen(rootNavController,viewModel)
