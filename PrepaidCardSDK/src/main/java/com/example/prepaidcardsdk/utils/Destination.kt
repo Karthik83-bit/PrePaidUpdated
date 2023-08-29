@@ -15,6 +15,6 @@ const val APPLY_CARD_SCREEN = "PageFourteen"
     const val ENTER_MOBILE_NUM_SCREEN = "EnterMobileNumScreen"
     const val SELECT_BENE ="SelectBeneficiary"
     const val ADD_BENE ="AddBene"
-    const val TRANSACTION = "Transaction"
+    const val TRANSACTION = "transactionScreen"
 
 }

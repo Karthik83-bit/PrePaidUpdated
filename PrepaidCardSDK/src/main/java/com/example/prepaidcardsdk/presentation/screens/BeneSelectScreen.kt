@@ -1,23 +1,20 @@
 package com.example.prepaidcardsdk.presentation.screens
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,6 +25,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavHostController
@@ -35,13 +33,33 @@ import com.example.prepaidcard.components.CustomButton
 import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.components.NewBene
+import com.example.prepaidcardsdk.components.newBeneList
+import com.example.prepaidcardsdk.data.model.resp.BeneNameResp
+import com.example.prepaidcardsdk.presentation.viewmodels.BeneficiaryViewModel
 import com.example.prepaidcardsdk.ui.theme.Cultured
 import com.example.prepaidcardsdk.ui.theme.tealGreen
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectBeneficiary(rootnavController: NavHostController) {
+fun beneSelectScreen(
+    rootnavController: NavHostController,
+    beneficiaryViewModel: BeneficiaryViewModel
+) {
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
+    val textState = remember {
+        mutableStateOf(TextFieldValue(""))
+    }
+
+    var newList = remember {
+        mutableStateListOf<BeneNameResp>()
+    }
+    LaunchedEffect(key1 = true) {
+        beneficiaryViewModel.list.toList().forEach {
+            newList.add(it)
+        }
+    }
     Scaffold(topBar = {
         CustomTopBar {
             rootnavController.popBackStack()
@@ -57,18 +75,37 @@ fun SelectBeneficiary(rootnavController: NavHostController) {
         }
     ) {
         Column(Modifier.padding(it)) {
-            Row (Modifier.padding(10.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)){
-                Icon(painter = painterResource(id = R.drawable.add_person), contentDescription = "Select Beneficiary", tint = tealGreen)
-                Text(text = "Select Beneficiary", fontFamily = FontFamily(Font(R.font.poppins_black)), color = tealGreen)
+            Row(
+                Modifier.padding(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.add_person),
+                    contentDescription = "Select Beneficiary",
+                    tint = tealGreen
+                )
+                Text(
+                    text = "Select Beneficiary",
+                    fontFamily = FontFamily(Font(R.font.poppins_black)),
+                    color = tealGreen
+                )
             }
             OutlinedTextField(
-                value = "Search",
-                enabled = true,
-                readOnly = false,
+                value = textState.value,
+                label = {
+                    Text(text = "Search")
+                },
                 onValueChange = {
-                    if (it.length <= 4) {
-                        it
+                    textState.value = it
+
+                    newList.removeRange(0, newList.size)
+                    beneficiaryViewModel.list.forEach { bene ->
+                        if (bene.title.contains(it.text, ignoreCase = true)) {
+                            if (!newList.contains(bene)) {
+                                newList.add(bene)
+                            }
+                        }
+
                     }
                 },
                 modifier = Modifier
@@ -84,35 +121,8 @@ fun SelectBeneficiary(rootnavController: NavHostController) {
                     disabledBorderColor = Cultured
                 )
             )
-            Row(
-                Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth()
-                    .clickable { rootnavController.navigate(Destination.TRANSACTION) },
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                OutlinedCard (modifier = Modifier.fillMaxWidth()){
-                    Icon(modifier = Modifier.padding(6.dp),
-                        painter = painterResource(id = R.drawable.person_pin),
-                        contentDescription = "add person",
-                        tint = tealGreen
-                    )
-                    Column {
-                        Text(modifier =Modifier.padding(6.dp),
-                            text = "PRATIK MOHANTY",
-                            fontFamily = FontFamily(Font(R.font.poppins_black))
-                        )
-                        Row(horizontalArrangement = Arrangement.SpaceAround,modifier = Modifier.padding(6.dp)) {
-                            Text(
-                                text = "STATE BANK OF INDIA "
-                            )
-                            Text(text = "xxxx xxxx xxxx 1234")
-                        }
-                    }
-                }
-            }
+            newBeneList(list = newList)
+
         }
-
     }
-
 }

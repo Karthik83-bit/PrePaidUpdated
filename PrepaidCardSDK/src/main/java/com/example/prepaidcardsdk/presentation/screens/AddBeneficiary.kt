@@ -1,14 +1,11 @@
 package com.example.prepaidcardsdk.presentation.screens
 
-import android.text.style.UnderlineSpan
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Icon
@@ -19,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -27,6 +23,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -35,12 +32,29 @@ import com.example.prepaidcard.components.CustomButton
 import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.data.model.resp.BeneNameResp
+import com.example.prepaidcardsdk.presentation.viewmodels.BeneficiaryViewModel
 import com.example.prepaidcardsdk.ui.theme.Cultured
 import com.example.prepaidcardsdk.ui.theme.tealGreen
 
 @Composable
-fun AddBene(rootnavController: NavHostController){
+fun AddBene(rootnavController: NavHostController, beneficiaryViewModel: BeneficiaryViewModel){
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
+    val enterBene = remember {
+        mutableStateOf(TextFieldValue(""))
+    }
+    val enterBank = remember {
+        mutableStateOf(TextFieldValue(""))
+    }
+    val accNum = remember {
+        mutableStateOf(TextFieldValue(""))
+    }
+    val reEnterAccNum = remember {
+        mutableStateOf(TextFieldValue(""))
+    }
+    val enterIFSC = remember {
+        mutableStateOf(TextFieldValue(""))
+    }
     Scaffold (topBar = {
         CustomTopBar {
             rootnavController.popBackStack()
@@ -49,6 +63,7 @@ fun AddBene(rootnavController: NavHostController){
         bottomBar = {
             Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                 CustomButton(text = "Add Beneficiary", buttonColor = tealGreen) {
+                    beneficiaryViewModel.list.add(BeneNameResp(enterBene.value.text, enterBank.value.text, accNum.value.text))
                     rootnavController.navigate(Destination.SELECT_BENE)
                 }
             }
@@ -72,13 +87,32 @@ fun AddBene(rootnavController: NavHostController){
             }
             Column (verticalArrangement = Arrangement.SpaceEvenly) {
                 OutlinedTextField(
-                    value = "Enter Beneficiary Name",
-                    enabled = true,
-                    readOnly = false,
+                    value = enterBene.value,
+                    label = {
+                            Text(text = "Enter Beneficiary Name")
+                    },
                     onValueChange = {
-                        if (it.length <= 4) {
-                            it
-                        }
+                        enterBene.value = it
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .onGloballyPositioned { coordinates ->
+                            textFieldSize = coordinates.size.toSize()
+                        },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Cultured,
+                        focusedBorderColor = Cultured,
+                        unfocusedBorderColor = Color.Transparent,
+                        disabledBorderColor = Cultured
+                    )
+                )
+
+                OutlinedTextField(
+                    value = enterBank.value,
+                    label = { Text(text = "Enter Bank Name")},
+                    onValueChange = {
+                        enterBank.value = it
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -94,13 +128,10 @@ fun AddBene(rootnavController: NavHostController){
                     )
                 )
                 OutlinedTextField(
-                    value = "Enter Bank Name",
-                    enabled = true,
-                    readOnly = false,
+                    value = accNum.value,
+                    label = { Text(text = "Account number")},
                     onValueChange = {
-                        if (it.length <= 4) {
-                            it
-                        }
+                        accNum.value = it
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -116,13 +147,10 @@ fun AddBene(rootnavController: NavHostController){
                     )
                 )
                 OutlinedTextField(
-                    value = "Account number",
-                    enabled = true,
-                    readOnly = false,
+                    value = reEnterAccNum.value,
+                    label = { Text(text = "Re-Enter Account Number")},
                     onValueChange = {
-                        if (it.length <= 4) {
-                            it
-                        }
+                        reEnterAccNum.value = it
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -138,35 +166,10 @@ fun AddBene(rootnavController: NavHostController){
                     )
                 )
                 OutlinedTextField(
-                    value = "Re-Enter Account Number",
-                    enabled = true,
-                    readOnly = false,
+                    value = enterIFSC.value,
+                    label = { Text(text = "Enter IFSC Code")},
                     onValueChange = {
-                        if (it.length <= 4) {
-                            it
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .onGloballyPositioned { coordinates ->
-                            textFieldSize = coordinates.size.toSize()
-                        },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Cultured,
-                        focusedBorderColor = Cultured,
-                        unfocusedBorderColor = Color.Transparent,
-                        disabledBorderColor = Cultured
-                    )
-                )
-                OutlinedTextField(
-                    value = "Enter IFSC Code",
-                    enabled = true,
-                    readOnly = false,
-                    onValueChange = {
-                        if (it.length <= 4) {
-                            it
-                        }
+                        enterIFSC.value = it
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -182,7 +185,9 @@ fun AddBene(rootnavController: NavHostController){
                     )
                 )
             }
-            Text(modifier = Modifier.padding(20.dp).clickable {  }, text = "I don't Remember the IFSC code", textDecoration = TextDecoration.Underline, color = tealGreen)
+            Text(modifier = Modifier
+                .padding(20.dp)
+                .clickable { }, text = "I don't Remember the IFSC code", textDecoration = TextDecoration.Underline, color = tealGreen)
 
         }
 

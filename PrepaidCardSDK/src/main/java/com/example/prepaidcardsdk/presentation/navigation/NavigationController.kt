@@ -11,31 +11,21 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.prepaidcard.screens.CardACtivationConfirmationScreen
 import com.example.prepaidcard.screens.ApplyCardScreen
+import com.example.prepaidcard.screens.CardACtivationConfirmationScreen
 import com.example.prepaidcard.screens.CardActivationScreen
-import com.example.prepaidcard.screens.SetPinScreen
-import com.example.prepaidcard.screens.EnterOTPScreen
 import com.example.prepaidcard.screens.CardManagementScreen
-import com.example.prepaidcard.screens.Screen26
-import com.example.prepaidcard.screens.TransactionInfo
+import com.example.prepaidcard.screens.EnterOTPScreen
 import com.example.prepaidcard.screens.MpinScreen
+import com.example.prepaidcard.screens.Screen26
+import com.example.prepaidcard.screens.SetPinScreen
+import com.example.prepaidcard.screens.TransactionInfo
 import com.example.prepaidcard.screens.ViewModel
-//import com.example.prepaidcard.screens.PageFourteen
-//import com.example.prepaidcard.screens.PageFourty
-//import com.example.prepaidcard.screens.PageFourtyOne
-//import com.example.prepaidcard.screens.PageFourtyTwo
-//import com.example.prepaidcard.screens.PageSix
-//import com.example.prepaidcard.screens.PageTen
-//import com.example.prepaidcard.screens.Screen26
-//import com.example.prepaidcard.screens.TransactionInfo
-//import com.example.prepaidcard.screens.VerifyOTP
-//import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.presentation.screens.AddBene
 import com.example.prepaidcardsdk.presentation.screens.EnterMobileNumScreen
-import com.example.prepaidcardsdk.presentation.screens.SelectBeneficiary
-import com.example.prepaidcardsdk.presentation.screens.Transaction
+import com.example.prepaidcardsdk.presentation.screens.beneSelectScreen
+import com.example.prepaidcardsdk.presentation.viewmodels.BeneficiaryViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
@@ -45,7 +35,7 @@ import com.example.prepaidcardsdk.screens.ViewCardsScreen
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun NavigationController(rootNavController:NavHostController, viewModel: ViewModel, verifyOTPViewModel: VerifyOTPViewModel = hiltViewModel()){
+fun NavigationController(rootNavController:NavHostController, viewModel: ViewModel, beneficiaryViewModel: BeneficiaryViewModel = hiltViewModel(), verifyOTPViewModel: VerifyOTPViewModel = hiltViewModel()){
     NavHost(
         modifier = Modifier
             .fillMaxSize(),
@@ -70,13 +60,10 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
         }
 
         composable(Destination.SELECT_BENE){
-            SelectBeneficiary(rootnavController = rootNavController)
+            beneSelectScreen(rootnavController = rootNavController, beneficiaryViewModel)
         }
         composable(Destination.ADD_BENE){
-            AddBene(rootnavController = rootNavController)
-        }
-        composable(Destination.TRANSACTION){
-            Transaction(rootNavController)
+            AddBene(rootnavController = rootNavController, beneficiaryViewModel)
         }
        /* composable(Destination.PAGE_ELEVEN){
             PageEleven(rootNavController)
@@ -111,5 +98,9 @@ fun NavigationController(rootNavController:NavHostController, viewModel: ViewMod
         composable(Destination.TRANSACTION_INFO){
             TransactionInfo(rootNavController)
         }
+/*
+        composable(Destination.TRANSACTION){
+            TransactionScreen(rootNavController, hiltViewModel<BeneNameViewModel>())
+        }*/
     }
 }
