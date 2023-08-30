@@ -38,8 +38,8 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
         return handleFlowResponse(call = {apiService.setPin(reqBody)},{it})
     }
 
-    override fun changeCardStatus(otp:String,cardStatus:String): Flow<NetworkResponse<ChangeStatusResponseModel>> {
-        val reqBody= ChangeStatusRequestModel(cardRefId = SDK_CONSTANTS.cardRefId?:"168", cardStatus = cardStatus,otp)
+    override fun changeCardStatus(otp: String, cardStatus: String, params: String): Flow<NetworkResponse<ChangeStatusResponseModel>> {
+        val reqBody= ChangeStatusRequestModel(cardRefId = SDK_CONSTANTS.cardRefId?:"168", cardStatus = cardStatus,otp,params=params)
 
         return handleFlowResponse(call = {apiService.changeStatus(reqBody)},{it})
     }
@@ -115,7 +115,7 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
     @RequiresApi(Build.VERSION_CODES.O)
     override fun resetPin(pin: String, otp: String): Flow<NetworkResponse<ResetPinResponseModel>> {
         val encPin = encryptData(pin, key)
-        val reqbody = ResetPinRequestModel(encryptPin = encPin, otp = otp)
+        val reqbody = ResetPinRequestModel(encryptPin = encPin, otp = otp )
         return handleFlowResponse({ apiService.resetPin(reqbody) }, { it })
     }
 

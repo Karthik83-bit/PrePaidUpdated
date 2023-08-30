@@ -14,8 +14,8 @@ import androidx.navigation.navArgument
 import com.example.prepaidcard.screens.CardACtivationConfirmationScreen
 import com.example.prepaidcard.screens.ApplyCardScreen
 import com.example.prepaidcard.screens.CardActivationScreen
+import com.example.prepaidcard.screens.CardManagementScreen
 import com.example.prepaidcardsdk.presentation.screens.EnterOTPScreen
-import com.example.prepaidcardsdk.presentation.screens.CardManagementScreen
 import com.example.prepaidcard.screens.Screen26
 import com.example.prepaidcard.screens.TransactionInfo
 import com.example.prepaidcard.screens.MpinScreen
@@ -34,6 +34,8 @@ import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.presentation.screens.EnterMobileNumScreen
 import com.example.prepaidcardsdk.presentation.screens.KycScreen
+import com.example.prepaidcardsdk.presentation.screens.SendMoneyScreen
+import com.example.prepaidcardsdk.presentation.viewmodels.BeneficiaryViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel

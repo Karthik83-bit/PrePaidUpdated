@@ -40,6 +40,7 @@ class VerifyOTPViewModel @Inject constructor(val verifyOTPUseCase: VerifyOTPUseC
                     isError.value = true
                     isLoading.value = false
                     errorMessage.value = it
+                    verifyOtp.value=""
                 },
                 onSuccess = {
                     if (it != null) {
@@ -52,14 +53,15 @@ class VerifyOTPViewModel @Inject constructor(val verifyOTPUseCase: VerifyOTPUseC
                             }
                         }
                     }
+                    verifyOtp.value=""
                 })
 
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun sendOtp(num:String=mobilenum.value,onSuccess: (GenerateOTPResp) -> Unit){
+    fun sendOtp(num:String=mobilenum.value,params:String,onSuccess: (GenerateOTPResp) -> Unit){
         handleFlow<GenerateOTPResp>(
-            response = generateOtpUseCase.invoke(generateOTPReq = GenerateOTPReq(cardRefid = SDK_CONSTANTS.cardRefId?:"", expairyTime =SDK_CONSTANTS.expirytime , mobileNumber =num, params = SDK_CONSTANTS.params)),
+            response = generateOtpUseCase.invoke(generateOTPReq = GenerateOTPReq(cardRefid = SDK_CONSTANTS.cardRefId?:"", expairyTime =SDK_CONSTANTS.expirytime , mobileNumber =num, params = params)),
             onLoading = {isLoading.value = it},
             onFailure = {
                 isError.value = true

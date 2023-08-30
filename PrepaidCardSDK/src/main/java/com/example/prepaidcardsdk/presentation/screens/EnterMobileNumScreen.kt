@@ -339,7 +339,7 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
 
         PhoneDialer(viewModel.mobilenum)
         ElevatedButton(onClick = {
-            viewModel.sendOtp {
+            viewModel.sendOtp(params = "CARD_OTP") {
                 if(it.status == "0"){
                     viewModel.verifyOTPScaffoldState.value=true
                     Toast.makeText(context, "OTP sent to the mobile number.", Toast.LENGTH_SHORT).show()
