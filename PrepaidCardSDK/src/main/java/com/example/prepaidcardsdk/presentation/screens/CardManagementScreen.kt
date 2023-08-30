@@ -3,29 +3,27 @@ package com.example.prepaidcard.screens
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.EaseOutBack
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-//import androidx.compose.foundation.layout.FlowColumnScopeInstance.weight
-
-
 import androidx.compose.foundation.layout.Row
-
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -33,6 +31,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -93,12 +92,12 @@ import com.example.prepaidcard.components.CustomCheckField
 import com.example.prepaidcard.components.CustomSheetWrap
 import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.components.Sheet
-
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcard.utils.FilterOption
 import com.example.prepaidcard.utils.STRING
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomSheetAlertDialog
+import com.example.prepaidcardsdk.components.Timer
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
@@ -127,7 +126,6 @@ fun CardManagementScreen(
     val sucess=remember{
         mutableStateOf(false)
     }
-   
     val sucessMsg=remember{
         mutableStateOf("")
     }
@@ -142,6 +140,31 @@ fun CardManagementScreen(
             manageViewModel.startanim.value = !manageViewModel.startanim.value
         }
     }
+
+    if (verifyViewModel.isError.value) {
+        AlertDialog(onDismissRequest = { }) {
+            CustomAlertDialog(verifyViewModel.errorMessage.value){
+                verifyViewModel.isError.value = false
+                if(verifyViewModel.destination.value.isNotEmpty()){
+                    rootNavController.navigate(verifyViewModel.destination.value)
+                    verifyViewModel.destination.value=""
+
+                }
+
+
+                verifyViewModel.errorMessage.value = ""
+                verifyViewModel.destination.value = ""
+            }
+
+        }
+    }
+    if(verifyViewModel.isLoading.value){
+        AlertDialog(onDismissRequest = { /*TODO*/ }) {
+            CustomLoader()
+        }
+    }
+
+
 //    val ReplaceToggleState = manageViewModel.ReplaceToggleState
 //
 //
@@ -517,12 +540,39 @@ fun CardManagementScreen(
                     }
 
 
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                        Text(
+                            "Resend Otp",
+                            fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                            fontSize = 14.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.ExtraBold,
+                            modifier = Modifier.clickable (enabled = timer.value == 0){
+                                timer.value = 5
+                                verifyViewModel.sendOtp {
+                                if(it.status == "0"){
+                                        showTimer.value =! showTimer.value
+                                    Toast.makeText(context, "Otp sent Successfully ", Toast.LENGTH_SHORT).show()
+                                    verifyViewModel.verifyOtp.value =""
+                                }
+                             }
+                            }
+                        )
 
-                Text("Remaining Time: ${"sec"}")}
-
-
-
-
+                    if (showTimer.value) {
+                        Text(
+                            "Remaining time : " + timer.value,
+                            fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                            fontSize = 14.sp,
+                            color = Color.Gray
+                        )
+                    }
+                }
+            }
         }
     }
     Box(){
@@ -688,14 +738,13 @@ fun CardManagementScreen(
 
 Spacer(modifier = Modifier.height(10.dp))
 
-               Card(modifier=Modifier.heightIn(min=300.dp,max=600.dp).border(2.dp, finocolor,RoundedCornerShape(topStart = 25.dp, topEnd =25.dp  )), colors = CardDefaults.cardColors(
-                    llight_finocolor), shape = RoundedCornerShape(topStart = 25.dp, topEnd =25.dp  ), elevation = CardDefaults.cardElevation(20.dp),
+               Card(modifier=Modifier.fillMaxHeight(1f), colors = CardDefaults.cardColors(
+                    Color.White), shape = RoundedCornerShape(topStart = 25.dp, topEnd =25.dp  ), elevation = CardDefaults.cardElevation(20.dp),
                     ) {
 
                     Row(
                         Modifier
                             .fillMaxWidth()
-
                             .padding(horizontal = 20.dp, vertical = 10.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
@@ -870,6 +919,8 @@ Spacer(modifier = Modifier.height(10.dp))
                                             Modifier.fillMaxWidth(),
                                             horizontalAlignment = Alignment.Start,
                                         verticalArrangement = Arrangement.spacedBy(0.dp)
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
                                         ) {
 
                                             Text(
@@ -951,6 +1002,25 @@ Spacer(modifier = Modifier.height(10.dp))
                                                     disabledActiveTrackColor = Color.Gray
                                                 )
                                                 )
+                                            }
+
+
+
+                                        }
+                                        Row(
+                                            Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+
+                                            Text(
+                                                text = "POS",
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 18.sp,
+                                                fontWeight = FontWeight(700),
+                                            )
+                                            Spacer(modifier = Modifier.width(20.dp))
+                                            Column {
                                                 Row(modifier = Modifier
                                                     .fillMaxWidth()
                                                     .padding(horizontal = 10.dp)
@@ -1053,6 +1123,26 @@ Spacer(modifier = Modifier.height(10.dp))
                                                     disabledActiveTrackColor = Color.Gray
                                                 )
                                                 )
+                                            }
+
+
+
+                                        }
+                                        Row(
+                                            Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+
+                                            Text(
+                                                text = "ECOM",
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 18.sp,
+                                                fontWeight = FontWeight(700),
+                                            )
+                                            Spacer(modifier = Modifier.width(10.dp))
+
+                                            Column {
                                                 Row(modifier = Modifier
                                                     .fillMaxWidth()
                                                     .padding(horizontal = 10.dp)
@@ -1143,7 +1233,7 @@ Spacer(modifier = Modifier.height(10.dp))
                                                             Modifier
                                                                 .height(7.dp)
                                                                 .padding(horizontal = 2.dp)
-                                                                .fillMaxWidth(it.value / 10000)
+                                                                .fillMaxWidth(it.value)
                                                                 .background(
                                                                     Color.White,
                                                                     RoundedCornerShape(10.dp)
@@ -1186,15 +1276,19 @@ Spacer(modifier = Modifier.height(10.dp))
                         Column(modifier = Modifier
                             .height(400.dp)
                             .verticalScroll(ScrollState(0), enabled = true)){
+                        Box(){
+                            Column(modifier = Modifier
+                                .height(400.dp)
+                                .verticalScroll(ScrollState(0), enabled = true)){
 
 
-                            Box(
-                                Modifier
-                                    .padding(vertical = 10.dp, horizontal = 10.dp)
-                                    .fillMaxHeight(0.4f)
-                                    .fillMaxWidth()
-                            ) {
-                                Column(horizontalAlignment = Alignment.Start) {
+                                Box(
+                                    Modifier
+                                        .padding(vertical = 10.dp, horizontal = 10.dp)
+                                        .fillMaxHeight(0.4f)
+                                        .fillMaxWidth()
+                                ) {
+                                    Column(horizontalAlignment = Alignment.Start) {
 
                                     Text(
                                         "Services",
@@ -1204,6 +1298,8 @@ Spacer(modifier = Modifier.height(10.dp))
                                         fontFamily = FontFamily(Font(R.font.lato_bold)),color= finocolor
                                     )
                                     if(!SDK_CONSTANTS.cardType.equals("GIFT",true)) {
+
+                                        if(!SDK_CONSTANTS.cardType.equals("GIFT",true)) {
 
                                         CustomCheckBox(
                                             manageViewModel.serviceRadioState,
@@ -1222,8 +1318,23 @@ Spacer(modifier = Modifier.height(10.dp))
                                         )
                                     }
                                 }
+                                            CustomCheckBox(
+                                                manageViewModel.serviceRadioState,
+                                                "Add Money"
+                                            )
+                                            CustomCheckBox(
+                                                manageViewModel.serviceRadioState,
+                                                "Send Money"
+                                            )
+                                        }
+                                        if(SDK_CONSTANTS.isVirtual == true) {
+                                            CustomCheckBox(
+                                                manageViewModel.serviceRadioState, "Order PhysicalCatd"
+                                            )
+                                        }
+                                    }
 
-                            }
+                                }
 //                            if(SDK_CONSTANTS.cardType.equals("GIFT",true) && SDK_CONSTANTS.isVirtual==false){
 //
 //                                Text("NO services Availabel for this card",color=Color.LightGray, modifier = Modifier.padding(start=10.dp))
@@ -1245,6 +1356,10 @@ Spacer(modifier = Modifier.height(10.dp))
 //                                }
 //
 //                            }}
+                            }
+                        }
+                    }
+               }
                                                  }
                         }
                     }
@@ -1297,8 +1412,11 @@ Spacer(modifier = Modifier.height(10.dp))
                             Font(R.font.poppins_regular)
                         ))
                     }
+            }
+        }
 
 
+    }
 
 
 
@@ -1320,7 +1438,7 @@ Spacer(modifier = Modifier.height(10.dp))
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    ElevatedButton(onClick = { 
+                    ElevatedButton(onClick = {
 //                                             manageViewModel.commingSoonSheet.value=true
 //                        scope.launch {
 //                            delay(2000)
@@ -1339,6 +1457,19 @@ Spacer(modifier = Modifier.height(10.dp))
                         ))
                     }
 
+//    if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value|| manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value||manageViewModel.cvvOtpSheetState.value )  {
+//        Box(
+//            Modifier
+//                .fillMaxSize()
+//                .background(
+//                    Color.LightGray.copy(0.2f)
+//
+//                )
+//                .pointerInput(null, null, {})
+//        ) {
+//
+//        }
+//    }
 
 
 
@@ -1423,7 +1554,7 @@ Spacer(modifier = Modifier.height(10.dp))
                     manageViewModel.errorMessage.value=it.statusDesc
                     manageViewModel.Otp.value=""
                 }
-            Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+                Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
             }
 
 

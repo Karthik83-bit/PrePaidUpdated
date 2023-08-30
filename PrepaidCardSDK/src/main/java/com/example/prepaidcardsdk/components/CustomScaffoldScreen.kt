@@ -14,6 +14,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -67,13 +68,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.example.prepaidcard.utils.STRING
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
+import com.example.prepaidcardsdk.components.Timer
 //import com.example.prepaidcardsdk.components.CustomSucessDialog
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.ui.theme.finocolor
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import kotlinx.coroutines.delay
@@ -778,10 +782,26 @@ fun CustomScaffoldScreen(
 
 
 }
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EnterOTPPinSheet(state: MutableState<String>, oncancel: () -> Unit, onSubmit: () -> Unit) {
+fun EnterOTPPinSheet(state: MutableState<String>,
+                     verifyViewModel: VerifyOTPViewModel,
+                     oncancel: () -> Unit,
+                     onSubmit: () -> Unit) {
 
+    val timer = remember {
+        mutableStateOf(5)
+    }
+    val showTimer = remember {
+        mutableStateOf(false)
+    }
+    Timer(timer, showTimer)
+    showTimer.value = true
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
+    val context = LocalContext.current
+
+
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -901,7 +921,38 @@ fun EnterOTPPinSheet(state: MutableState<String>, oncancel: () -> Unit, onSubmit
         }
 
 
-
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                "Resend Otp",
+                fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                fontSize = 14.sp,
+                color = White,
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier
+                    .clickable(enabled = timer.value == 0) {
+                        timer.value = 5
+                        verifyViewModel.sendOtp {
+                            if (it.status == "0") {
+                                showTimer.value=! showTimer.value
+                                Toast.makeText(context, "OTP sent successfuly", Toast.LENGTH_SHORT).show()
+                                verifyViewModel.verifyOtp.value=""
+                            }
+                        }
+                    }
+            )
+            if (showTimer.value) {
+                Text(
+                    "Remaining time : " + timer.value,
+                    fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                    fontSize = 14.sp,
+                    color = White
+                )
+            }
+        }
 
 
     }

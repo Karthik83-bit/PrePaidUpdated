@@ -146,6 +146,15 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
         FocusRequester(),
         FocusRequester(),
     )
+
+
+    val timer = remember {
+        mutableStateOf(5)
+    }
+    val showTimer = remember {
+        mutableStateOf(false)
+    }
+
     if(viewModel.isLoading.value){
         AlertDialog(onDismissRequest = { /*TODO*/ }) {
             CustomLoader()
@@ -363,7 +372,7 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
 
     }
     CustomSheetWrap(state = viewModel.verifyOTPScaffoldState, color = light_finocolor) {
-        EnterOTPPinSheet(state = viewModel.verifyOtp, oncancel = { viewModel.verifyOTPScaffoldState.value=false}) {
+        EnterOTPPinSheet(state = viewModel.verifyOtp, verifyViewModel = viewModel, oncancel = { viewModel.verifyOTPScaffoldState.value=false}) {
             viewModel.VerifyOtp {
                 if(it.status=="0"){
                     rootNavController.navigate(Destination.VIEW_CARDS_SCREEN){

@@ -6,6 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -63,9 +64,11 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -86,11 +89,17 @@ import com.example.prepaidcardsdk.data.model.resp.toViewcardresponseWrapperDomai
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.ui.theme.HitextColor
+import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.cdback
 import com.example.prepaidcardsdk.ui.theme.finocolor
 import com.example.prepaidcardsdk.ui.theme.gray_color
+import com.example.prepaidcardsdk.ui.theme.isuGreen
+import com.example.prepaidcardsdk.ui.theme.isuOrrange
 import com.example.prepaidcardsdk.ui.theme.light_finocolor
 //import com.example.prepaidcardsdk.ui.theme.light_isuOrrange
+import com.example.prepaidcardsdk.ui.theme.lighttealGreen
+import com.example.prepaidcardsdk.ui.theme.neon
+import com.example.prepaidcardsdk.ui.theme.tealGreen
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
