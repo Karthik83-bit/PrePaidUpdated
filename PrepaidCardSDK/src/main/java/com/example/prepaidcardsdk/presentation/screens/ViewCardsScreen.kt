@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.MarqueeAnimationMode
@@ -32,8 +33,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.IconButton
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -43,18 +43,21 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
@@ -69,8 +72,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.prepaidcard.components.CustomButton
-import com.example.prepaidcard.components.CustomCheckBox
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.example.newui.components.CardFace
+import com.example.newui.components.FlipCard
+import com.example.prepaidcard.components.CustomSheetWrap
 import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
@@ -79,6 +87,7 @@ import com.example.prepaidcardsdk.components.CustomBlockedAlertDialog
 import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.data.model.resp.toViewcardresponseWrapperDomain
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.ui.theme.HitextColor
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.cdback
@@ -92,22 +101,28 @@ import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 import com.example.prepaidcardsdk.ui.theme.neon
 import com.example.prepaidcardsdk.ui.theme.tealGreen
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 
-fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataViewModel)
+fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataViewModel,verifyViewModel:VerifyOTPViewModel)
 {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
+
     val activity = LocalContext.current as Activity
+    val scope= rememberCoroutineScope()
     BackHandler {
         activity.finish()
     }
-Scaffold(topBar = { CustomTopBar {
+    Box(){
+Scaffold(modifier = Modifier.blur(if(viewModel.commingsoonSheet.value)10.dp else 0.dp),topBar = { CustomTopBar {
     activity.finish()
 }}) {
+
 
 
     Column(
@@ -118,6 +133,7 @@ Scaffold(topBar = { CustomTopBar {
             .verticalScroll(enabled = true, state = ScrollState(0))
 
     ) {
+
         if (viewModel.isBlocked.value) {
             AlertDialog(onDismissRequest = { /*TODO*/ }) {
                 CustomBlockedAlertDialog(errMsg = viewModel.errorMessage.value, onCancel = {
@@ -142,6 +158,7 @@ Scaffold(topBar = { CustomTopBar {
                 CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
                     viewModel.isError.value = false
                     if (viewModel.destination.value.isNotEmpty()) {
+
                         rootNavController.navigate(Destination.ENTER_MOBILE_NUM_SCREEN)
                         viewModel.destination.value = ""
                     }
@@ -574,6 +591,19 @@ Scaffold(topBar = { CustomTopBar {
 
 
         {
+            ClickableText(text = AnnotatedString("Link a new card"), onClick ={
+
+                verifyViewModel.sendOtp(SDK_CONSTANTS.mobileNumber) {
+                    if(it.status=="0"){
+                        viewModel.linkCardSheet.value=true
+                    }
+                    else{
+                        viewModel.isError.value=true
+                        viewModel.errorMessage.value=it.statusDesc
+                    }
+
+                }
+            } )
 //                        DetailsState.value
             Box(
                 Modifier
@@ -710,7 +740,7 @@ Scaffold(topBar = { CustomTopBar {
                                     fontSize = 12.sp
                                 )
                                 Text(
-                                    text = "Completed",
+                                    text = "min-KYC",
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                     fontSize = 14.sp,
 //                                            modifier = Modifier.blur(viewModel.mask.value)
@@ -730,19 +760,38 @@ Scaffold(topBar = { CustomTopBar {
                                 animationMode = MarqueeAnimationMode.Immediately,
                                 delayMillis = 0
                             ), color = finocolor)
-                        Row(Modifier.fillMaxWidth().height(100.dp), horizontalArrangement = Arrangement.Center){
-                        ElevatedButton(onClick = { rootNavController.navigate(Destination.KYC_SCREEN) }, modifier = Modifier
-                            .size(70.dp)
+
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(100.dp), horizontalArrangement = Arrangement.Center)
+                        {
+                        ElevatedButton(onClick = {
+                            viewModel.commingsoonSheet.value=true
+                            scope.launch{
+                            delay(2000)
+                            viewModel.commingsoonSheet.value=false
+
+                        } },
+                            shape = RoundedCornerShape(4.dp),
+                            modifier = Modifier
+
                             .background(
                                 Color.Transparent,
-                                RoundedCornerShape(50.dp)
+                                RoundedCornerShape(2.dp)
                             ), colors = ButtonDefaults.buttonColors(finocolor), elevation = ButtonDefaults.buttonElevation(10.dp)) {
-                            Icon(painter = painterResource(id = R.drawable.kyc), contentDescription = "",tint= Color.White)
+                            Text("Start KYC")
                         }
-                    }}
+
+                    }
+
+                    }
+
+
                 }
             }
         }
+
 //                Row(
 //                    modifier = Modifier
 //                        .fillMaxWidth()
@@ -759,8 +808,149 @@ Scaffold(topBar = { CustomTopBar {
 //                    }
 //
 //                }}
+
     }
-}}
+}
+        if(viewModel.commingsoonSheet.value){
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(0.5f))
+                .pointerInput(null, null, {})){
+
+        }}
+        CustomSheetWrap(state = viewModel.commingsoonSheet) {
+            val lottie by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.comminsoon)
+
+            )
+            val startAnim= remember{
+                mutableStateOf(false)
+            }
+
+            val progress by animateLottieCompositionAsState(composition = lottie)
+            LottieAnimation(composition =lottie , progress = { progress}, Modifier.size(200.dp))
+
+
+
+        }
+        CustomSheetWrap(state = viewModel.linkCardSheet, color = cdback, initOffset = 1500) {
+            Box(){
+//                Box(Modifier.fillMaxWidth().fillMaxHeight(0.8f).blur(100.dp)){
+//                    Column(verticalArrangement = Arrangement.Top, modifier = Modifier.fillMaxSize()) {
+//                        Image(painter = painterResource(id = R.drawable.link_bg), contentDescription ="", modifier=Modifier.fillMaxWidth().height(400.dp), contentScale = ContentScale.FillBounds)
+//                    }
+//
+//                }
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(20.dp))
+            {
+                FlipCard(
+                    name = SDK_CONSTANTS.name,
+                    cardno = "",
+                    exp = "",
+                    avlbaln = "",
+                    cardfaceState = remember {
+                        mutableStateOf(CardFace.Front)
+                    },
+                    startanim = remember {
+                        mutableStateOf(true)
+                    },
+                    viewBalance = {
+
+                    },
+                    blur = 10.dp
+                )
+
+                OutlinedTextField(value =SDK_CONSTANTS.mobileNumber , onValueChange ={}, enabled = false, readOnly = true , label = {Text("Mobile Number")})
+                OutlinedTextField(value = viewModel.cardRefId.value, onValueChange ={viewModel.cardRefId.value=it}, placeholder = {Text("REFID")} , label = {Text("Card Ref ID")})
+                BasicTextField(value = viewModel.otp.value, onValueChange = {
+                    if(it.length<=4){
+                        viewModel.otp.value=it
+                    }
+
+
+
+
+
+                }, keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.NumberPassword,
+                    imeAction = ImeAction.Done
+                )
+                ){
+//                    OTPInput(textList =textlist , requestList =focusRequesterList )
+                    Row(){
+                        repeat(4){
+                            val char=when{
+                                it>=viewModel.otp.value.length->"0"
+                                else->viewModel.otp.value[it]
+                            }
+                            Card(
+                                modifier = Modifier
+                                    .size(75.dp)
+                                    .padding(horizontal = 10.dp), elevation = CardDefaults.cardElevation(10.dp),
+                            colors = CardDefaults.cardColors(Color.White)) {
+                                Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                                    Text(char.toString(), color =if(it>=viewModel.otp.value.length) Color.Gray else Color.Black, fontWeight = if(it>=viewModel.otp.value.length) FontWeight(300) else FontWeight(800))
+
+                                }
+
+
+
+
+
+
+                            }
+                        }
+                    }
+
+
+
+                }
+                OutlinedButton(
+                    colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
+                    border = BorderStroke(1.dp, finocolor),
+                    onClick = {
+                              viewModel.linkCardSheet.value=false
+                    },
+                    enabled = true,
+                    modifier = Modifier
+                        .height(60.dp)
+                        .fillMaxWidth(0.9f),
+                    shape = RoundedCornerShape(4.dp)
+                ) {
+                    Text("Cancel")
+
+
+                }
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = finocolor
+                    ),
+                    onClick = {
+                        viewModel.linkCardSheet.value=false
+
+                    },
+                    enabled = true,
+                    modifier = Modifier
+                        .height(60.dp)
+                        .fillMaxWidth(0.9f),
+                    shape = RoundedCornerShape(4.dp)
+                ) {
+                    Text("Register", color = Color.White)
+
+
+                }
+
+            }
+          }
+
+
+
+        }
+
+    }}
 
 
 

@@ -24,7 +24,11 @@ class CardActivationViewModel @Inject constructor(val changeCardStatusUseCase: C
     var response:MutableState<ChangeStatusResponseModel?> = mutableStateOf(null)
     fun changeCardStatus(onComplete:(ChangeStatusResponseModel?)->Unit) {
         viewModelScope.launch {
-            handleFlow<ChangeStatusResponseModel>(response = changeCardStatusUseCase.invoke("1234","active"),
+            handleFlow<ChangeStatusResponseModel>(response = changeCardStatusUseCase.invoke(
+                "1234",
+                "active",
+                params
+            ),
                 onLoading = {
                     isLoading.value = it
                 },

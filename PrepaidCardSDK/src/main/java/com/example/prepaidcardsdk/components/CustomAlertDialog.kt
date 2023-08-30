@@ -246,7 +246,7 @@ fun CustomBlockedAlertDialog(errMsg:String,onCancel:()->Unit,onClick:()->Unit) {
                         modifier = Modifier.defaultMinSize(minWidth = 100.dp, minHeight = 40.dp,),
                         shape = RoundedCornerShape(4.dp)
                     ) {
-                        Text("UNBLOCK", color = White, fontWeight = FontWeight(500))
+                        Text("UNBLOCK", color = White,  fontWeight = FontWeight(400), fontSize = 12.sp)
                     }
                     ElevatedButton(
                         onClick = { onCancel() },
@@ -255,7 +255,7 @@ fun CustomBlockedAlertDialog(errMsg:String,onCancel:()->Unit,onClick:()->Unit) {
                         modifier = Modifier.defaultMinSize(minWidth = 100.dp, minHeight = 40.dp,),
                         shape = RoundedCornerShape(4.dp)
                     ) {
-                        Text("REMIND LATER", color = Red, fontWeight = FontWeight(500))
+                        Text("REMIND LATER", color = Red, fontWeight = FontWeight(400), fontSize = 12.sp)
                     }
                 }
 

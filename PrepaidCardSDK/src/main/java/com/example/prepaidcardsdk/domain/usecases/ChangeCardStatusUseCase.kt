@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ChangeCardStatusUseCase @Inject constructor(val repo:Repository) {
-    fun invoke(otp:String,status:String): Flow<NetworkResponse<ChangeStatusResponseModel>> {
-       return repo.changeCardStatus(otp,status)
+    fun invoke(otp: String, status: String, params: String,): Flow<NetworkResponse<ChangeStatusResponseModel>> {
+       return repo.changeCardStatus(otp,status,params)
     }
 }

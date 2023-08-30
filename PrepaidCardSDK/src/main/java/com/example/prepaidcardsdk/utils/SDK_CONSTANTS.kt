@@ -16,8 +16,15 @@ object SDK_CONSTANTS {
      var isActive:Boolean?=null
      var availbalance:String =""
  var isPinSet:Boolean?=null
-     var expirytime:String =""
+     var expirytime:String ="5"
      var params:String = ""
     var customerId:String = ""
     var kycType:String =""
+    var email:String=""
+    var name:String=""
+    var mobileNumber:String=""
+    var ovdnumber: String=""
+    var corporateName: String=""
+    var programManagerName:String= ""
+
 }

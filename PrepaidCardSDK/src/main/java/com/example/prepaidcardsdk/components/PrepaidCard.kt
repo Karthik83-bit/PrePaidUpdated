@@ -1,7 +1,5 @@
 package com.example.newui.components
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.animateFloatAsState
@@ -17,17 +15,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,9 +37,6 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -55,18 +47,14 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.core.R
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.prepaidcardsdk.domain.usecases.ResetPinUseCase
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
-import com.example.prepaidcardsdk.ui.theme.HitextColor
 import com.example.prepaidcardsdk.ui.theme.Resetcolor
-import com.example.prepaidcardsdk.ui.theme.tealGreen
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 
 
@@ -90,8 +78,14 @@ fun FlipCard(
     exp: String,
     avlbaln: String,
     cardfaceState: MutableState<CardFace>,
-    startanim:MutableState<Boolean>,
+    startanim: MutableState<Boolean>,
+
+    scaleparam: Float = 0f,
+    rotate: Float = 0f,
+    translatep: Float = 0f,
+    blur: Dp=0.dp,
     viewBalance: () -> Unit,
+
 ) {
 
 
@@ -109,7 +103,7 @@ fun FlipCard(
         )
     )
     val scale= animateFloatAsState(
-        targetValue = if(startanim.value)1f else 1.3f,
+        targetValue = if(startanim.value)0.98f else 1.3f,
         animationSpec = tween(
             durationMillis = 1000,
             easing = EaseInOut,
@@ -133,11 +127,12 @@ fun FlipCard(
     val cont = LocalContext.current
 
     Card(
-        modifier = Modifier.zIndex(100f)
+        modifier = Modifier.zIndex(100f).blur(blur).background(Color.Black.copy(scaleparam*1))
             .rotate(rotate.value)
-            .scale(scale.value)
+            .scale(scale.value-scaleparam)
             .graphicsLayer {
                 translationX =translate.value
+                translationY=translatep
             },
         colors = CardDefaults.cardColors(Color.Transparent)
     ) {
@@ -215,8 +210,8 @@ fun PrepaidCard(
         modifier = clickable
 
 
-            .width(940.dp)
-            .height(290.dp)
+            .width(900.dp)
+            .height(270.dp)
             .padding(5.dp)
             .drawBehind {
 

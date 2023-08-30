@@ -1,6 +1,5 @@
 package com.example.prepaidcard.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -144,14 +143,20 @@ val context= LocalContext.current
 val state= remember {
     mutableStateOf(CardFace.Front)
 }
-                FlipCard(SDK_CONSTANTS.cardUser, SDK_CONSTANTS.cardNumber, SDK_CONSTANTS.expiryDate, SDK_CONSTANTS.availbalance, cardfaceState = state,
+                FlipCard(
+                    SDK_CONSTANTS.cardUser,
+                    SDK_CONSTANTS.cardNumber,
+                    SDK_CONSTANTS.expiryDate,
+                    SDK_CONSTANTS.availbalance,
+                    cardfaceState = state,
                     remember {
                         mutableStateOf(false)
-                    })
+                    },
+                    viewBalance = {
 
-                {
-
-                }
+                    },
+                    blur = 10.dp
+                )
                 CustomCheckField(
                     state = viewModel.cardActivationToggleState,
                     text = "Card Activation",

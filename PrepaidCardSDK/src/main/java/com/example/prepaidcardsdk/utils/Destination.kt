@@ -14,6 +14,7 @@ const val APPLY_CARD_SCREEN = "PageFourteen"
     const val MPIN_SCREEN="MPIN_1"
     const val ENTER_MOBILE_NUM_SCREEN = "EnterMobileNumScreen"
     const val KYC_SCREEN ="KycScreen"
+    const val SEND_MONEY_SCREEN="SendMoney"
     const val SELECT_BENE ="SelectBeneficiary"
     const val ADD_BENE ="AddBene"
 

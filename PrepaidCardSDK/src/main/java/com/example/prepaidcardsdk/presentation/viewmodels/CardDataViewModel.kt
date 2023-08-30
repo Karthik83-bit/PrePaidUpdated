@@ -31,6 +31,10 @@ class CardDataViewModel @Inject constructor(
 
     ViewModel() {
 
+    val cardRefId=mutableStateOf("")
+    val otp=mutableStateOf("")
+    val linkCardSheet=mutableStateOf(false)
+    val commingsoonSheet=mutableStateOf(false)
     val isBlocked=mutableStateOf(false)
     val isLoading = mutableStateOf(false)
     var isError: MutableState<Boolean> = mutableStateOf(false)

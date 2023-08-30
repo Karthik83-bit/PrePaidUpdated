@@ -1,14 +1,9 @@
 package com.example.prepaidcardsdk.presentation.viewmodels
 
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.EaseInOut
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import com.example.newui.components.CardFace
 import com.example.prepaidcardsdk.data.model.resp.ChangeStatusResponseModel
@@ -66,6 +61,7 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
 
     val startanim=
         mutableStateOf(false)
+    val commingSoonSheet= mutableStateOf(false)
 
 //    val cautionSheetState= mutableStateOf(false)
 
@@ -185,9 +181,15 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
         })
     }
 
-    fun changeCardStatus(otp:String=Otp.value,status:String,onSucesss:(ChangeStatusResponseModel)->Unit){
+    fun changeCardStatus(
+        otp: String = Otp.value,
+        status: String,
+        params: String,
+        onSucesss: (ChangeStatusResponseModel) -> Unit,
 
-        handleFlow(changeCardStatus.invoke(otp,status), onLoading = {
+    ){
+
+        handleFlow(changeCardStatus.invoke(otp,status,params), onLoading = {
                                                                     isLoading.value=it
         }, onSuccess = {
 
