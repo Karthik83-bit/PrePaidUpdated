@@ -48,6 +48,7 @@ class VerifyOTPViewModel @Inject constructor(val verifyOTPUseCase: VerifyOTPUseC
                             if(it.status.equals("0")){
                                 SDK_CONSTANTS.customerId = it.customerResponse.userId.toString()
                                 SDK_CONSTANTS.kycType = it.customerResponse.kycType
+                                SDK_CONSTANTS.mobileNumber=it.customerResponse.mobileNumber.toString()
                             }
                         }
                     }
@@ -56,9 +57,9 @@ class VerifyOTPViewModel @Inject constructor(val verifyOTPUseCase: VerifyOTPUseC
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun sendOtp(onSuccess: (GenerateOTPResp) -> Unit){
+    fun sendOtp(num:String=mobilenum.value,onSuccess: (GenerateOTPResp) -> Unit){
         handleFlow<GenerateOTPResp>(
-            response = generateOtpUseCase.invoke(generateOTPReq = GenerateOTPReq(cardRefid = SDK_CONSTANTS.cardRefId?:"", expairyTime =SDK_CONSTANTS.expirytime , mobileNumber = mobilenum.value, params = SDK_CONSTANTS.params)),
+            response = generateOtpUseCase.invoke(generateOTPReq = GenerateOTPReq(cardRefid = SDK_CONSTANTS.cardRefId?:"", expairyTime =SDK_CONSTANTS.expirytime , mobileNumber =num, params = SDK_CONSTANTS.params)),
             onLoading = {isLoading.value = it},
             onFailure = {
                 isError.value = true

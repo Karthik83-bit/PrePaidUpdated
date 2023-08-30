@@ -20,3 +20,6 @@ data class CustomerResponse(
     val updatedDate: String,
     val userId: Int
 )
+fun CustomerResponse.toConstants(){
+
+}

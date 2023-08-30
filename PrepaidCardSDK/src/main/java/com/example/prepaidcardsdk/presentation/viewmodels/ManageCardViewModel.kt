@@ -66,6 +66,7 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
 
     val startanim=
         mutableStateOf(false)
+    val commingSoonSheet= mutableStateOf(false)
 
 //    val cautionSheetState= mutableStateOf(false)
 

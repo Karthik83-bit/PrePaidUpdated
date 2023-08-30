@@ -61,6 +61,7 @@ import com.example.prepaidcardsdk.components.CustomAlertDialog
 import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.components.CustomOTPinp
 import com.example.prepaidcardsdk.components.OTPInput
+import com.example.prepaidcardsdk.components.PhoneDialer
 import com.example.prepaidcardsdk.components.Timer
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
@@ -377,6 +378,8 @@ success.value=false
                     },
 
                     )
+
+                PhoneDialer(otp = viewModel.Otp)
             }
         }
     }

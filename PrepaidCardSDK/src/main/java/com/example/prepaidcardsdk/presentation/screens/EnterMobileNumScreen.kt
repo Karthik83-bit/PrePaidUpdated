@@ -4,12 +4,14 @@ package com.example.prepaidcardsdk.presentation.screens
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -36,12 +38,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -59,6 +63,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.prepaidcard.components.CustomCheckBox
 import com.example.prepaidcard.components.CustomSheetWrap
 import com.example.prepaidcard.components.EnterOTPPinSheet
@@ -66,6 +75,7 @@ import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
 import com.example.prepaidcardsdk.components.CustomLoader
+import com.example.prepaidcardsdk.components.PhoneDialer
 import com.example.prepaidcardsdk.data.model.req.VerifyOtpReq
 import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.ui.theme.finocolor
@@ -142,7 +152,10 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
         }
     }
     if(viewModel.verifyOTPScaffoldState.value){
-        Box(Modifier.fillMaxSize().background(Color.Black.copy(0.2f)))
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(0.2f)))
     }
 
 
@@ -150,7 +163,8 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
         Modifier
             .fillMaxSize()
             .padding(20.dp)
-            .blur(if(viewModel.verifyOTPScaffoldState.value)10.dp else 0.dp)
+            .background(Color.White)
+            .blur(if (viewModel.verifyOTPScaffoldState.value) 10.dp else 0.dp)
             .verticalScroll(enabled = true, state = ScrollState(0)), horizontalAlignment = Alignment.CenterHorizontally)
     {
 
@@ -198,7 +212,7 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
         Column(verticalArrangement = Arrangement.spacedBy(50.dp), horizontalAlignment = Alignment.CenterHorizontally){
             Box(contentAlignment = Alignment.Center){
                 Image(painter = painterResource(id = R.drawable.login_bg) , contentDescription ="", modifier = Modifier
-                    .size(200.dp))
+                    .size(100.dp))
 
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(5.dp)) {
@@ -208,21 +222,23 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
 
             val cont= LocalContext.current
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally){
-                BasicTextField(value = viewModel.mobilenum.value, onValueChange = {
-                        if(it.length<=10){
-                            viewModel.mobilenum.value=it
-                        }
-
-
-
-
-
-                }, keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.NumberPassword,
-                    imeAction = ImeAction.Done
-                )
-                ){
-//                    OTPInput(textList =textlist , requestList =focusRequesterList )
+//                BasicTextField(value = viewModel.mobilenum.value, onValueChange = {
+//                        if(it.length<=10){
+//                            viewModel.mobilenum.value=it
+//                        }
+//
+//
+//
+//
+//
+//                }, keyboardOptions = KeyboardOptions(
+//                    keyboardType = KeyboardType.NumberPassword,
+//                    imeAction = ImeAction.Done
+//                )
+//                )
+//
+           Box  {
+//                   OTPInput(textList =textlist , requestList =focusRequesterList )
                     Row(){
                         repeat(10){
                             val char=when{
@@ -247,6 +263,7 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
                             }
                         }
                     }
+               Spacer(modifier = Modifier.height(100.dp))
                     if(viewModel.isError.value){
                         AlertDialog(onDismissRequest = { }) {
                             CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
@@ -304,31 +321,42 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
                 }
 
             }
+            val width= animateDpAsState(targetValue = if(viewModel.isLoading.value) 100.dp else 400.dp)
+            val height= animateDpAsState(targetValue = if(viewModel.isLoading.value) 100.dp else 50.dp)
 
-            ElevatedButton(onClick = {
-                viewModel.sendOtp {
-                    if(it.status == "0"){
-                        viewModel.verifyOTPScaffoldState.value=true
-                        Toast.makeText(context, "OTP sent to the mobile number.", Toast.LENGTH_SHORT).show()
-                    }
-                     else if (viewModel.mobilenum.value == "") {
-                        viewModel.isError.value = true
-                        viewModel.errorMessage.value = "Mobile Number field can't be blank."
-                        viewModel.destination.value = Destination.ENTER_MOBILE_NUM_SCREEN
-                    } else if (viewModel.mobilenum.value.length <= 9) {
-                        viewModel.isError.value = true
-                        viewModel.errorMessage.value = "Enter a valid Mobile Number."
-                        viewModel.destination.value = Destination.ENTER_MOBILE_NUM_SCREEN
 
-                    }
+
+        }
+
+        PhoneDialer(viewModel.mobilenum)
+        ElevatedButton(onClick = {
+            viewModel.sendOtp {
+                if(it.status == "0"){
+                    viewModel.verifyOTPScaffoldState.value=true
+                    Toast.makeText(context, "OTP sent to the mobile number.", Toast.LENGTH_SHORT).show()
+                }
+                else if (viewModel.mobilenum.value == "") {
+                    viewModel.isError.value = true
+                    viewModel.errorMessage.value = "Mobile Number field can't be blank."
+                    viewModel.destination.value = Destination.ENTER_MOBILE_NUM_SCREEN
+                } else if (viewModel.mobilenum.value.length <= 9) {
+                    viewModel.isError.value = true
+                    viewModel.errorMessage.value = "Enter a valid Mobile Number."
+                    viewModel.destination.value = Destination.ENTER_MOBILE_NUM_SCREEN
 
                 }
+                else{
+                    viewModel.isError.value = true
+                    viewModel.errorMessage.value=it.statusDesc
+                }
 
-            }, shape = RoundedCornerShape(5.dp), elevation = ButtonDefaults.buttonElevation(20.dp), modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp), colors = ButtonDefaults.buttonColors(finocolor)) {
-                Text("SEND OTP", fontFamily = FontFamily(listOf(Font(R.font.poppins_regular))))
             }
+
+        }, shape = RoundedCornerShape(500.dp), elevation = ButtonDefaults.buttonElevation(20.dp), modifier = Modifier
+            .size(80.dp), colors = ButtonDefaults.buttonColors(Color.White)) {
+
+            Text(">", fontFamily = FontFamily(listOf(Font(R.font.poppins_regular)
+            )), color = Color.Black, fontSize = 40.sp)
         }
 
 
@@ -352,4 +380,7 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
         }
 
     }
+
+
+
 }

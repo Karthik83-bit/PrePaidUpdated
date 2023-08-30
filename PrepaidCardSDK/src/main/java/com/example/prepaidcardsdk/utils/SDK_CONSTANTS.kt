@@ -20,4 +20,11 @@ object SDK_CONSTANTS {
      var params:String = ""
     var customerId:String = ""
     var kycType:String =""
+    var email:String=""
+    var name:String=""
+    var mobileNumber:String=""
+    var ovdnumber: String=""
+    var corporateName: String=""
+    var programManagerName:String= ""
+
 }

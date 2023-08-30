@@ -3,27 +3,29 @@ package com.example.prepaidcard.screens
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.EaseOutBack
-import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+//import androidx.compose.foundation.layout.FlowColumnScopeInstance.weight
+
+
 import androidx.compose.foundation.layout.Row
+
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -31,8 +33,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.material.SliderDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -41,7 +41,6 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderState
@@ -62,17 +61,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.Color.Companion.Red
-import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -90,7 +88,6 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.newui.components.CardFace
 import com.example.newui.components.FlipCard
 
-import com.example.prepaidcard.components.CustomButton
 import com.example.prepaidcard.components.CustomCheckBox
 import com.example.prepaidcard.components.CustomCheckField
 import com.example.prepaidcard.components.CustomSheetWrap
@@ -101,23 +98,19 @@ import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcard.utils.FilterOption
 import com.example.prepaidcard.utils.STRING
 import com.example.prepaidcardsdk.R
-import com.example.prepaidcardsdk.components.CustomAlertDialog
-import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.components.CustomSheetAlertDialog
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.ui.theme.Resetcolor
-import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.cdback
 import com.example.prepaidcardsdk.ui.theme.finocolor
 import com.example.prepaidcardsdk.ui.theme.light_finocolor
-import com.example.prepaidcardsdk.ui.theme.lighttealGreen
-import com.example.prepaidcardsdk.ui.theme.tealGreen
+import com.example.prepaidcardsdk.ui.theme.llight_finocolor
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.nio.file.WatchEvent
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -128,11 +121,13 @@ fun CardManagementScreen(
     cardDataViewModel:CardDataViewModel,
     onClick: (state: Boolean) -> Unit = {},
     manageViewModel: ManageCardViewModel,
+    verifyViewModel: VerifyOTPViewModel
 ) {
     val scope = rememberCoroutineScope()
     val sucess=remember{
         mutableStateOf(false)
     }
+   
     val sucessMsg=remember{
         mutableStateOf("")
     }
@@ -143,7 +138,9 @@ fun CardManagementScreen(
         }
     }
     LaunchedEffect(key1 = true ){
-        manageViewModel.startanim.value=!manageViewModel.startanim.value
+        if(manageViewModel.startanim.value==false) {
+            manageViewModel.startanim.value = !manageViewModel.startanim.value
+        }
     }
 //    val ReplaceToggleState = manageViewModel.ReplaceToggleState
 //
@@ -528,21 +525,14 @@ fun CardManagementScreen(
 
         }
     }
+    Box(){
 
     Scaffold(topBar = {
         CustomTopBar {
             rootNavController.popBackStack()
         }
 
-    },   modifier=Modifier.blur(
-        if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value|| manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value||manageViewModel.cvvOtpSheetState.value ||manageViewModel.viewBalanceOtpSheetState.value) {
-
-            10.dp
-        } else {
-
-            0.dp
-        }
-    ))
+    },   modifier=Modifier)
     {
 
 
@@ -572,37 +562,61 @@ fun CardManagementScreen(
 
         Box(
             Modifier
-                .padding(it)
-                .fillMaxSize()
-                .background(
-                    color = if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value || manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value || manageViewModel.cvvOtpSheetState.value || manageViewModel.viewBalanceOtpSheetState.value) {
-                        Color.LightGray.copy(0.5f)
+                .blur(
+                    if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value || manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value || manageViewModel.cvvOtpSheetState.value || manageViewModel.viewBalanceOtpSheetState.value || manageViewModel.commingSoonSheet.value) {
+
+                        10.dp
                     } else {
-                        Color.White
+
+                        0.dp
                     }
                 )
+                .padding(it)
+                .fillMaxSize()
+
         ) {
             Column(
+
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(color = White)
+                    .heightIn(300.dp)
                     .verticalScroll(enabled = true, state = ScrollState(0))
-                    .background(Color.LightGray.copy(0.2f))
-                    ,
+
+            ,
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
+
                 Column(Modifier.fillMaxSize()) {
-                    FlipCard(
-                        name = SDK_CONSTANTS.cardUser,
-                        cardno = SDK_CONSTANTS.cardNumber,
-                        exp = SDK_CONSTANTS.expiryDate,
-                        avlbaln = SDK_CONSTANTS.availbalance,
-                        cardfaceState = manageViewModel.cardFace,
-                        manageViewModel.startanim
-                    ) {
-                        manageViewModel.viewBalanceOtp.value =
-                            !manageViewModel.viewBalanceOtp.value
+                    Box(){
+
+
+                        FlipCard(
+                            name = SDK_CONSTANTS.cardUser,
+                            cardno = SDK_CONSTANTS.cardNumber,
+                            exp = SDK_CONSTANTS.expiryDate,
+                            avlbaln = SDK_CONSTANTS.availbalance,
+                            cardfaceState = manageViewModel.cardFace,
+                            manageViewModel.startanim,
+
+                            viewBalance = {
+                                manageViewModel.viewBalanceOtp.value =
+                                    !manageViewModel.viewBalanceOtp.value
+                            },
+
+
+                        )
+
+
+//
                     }
+
+
+
+
+
+
                     Spacer(modifier = Modifier.height(5.dp))
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
                     Row(
@@ -612,8 +626,12 @@ fun CardManagementScreen(
                                 light_finocolor,
                                 shape = RoundedCornerShape(topEnd = 50.dp, bottomEnd = 50.dp)
                             ), verticalAlignment = Alignment.CenterVertically){
-                        Text("Balance: xxxxxx",color= Color.White,modifier=Modifier.padding(5.dp))
-                        Icon(painter = painterResource(id = R.drawable.baseline_monetization_on_24),"",tint= Color.White, modifier = Modifier.size(40.dp))
+                        Text("Balance: ${if(manageViewModel.cardDataMask.value)"*****" else SDK_CONSTANTS.availbalance}",color= Color.White,modifier=Modifier.padding(5.dp))
+                        Icon(painter = painterResource(id = R.drawable.baseline_currency_rupee_24),"",tint= Color.White, modifier = Modifier
+                            .size(40.dp)
+                            .graphicsLayer {
+                                rotationX = if (!manageViewModel.cardDataMask.value) 360f else 0f
+                            })
                     }
                         Spacer(modifier = Modifier.width(20.dp))
                         Column(){
@@ -670,13 +688,14 @@ fun CardManagementScreen(
 
 Spacer(modifier = Modifier.height(10.dp))
 
-               Card(modifier=Modifier.fillMaxHeight(1f), colors = CardDefaults.cardColors(
-                    Color.White), shape = RoundedCornerShape(topStart = 25.dp, topEnd =25.dp  ), elevation = CardDefaults.cardElevation(20.dp),
+               Card(modifier=Modifier.heightIn(min=300.dp,max=600.dp).border(2.dp, finocolor,RoundedCornerShape(topStart = 25.dp, topEnd =25.dp  )), colors = CardDefaults.cardColors(
+                    llight_finocolor), shape = RoundedCornerShape(topStart = 25.dp, topEnd =25.dp  ), elevation = CardDefaults.cardElevation(20.dp),
                     ) {
 
                     Row(
                         Modifier
                             .fillMaxWidth()
+
                             .padding(horizontal = 20.dp, vertical = 10.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
@@ -689,12 +708,12 @@ Spacer(modifier = Modifier.height(10.dp))
                                     finocolor
                                 },
                                 fontWeight = FontWeight(
-                                    if (s != manageViewModel.clickedState.value) 600 else {
-                                        800
+                                    if (s != manageViewModel.clickedState.value) 400 else {
+                                        700
                                     }
                                     )
-                            , fontSize =  if (s != manageViewModel.clickedState.value) 15.sp else {
-                                    18.sp
+                            , fontSize =  if (s != manageViewModel.clickedState.value) 13.sp else {
+                                    15.sp
                                 }, fontFamily = FontFamily(Font(R.font.poppins_regular))
                             )
 
@@ -715,15 +734,16 @@ Spacer(modifier = Modifier.height(10.dp))
                         Box(
                             Modifier
                                 .padding(vertical = 10.dp, horizontal = 10.dp)
-                                .fillMaxSize()
+                                .fillMaxSize().background(Transparent)
                         ) {
-                            Column(horizontalAlignment = Alignment.Start) {
+                            Column(horizontalAlignment = Alignment.Start, modifier = Modifier.background(Transparent)) {
                                 Text(
                                     "Card Statement",
                                     fontWeight = FontWeight(600),
                                     fontSize = 20.sp,
                                     modifier = Modifier.padding(10.dp),
-                                    fontFamily = FontFamily(Font(R.font.lato_bold))
+                                    fontFamily = FontFamily(Font(R.font.lato_bold)),
+                                    color= finocolor
                                 )
                                 val checkList =
                                     listOf<String>("Last 10 Transaction", "Transaction History")
@@ -756,7 +776,7 @@ Spacer(modifier = Modifier.height(10.dp))
                     {
                         Box(
                             Modifier
-                                .padding(vertical = 10.dp)
+                                .padding(vertical = 10.dp, horizontal = 10.dp)
                                 .fillMaxSize()
                         ) {
                             Column(
@@ -767,9 +787,10 @@ Spacer(modifier = Modifier.height(10.dp))
                                     fontWeight = FontWeight(600),
                                     fontSize = 20.sp,
                                     modifier = Modifier.padding(10.dp),
-                                    fontFamily = FontFamily(Font(R.font.lato_bold))
+                                    fontFamily = FontFamily(Font(R.font.lato_bold)),
+                                    color= finocolor
                                 )
-                                if(!SDK_CONSTANTS.cardType.equals("GIFT")){
+                                if(SDK_CONSTANTS.isVirtual==false||SDK_CONSTANTS.isVirtual==null){
                                     CustomCheckField(
                                         state = manageViewModel.resetPinUI,
                                         text =  if(SDK_CONSTANTS.isPinSet==true)"ResetPin" else "SetPin",
@@ -831,7 +852,8 @@ Spacer(modifier = Modifier.height(10.dp))
                                     fontWeight = FontWeight(600),
                                     fontSize = 20.sp,
                                     modifier = Modifier.padding(10.dp),
-                                    fontFamily = FontFamily(Font(R.font.lato_bold))
+                                    fontFamily = FontFamily(Font(R.font.lato_bold)),
+                                            color= finocolor
                                 )
                                 ElevatedCard(
                                     modifier = Modifier.padding(
@@ -844,32 +866,40 @@ Spacer(modifier = Modifier.height(10.dp))
                                         Modifier.padding(10.dp),
                                         verticalArrangement = Arrangement.spacedBy(15.dp)
                                     ) {
-                                        Row(
+                                        Column(
                                             Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                        verticalAlignment = Alignment.CenterVertically
+                                            horizontalAlignment = Alignment.Start,
+                                        verticalArrangement = Arrangement.spacedBy(0.dp)
                                         ) {
 
                                             Text(
                                                 text = "ATM",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontFamily = FontFamily(Font(R.font.poppins_regular)),
                                                 fontSize = 18.sp,
-                                                fontWeight = FontWeight(700),
+                                                fontWeight = FontWeight(600),
+                                                color = finocolor
                                             )
                                             Spacer(modifier = Modifier.width(10.dp))
+                                            val slidervalue= remember{mutableStateOf(0f)}
                                             Column {
-                                                Row(modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(horizontal = 10.dp)
-                                                    .graphicsLayer {
-                                                        translationY = 30f
-                                                    }, horizontalArrangement = Arrangement.SpaceBetween){
-                                                    Text("0", fontWeight = FontWeight(900),fontSize = 10.sp, color = finocolor)
-                                                    Text("10000",fontWeight = FontWeight(900), fontSize = 10.sp, color =finocolor)
-                                                }
-                                                val slidervalue= remember{mutableStateOf(0f)}
+                                                Text((Math.round((slidervalue.value))).toString(),
+                                                    Modifier
+                                                        .graphicsLayer {
+                                                            translationX = slidervalue.value / 15
+                                                            translationY = 20f
+                                                        }
+                                                        .background(
+                                                            finocolor,
+                                                            shape = RoundedCornerShape(15.dp)
+                                                        )
+                                                        .padding(horizontal = 15.dp), color = White, fontSize =
+                                                15.sp, fontWeight = FontWeight(600)
+                                                )
 
-                                                Slider(state = SliderState(initialValue = slidervalue.value,steps=20, initialOnValueChange = {
+
+
+                                                Slider(state = SliderState(initialValue = slidervalue.value,steps=10, valueRange = 0f..10000f, initialOnValueChange = {
+
                                                                                                                                               slidervalue.value=it
 
                                                 },), thumb ={Column()
@@ -909,7 +939,7 @@ Spacer(modifier = Modifier.height(10.dp))
                                                                     Modifier
                                                                         .height(7.dp)
                                                                         .padding(horizontal = 2.dp)
-                                                                        .fillMaxWidth(it.value)
+                                                                        .fillMaxWidth(it.value / 10000)
                                                                         .background(
                                                                             Color.White,
                                                                             RoundedCornerShape(10.dp)
@@ -921,36 +951,57 @@ Spacer(modifier = Modifier.height(10.dp))
                                                     disabledActiveTrackColor = Color.Gray
                                                 )
                                                 )
+                                                Row(modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(horizontal = 10.dp)
+                                                    .graphicsLayer {
+                                                        translationY = -30f
+                                                    }, horizontalArrangement = Arrangement.SpaceBetween){
+
+                                                    Text("0", fontWeight = FontWeight(900),fontSize = 10.sp, color = finocolor)
+
+
+                                                    Text("10000",fontWeight = FontWeight(900), fontSize = 10.sp, color =finocolor)
+                                                }
                                             }
 
 
 
                                         }
-                                        Row(
+                                        Column(
                                             Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            verticalAlignment = Alignment.CenterVertically
+                                            horizontalAlignment = Alignment.Start,
+                                            verticalArrangement = Arrangement.spacedBy(0.dp)
                                         ) {
 
                                             Text(
                                                 text = "POS",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontFamily = FontFamily(Font(R.font.poppins_regular)),
                                                 fontSize = 18.sp,
-                                                fontWeight = FontWeight(700),
+                                                fontWeight = FontWeight(600),
+                                                color = finocolor
                                             )
-                                            Spacer(modifier = Modifier.width(20.dp))
+                                            Spacer(modifier = Modifier.width(10.dp))
+                                            val slidervalue= remember{mutableStateOf(0f)}
                                             Column {
-                                                Row(modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .graphicsLayer {
-                                                        translationY = 40f
-                                                    }, horizontalArrangement = Arrangement.SpaceBetween){
-                                                    Text("0", fontWeight = FontWeight(900),fontSize = 10.sp, color = finocolor)
-                                                    Text("10000",fontWeight = FontWeight(900), fontSize = 10.sp, color =finocolor)
-                                                }
-                                                val slidervalue= remember{mutableStateOf(0f)}
+                                                Text((Math.round((slidervalue.value))).toString(),
+                                                    Modifier
+                                                        .graphicsLayer {
+                                                            translationX = slidervalue.value / 15
+                                                            translationY = 20f
+                                                        }
+                                                        .background(
+                                                            finocolor,
+                                                            shape = RoundedCornerShape(15.dp)
+                                                        )
+                                                        .padding(horizontal = 15.dp), color = White, fontSize =
+                                                15.sp, fontWeight = FontWeight(600)
+                                                )
 
-                                                Slider(state = SliderState(initialValue = slidervalue.value,steps=20, initialOnValueChange = {
+
+
+                                                Slider(state = SliderState(initialValue = slidervalue.value,steps=10, valueRange = 0f..10000f, initialOnValueChange = {
+
                                                     slidervalue.value=it
 
                                                 },), thumb ={Column()
@@ -990,7 +1041,7 @@ Spacer(modifier = Modifier.height(10.dp))
                                                             Modifier
                                                                 .height(7.dp)
                                                                 .padding(horizontal = 2.dp)
-                                                                .fillMaxWidth(it.value)
+                                                                .fillMaxWidth(it.value / 10000)
                                                                 .background(
                                                                     Color.White,
                                                                     RoundedCornerShape(10.dp)
@@ -1002,37 +1053,57 @@ Spacer(modifier = Modifier.height(10.dp))
                                                     disabledActiveTrackColor = Color.Gray
                                                 )
                                                 )
+                                                Row(modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(horizontal = 10.dp)
+                                                    .graphicsLayer {
+                                                        translationY = -30f
+                                                    }, horizontalArrangement = Arrangement.SpaceBetween){
+
+                                                    Text("0", fontWeight = FontWeight(900),fontSize = 10.sp, color = finocolor)
+
+
+                                                    Text("10000",fontWeight = FontWeight(900), fontSize = 10.sp, color =finocolor)
+                                                }
                                             }
 
 
 
                                         }
-                                        Row(
+                                        Column(
                                             Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            verticalAlignment = Alignment.CenterVertically
+                                            horizontalAlignment = Alignment.Start,
+                                            verticalArrangement = Arrangement.spacedBy(0.dp)
                                         ) {
 
                                             Text(
-                                                text = "ECOM",
-                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                "ECOM",
+                                                fontFamily = FontFamily(Font(R.font.poppins_regular)),
                                                 fontSize = 18.sp,
-                                                fontWeight = FontWeight(700),
+                                                fontWeight = FontWeight(600),
+                                                color = finocolor
                                             )
                                             Spacer(modifier = Modifier.width(10.dp))
-
+                                            val slidervalue= remember{mutableStateOf(0f)}
                                             Column {
-                                                Row(modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .graphicsLayer {
-                                                        translationY = 40f
-                                                    }, horizontalArrangement = Arrangement.SpaceBetween){
-                                                    Text("0", fontWeight = FontWeight(900),fontSize = 10.sp, color = finocolor)
-                                                    Text("10000",fontWeight = FontWeight(900), fontSize = 10.sp, color =finocolor)
-                                                }
-                                                val slidervalue= remember{mutableStateOf(0f)}
+                                                Text((Math.round((slidervalue.value))).toString(),
+                                                    Modifier
+                                                        .graphicsLayer {
+                                                            translationX = slidervalue.value / 15
+                                                            translationY = 20f
+                                                        }
+                                                        .background(
+                                                            finocolor,
+                                                            shape = RoundedCornerShape(15.dp)
+                                                        )
+                                                        .padding(horizontal = 15.dp), color = White, fontSize =
+                                                15.sp, fontWeight = FontWeight(600)
+                                                )
 
-                                                Slider(state = SliderState(initialValue = slidervalue.value,steps=20, initialOnValueChange = {
+
+
+                                                Slider(state = SliderState(initialValue = slidervalue.value,steps=10, valueRange = 0f..10000f, initialOnValueChange = {
+
                                                     slidervalue.value=it
 
                                                 },), thumb ={Column()
@@ -1072,7 +1143,7 @@ Spacer(modifier = Modifier.height(10.dp))
                                                             Modifier
                                                                 .height(7.dp)
                                                                 .padding(horizontal = 2.dp)
-                                                                .fillMaxWidth(it.value)
+                                                                .fillMaxWidth(it.value / 10000)
                                                                 .background(
                                                                     Color.White,
                                                                     RoundedCornerShape(10.dp)
@@ -1084,21 +1155,37 @@ Spacer(modifier = Modifier.height(10.dp))
                                                     disabledActiveTrackColor = Color.Gray
                                                 )
                                                 )
+                                                Row(modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(horizontal = 10.dp)
+                                                    .graphicsLayer {
+                                                        translationY = -30f
+                                                    }, horizontalArrangement = Arrangement.SpaceBetween){
+
+                                                    Text("0", fontWeight = FontWeight(900),fontSize = 10.sp, color = finocolor)
+
+
+                                                    Text("10000",fontWeight = FontWeight(900), fontSize = 10.sp, color =finocolor)
+                                                }
                                             }
 
 
 
                                         }
+
 
 
                                     }
 
-                                }
+                               }
                             }
                         }
                     } else
                     {
-                        Column(){
+                        Box(){
+                        Column(modifier = Modifier
+                            .height(400.dp)
+                            .verticalScroll(ScrollState(0), enabled = true)){
 
 
                             Box(
@@ -1109,17 +1196,25 @@ Spacer(modifier = Modifier.height(10.dp))
                             ) {
                                 Column(horizontalAlignment = Alignment.Start) {
 
-
+                                    Text(
+                                        "Services",
+                                        fontWeight = FontWeight(600),
+                                        fontSize = 20.sp,
+                                        modifier = Modifier.padding(10.dp),
+                                        fontFamily = FontFamily(Font(R.font.lato_bold)),color= finocolor
+                                    )
                                     if(!SDK_CONSTANTS.cardType.equals("GIFT",true)) {
 
                                         CustomCheckBox(
                                             manageViewModel.serviceRadioState,
                                             "Add Money"
                                         )
-                                        CustomCheckBox(
-                                            manageViewModel.serviceRadioState,
-                                            "Send Money"
-                                        )
+                                        if(!SDK_CONSTANTS.kycType.equals("min_kyc")) {
+                                            CustomCheckBox(
+                                                manageViewModel.serviceRadioState,
+                                                "Send Money"
+                                            )
+                                        }
                                     }
                                     if(SDK_CONSTANTS.isVirtual == true) {
                                         CustomCheckBox(
@@ -1151,8 +1246,24 @@ Spacer(modifier = Modifier.height(10.dp))
 //
 //                            }}
                                                  }
+                        }
                     }
-                }
+//                   if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value || manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value || manageViewModel.cvvOtpSheetState.value || manageViewModel.viewBalanceOtpSheetState.value||manageViewModel.commingSoonSheet.value) {
+//                       Box(
+//                           Modifier
+//                               .padding(it)
+//                               .fillMaxSize()
+//                               .background(
+//                                   color = if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value || manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value || manageViewModel.cvvOtpSheetState.value || manageViewModel.viewBalanceOtpSheetState.value || manageViewModel.commingSoonSheet.value) {
+//                                       Color.LightGray.copy(0.5f)
+//                                   } else {
+//                                       Color.White
+//                                   }
+//                               )
+//                       )
+//                   }
+
+               }
 
                 }
             }
@@ -1182,7 +1293,7 @@ Spacer(modifier = Modifier.height(10.dp))
                     }, colors= ButtonDefaults.elevatedButtonColors(
                         finocolor), shape= RoundedCornerShape(5.dp), modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("PROCEED", color= Color.White, fontSize = 25.sp, fontFamily = FontFamily(
+                        Text("PROCEED", color= Color.White, fontSize = 12.sp, fontFamily = FontFamily(
                             Font(R.font.poppins_regular)
                         ))
                     }
@@ -1193,6 +1304,7 @@ Spacer(modifier = Modifier.height(10.dp))
 
                 }}
         }
+
 
         CustomSheetWrap(state = mutableStateOf(manageViewModel.clickedState.value.equals("Services")), ) {
             if(SDK_CONSTANTS.cardType.equals("GIFT",true) && SDK_CONSTANTS.isVirtual==false){
@@ -1208,7 +1320,18 @@ Spacer(modifier = Modifier.height(10.dp))
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    ElevatedButton(onClick = { /*TODO*/ }, colors= ButtonDefaults.elevatedButtonColors(
+                    ElevatedButton(onClick = { 
+//                                             manageViewModel.commingSoonSheet.value=true
+//                        scope.launch {
+//                            delay(2000)
+//                            manageViewModel.commingSoonSheet.value=false
+                        if(manageViewModel.serviceRadioState.value.equals("Send Money")){
+                            rootNavController.navigate(Destination.SEND_MONEY_SCREEN)
+                        }
+//                        }
+
+
+                    }, colors= ButtonDefaults.elevatedButtonColors(
                         finocolor), shape= RoundedCornerShape(5.dp), modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("PROCEED", color= Color.White, fontSize = 25.sp, fontFamily = FontFamily(
@@ -1222,24 +1345,49 @@ Spacer(modifier = Modifier.height(10.dp))
 
                 }}
         }
+        CustomSheetWrap(state = manageViewModel.commingSoonSheet) {
+            val lottie by rememberLottieComposition(spec =LottieCompositionSpec.RawRes(R.raw.comminsoon)
+
+            )
+            val startAnim= remember{
+                mutableStateOf(false)
+            }
+
+            val progress by animateLottieCompositionAsState(composition = lottie)
+            LottieAnimation(composition =lottie , progress = { progress}, Modifier.size(200.dp))
 
 
-
-    }
-
-    if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value|| manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value||manageViewModel.cvvOtpSheetState.value )  {
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(
-                    Color.LightGray.copy(0.2f)
-
-                )
-                .pointerInput(null, null, {})
-        ) {
 
         }
+
+
     }
+        if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value || manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value || manageViewModel.cvvOtpSheetState.value || manageViewModel.viewBalanceOtpSheetState.value || manageViewModel.commingSoonSheet.value) {
+
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(Gray.copy(0.5f))
+                    .pointerInput(null, null, {})){
+
+            }}
+        }
+
+
+
+//    if (manageViewModel.blockCardSheetState.value || manageViewModel.resetPinSheetState.value|| manageViewModel.blockOtpSheetState.value || manageViewModel.resetPinOtpSheetState.value||manageViewModel.cvvOtpSheetState.value )  {
+//        Box(
+//            Modifier
+//                .fillMaxSize()
+//                .background(
+//                    Color.LightGray.copy(0.2f)
+//
+//                )
+//                .pointerInput(null, null, {})
+//        ) {
+//
+//        }
+//    }
 
     CustomSheetWrap(state =manageViewModel.resetPinSheetState, initOffset = 2000 , color = light_finocolor) {
 //            Sheet("", manageViewModel.cvvUI, {}) {}
