@@ -26,8 +26,9 @@ fun NewBene(
     title: String,
     subtitle: String,
     accNum: String,
-    onclick:()->Unit,
-    delete: ()->Unit
+    onclick: () -> Unit,
+    delete: () -> Unit
+
 ){
 
     Row(
@@ -57,7 +58,7 @@ fun NewBene(
                     Text(
                         text = subtitle
                     )
-                    Text(text = accNum)
+                    Text(text = maskString(accNum))
                     Icon(painter = painterResource(id = R.drawable.removebene),
                         contentDescription = "beneRemove",
                         modifier = Modifier.clickable { delete()})
@@ -69,7 +70,7 @@ fun NewBene(
     }
 }
 @Composable
-fun newBeneList(list: MutableList<BeneNameResp>,onClick:()->Unit) {
+fun newBeneList(list: MutableList<BeneNameResp>, onClick: () -> Unit) {
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         list.map { item ->
@@ -78,15 +79,24 @@ fun newBeneList(list: MutableList<BeneNameResp>,onClick:()->Unit) {
                 subtitle = item.subtitle,
                 accNum = item.accNum,
                 onclick = {
-onClick()
+                    onClick()
                 }
-
                 ) {
                 list.remove(item)
             }
         }
     }
 }
+
+fun maskString(input: String): String {
+    val length = input.length
+    val maskedLength = length - 4
+    val maskedPart = "x".repeat(maskedLength)
+    val lastFourDigits = input.substring(maskedLength)
+
+    return "$maskedPart$lastFourDigits"
+}
+
 
 
 

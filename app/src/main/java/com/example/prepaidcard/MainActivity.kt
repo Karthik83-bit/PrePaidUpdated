@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.AnimRes
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,12 +14,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.prepaidcard.navigation.NavigationController
 //import com.example.prepaidcard.screens.PageFourteen
 //import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.ui.theme.PrepaidCardTheme

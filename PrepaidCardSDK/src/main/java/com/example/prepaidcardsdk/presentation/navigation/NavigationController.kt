@@ -1,4 +1,4 @@
-package com.example.prepaidcard.navigation
+package com.example.prepaidcardsdk.presentation.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -33,7 +33,6 @@ import com.example.prepaidcard.screens.ViewModel
 //import com.example.prepaidcard.screens.ViewModel
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.presentation.screens.EnterMobileNumScreen
-import com.example.prepaidcardsdk.presentation.screens.KycScreen
 import com.example.prepaidcardsdk.presentation.screens.SendMoneyScreen
 import com.example.prepaidcardsdk.presentation.viewmodels.BeneficiaryViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewModel
@@ -43,8 +42,8 @@ import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.SendMoneyViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.screens.ViewCardsScreen
-import com.prepaid_service_app.presentation.screens.AddBene
-import com.prepaid_service_app.presentation.screens.beneSelectScreen
+import com.example.prepaidcardsdk.presentation.screens.AddBene
+import com.example.prepaidcardsdk.presentation.screens.beneSelectScreen
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable

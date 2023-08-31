@@ -1,4 +1,4 @@
-package com.prepaid_service_app.presentation.screens
+package com.example.prepaidcardsdk.presentation.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

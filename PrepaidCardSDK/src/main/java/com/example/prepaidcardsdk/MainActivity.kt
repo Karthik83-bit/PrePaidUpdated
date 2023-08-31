@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import com.example.prepaidcard.navigation.NavigationController
+import com.example.prepaidcardsdk.presentation.navigation.NavigationController
 import com.example.prepaidcardsdk.ui.theme.PrepaidCardTheme
 import dagger.hilt.android.AndroidEntryPoint
 
