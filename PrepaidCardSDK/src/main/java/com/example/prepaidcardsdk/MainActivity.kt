@@ -2,6 +2,7 @@ package com.example.prepaidcardsdk
 
 import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -26,6 +27,10 @@ class MainActivity : ComponentActivity(){
         super.onCreate(savedInstanceState)
 
         setContent {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE
+            )
             PrepaidCardTheme {
                 // A surface container using the 'background' color from the theme
                 RootView {

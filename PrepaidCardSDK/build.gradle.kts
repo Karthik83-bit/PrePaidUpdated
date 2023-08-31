@@ -89,7 +89,11 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
 
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    //acompanist
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.24.12-rc")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.24.12-rc")
+    implementation("com.google.accompanist:accompanist-navigation-material:0.24.12-rc")
 
 
 
