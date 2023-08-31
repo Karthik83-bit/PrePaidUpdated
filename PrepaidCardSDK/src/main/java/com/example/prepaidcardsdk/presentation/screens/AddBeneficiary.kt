@@ -36,6 +36,7 @@ import com.example.prepaidcardsdk.data.model.resp.BeneNameResp
 import com.example.prepaidcardsdk.presentation.viewmodels.BeneficiaryViewModel
 import com.example.prepaidcardsdk.ui.theme.Cultured
 import com.example.prepaidcardsdk.ui.theme.tealGreen
+import java.util.regex.Pattern
 
 @Composable
 fun AddBene(rootnavController: NavHostController, beneficiaryViewModel: BeneficiaryViewModel){
@@ -46,15 +47,22 @@ fun AddBene(rootnavController: NavHostController, beneficiaryViewModel: Benefici
     val enterBank = remember {
         mutableStateOf(TextFieldValue(""))
     }
-    val accNum = remember {
-        mutableStateOf(TextFieldValue(""))
-    }
+    val accNumClicked = beneficiaryViewModel.accNumClick
+    val accNum = beneficiaryViewModel.accNum
+    val accNumError = beneficiaryViewModel.accNumError
+    val accNumErrorMessage = beneficiaryViewModel.accNumErrorMessage
+    var accNumPattern = Pattern.compile("^[0-9]{9,18}\$")
+
     val reEnterAccNum = remember {
         mutableStateOf(TextFieldValue(""))
     }
-    val enterIFSC = remember {
-        mutableStateOf(TextFieldValue(""))
-    }
+    val enterIFSC = beneficiaryViewModel.ifscNum
+    val ifscError = beneficiaryViewModel.ifscError
+    val ifscErrorMessage = beneficiaryViewModel.ifscErrorMessage
+    var ifscPattern = Pattern.compile("^[A-Z]{4}0[A-Z0-9]{6}\$")
+
+
+
     Scaffold (topBar = {
         CustomTopBar {
             rootnavController.popBackStack()
@@ -63,7 +71,7 @@ fun AddBene(rootnavController: NavHostController, beneficiaryViewModel: Benefici
         bottomBar = {
             Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                 CustomButton(text = "Add Beneficiary", buttonColor = tealGreen) {
-                    beneficiaryViewModel.list.add(BeneNameResp(enterBene.value.text, enterBank.value.text, accNum.value.text))
+                    beneficiaryViewModel.list.add(BeneNameResp(enterBene.value.text, enterBank.value.text, accNum.value))
                     rootnavController.navigate(Destination.SELECT_BENE)
                 }
             }
@@ -127,6 +135,10 @@ fun AddBene(rootnavController: NavHostController, beneficiaryViewModel: Benefici
                         disabledBorderColor = Cultured
                     )
                 )
+                if(accNum.value != "" && accNum.value.matches(accNumPattern.toRegex())){
+                    accNumError.value = true
+                    accNumErrorMessage.value = "Please Enter Correct Account Number"
+                }
                 OutlinedTextField(
                     value = accNum.value,
                     label = { Text(text = "Account number")},
