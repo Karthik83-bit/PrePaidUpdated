@@ -91,7 +91,7 @@ class CardDataViewModel @Inject constructor(
             handleFlow<CardDataResponse>(
                 response = cardDataUseCase.invoke(
                     "http://35.200.225.250:8080/cardissuer/cms/viewCarddata",
-                    requestModel = ViewCardDataReqModel(cardRefId = SDK_CONSTANTS.cardRefId?:"", customerId = customerId)
+                    requestModel = ViewCardDataReqModel(cardRefId = SDK_CONSTANTS.cardRefId?:"", otp = otp.value, mobileNumber = SDK_CONSTANTS.mobileNumber)
                 ),
                 onSuccess = {
                     onComplete(it)

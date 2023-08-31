@@ -117,7 +117,9 @@ fun beneSelectScreen(
                     disabledBorderColor = Cultured
                 )
             )
-            newBeneList(list = newList)
+            newBeneList(list = newList){
+                rootnavController.navigate(Destination.SEND_MONEY_SCREEN)
+            }
 
         }
     }

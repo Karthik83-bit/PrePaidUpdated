@@ -46,6 +46,7 @@ class GeneratePinViewModel @Inject constructor(
     var errorMessage: MutableState<String> = mutableStateOf("")
     var response: MutableState<SetPinResponse?> = mutableStateOf(null)
     var otp:MutableState<String> = mutableStateOf("")
+    var otpSheetState= mutableStateOf(false)
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun encryptData(data: String, key: ByteArray): String {

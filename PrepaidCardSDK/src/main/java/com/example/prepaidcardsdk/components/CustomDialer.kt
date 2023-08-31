@@ -1,6 +1,9 @@
 package com.example.prepaidcardsdk.components
 
+import android.os.Build
+import android.os.VibrationEffect
 import android.os.Vibrator
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,8 +37,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PhoneDialer(otp:MutableState<String>) {
@@ -76,13 +81,19 @@ fun PhoneDialer(otp:MutableState<String>) {
 
     }
 }
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NumberButton(modifier:Modifier=Modifier,number: String, onClick: () -> Unit) {
+    val context= LocalContext.current
+    val vibrator = ContextCompat.getSystemService(context,Vibrator::class.java)
     Box(
         modifier = modifier
             .size(60.dp)
             .padding(4.dp)
-            .clickable { onClick() },
+            .clickable {
+                val effect = VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_HEAVY_CLICK)
+                vibrator?.vibrate(effect)
+                onClick() },
         contentAlignment = Alignment.Center,
         content = {
             Text(

@@ -316,7 +316,22 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
                         else{
                             "UNBLOCK_OTP"
                         }
-                    viewModel.changeCardStatus(viewModel.Otp.value, status = status,params=params){
+                        if(SDK_CONSTANTS.isPinSet!=true){
+                            viewModel.resetPin(pin = viewModel.reenterPin.value, otp = viewModel.Otp.value) {
+                                if(it.status=="0"){
+                                    rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN)
+                                }
+                                else{
+                                    viewModel.isError.value=true
+                                    viewModel.errorMessage.value=it.statusDesc
+                                    viewModel.navDest.value=Destination.VIEW_CARDS_SCREEN
+
+                                }
+                            }
+
+                        }
+                        else{
+                    viewModel.changeCardStatus(viewModel.Otp.value, status = status){
                         Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
                         if(it.status=="0"){
                             success.value=true
@@ -358,7 +373,7 @@ success.value=false
                             viewModel.navDest.value=Destination.VIEW_CARDS_SCREEN
                         }
 
-                    }
+                    }}
                     },
 
                     )

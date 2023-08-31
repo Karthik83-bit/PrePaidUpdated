@@ -1,5 +1,8 @@
 package com.example.prepaidcard.screens
 
+import android.os.Build
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,29 +44,38 @@ import com.example.newui.components.CardFace
 import com.example.newui.components.FlipCard
 //import com.example.prepaidcard.R
 import com.example.prepaidcard.components.CustomCheckField
+import com.example.prepaidcard.components.CustomSheetWrap
 import com.example.prepaidcard.components.CustomTopBar
+import com.example.prepaidcard.components.EnterOTPPinSheet
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
+import com.example.prepaidcardsdk.ui.theme.light_finocolor
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardActivationScreen(
     rootNavController: NavHostController,
     onClick: (state: Boolean) -> Unit = {},
     viewModel: CardActivationViewModel,
+    verifyOTPViewModel: VerifyOTPViewModel,
+    manageCardViewModel: ManageCardViewModel
 ) {
 val context= LocalContext.current
 
 
-
+Box(){
     Scaffold(topBar = {
         CustomTopBar {
             rootNavController.popBackStack()
         }
-    }) { it ->
+    })
+    { it ->
 
         var textFieldSize by remember { mutableStateOf(Size.Zero) }
         if (viewModel.isError.value) {
@@ -143,20 +155,7 @@ val context= LocalContext.current
 val state= remember {
     mutableStateOf(CardFace.Front)
 }
-                FlipCard(
-                    SDK_CONSTANTS.cardUser,
-                    SDK_CONSTANTS.cardNumber,
-                    SDK_CONSTANTS.expiryDate,
-                    SDK_CONSTANTS.availbalance,
-                    cardfaceState = state,
-                    remember {
-                        mutableStateOf(false)
-                    },
-                    viewBalance = {
 
-                    },
-                    blur = 10.dp
-                )
                 CustomCheckField(
                     state = viewModel.cardActivationToggleState,
                     text = "Card Activation",
@@ -164,12 +163,21 @@ val state= remember {
                 ) {
                     viewModel.cardActivationToggleState.value =
                         !viewModel.cardActivationToggleState.value
-                    if(SDK_CONSTANTS.isPinSet==true&& SDK_CONSTANTS.isVirtual==true){
-                        rootNavController.navigate(Destination.ENTER_OTP_SCREEN)
+                    verifyOTPViewModel.sendOtp(SDK_CONSTANTS.mobileNumber, params = "ACTIVATION_OTP"){
+                        if(it.status=="0"){
+                            verifyOTPViewModel.verifyOTPScaffoldState.value=true
+                        }
+                        else{
+                            viewModel.isError.value=true
+                            viewModel.errorMessage.value=it.statusDesc
+                        }
                     }
-                    else{
-                        rootNavController.navigate(Destination.GENERATE_PIN_SCREEN)
-                    }
+
+
+
+
+
+
 
 
                 }
@@ -178,4 +186,47 @@ val state= remember {
             }
         }
     }
+CustomSheetWrap(state = remember {
+    mutableStateOf(true)
+}) {
+    FlipCard(name = "", cardno = "****-****-****-****", exp ="***" , avlbaln ="*****" , cardfaceState = remember {
+        mutableStateOf(CardFace.Front)
+    } , startanim = remember {
+        mutableStateOf(false)
+    } ) {
+
+    }
+
+}
+    CustomSheetWrap(
+        state = verifyOTPViewModel.verifyOTPScaffoldState,
+
+        initOffset = 1000,
+        color = if (viewModel.isError.value) Color.Red.copy(0.6f) else light_finocolor
+    ) {
+        EnterOTPPinSheet(state = verifyOTPViewModel.verifyOtp,verifyOTPViewModel,
+            oncancel = { verifyOTPViewModel.verifyOTPScaffoldState.value = false }) {
+
+            manageCardViewModel.changeCardStatus(otp = verifyOTPViewModel.verifyOtp.value, status = "active"){
+                if(it.status=="0"){
+                    if( SDK_CONSTANTS.isVirtual!=true && SDK_CONSTANTS.isPinSet==false ){
+                        rootNavController.navigate(Destination.GENERATE_PIN_SCREEN)
+
+                    }
+                    else{
+                        rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN)
+                    }
+                    verifyOTPViewModel.verifyOTPScaffoldState.value=false
+                }
+                else{
+                    viewModel.isError.value=true
+                    viewModel.errorMessage.value=it.statusDesc
+                }
+            }
+
+
+        }
+    }
+
+}
 }

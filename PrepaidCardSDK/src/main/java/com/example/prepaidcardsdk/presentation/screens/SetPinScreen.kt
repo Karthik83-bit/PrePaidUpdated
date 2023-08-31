@@ -2,6 +2,7 @@ package com.example.prepaidcard.screens
 
 //import androidx.compose.material.TextFieldDefaults
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -48,13 +49,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 //import androidx.compose.material3.TextFieldDefaults
 import com.example.prepaidcard.components.CustomButton
+import com.example.prepaidcard.components.CustomSheetWrap
+import com.example.prepaidcard.components.EnterOTPPinSheet
 import com.example.prepaidcard.utils.Destination
 
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.finocolor
+import com.example.prepaidcardsdk.ui.theme.light_finocolor
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
+import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,17 +68,20 @@ import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 fun SetPinScreen(
     rootNavController: NavHostController,
     viewModel: GeneratePinViewModel,
-    manageViewModel: ManageCardViewModel
+    manageViewModel: ManageCardViewModel,
+verifyOTPViewModel: VerifyOTPViewModel
 ) {
 val pindontMatch=remember{
     mutableStateOf(false)
 }
     val context= LocalContext.current
+    Box(){
     Scaffold(topBar = {
         CustomTopBar {
             rootNavController.popBackStack()
         }
-    }) {
+    })
+    {
         Column(
             modifier = Modifier
                 .padding(it)
@@ -93,6 +102,8 @@ val pindontMatch=remember{
                                 Button(onClick = {
                                     viewModel.isError.value=false
                                     rootNavController.popBackStack()
+                                    viewModel.otp.value=""
+                                    viewModel.reenterPin.value=""
                                 }) {
                                     Text("ok")
 
@@ -282,9 +293,11 @@ val pindontMatch=remember{
                     buttonColor = finocolor,
                     enable=!pindontMatch.value
                 ) {
-                       rootNavController.navigate(Destination.ENTER_OTP_SCREEN){
-                           popUpTo(Destination.CARD_ACTIVATION_SCREEN)
-                       }
+                   viewModel.otpSheetState.value=true
+
+
+
+
                 }
                 CustomButton(
                     text = "CANCEL",
@@ -296,6 +309,30 @@ val pindontMatch=remember{
             }
 
 
+        }
+    }
+        CustomSheetWrap(
+            state = verifyOTPViewModel.verifyOTPScaffoldState,
+
+            initOffset = 1000,
+            color = if (viewModel.isError.value) Red.copy(0.6f) else light_finocolor
+        ) {
+            EnterOTPPinSheet(state = viewModel.otp,verifyOTPViewModel,
+                oncancel = { verifyOTPViewModel.verifyOTPScaffoldState.value = false }) {
+
+              manageViewModel.resetPin(pin = viewModel.reenterPin.value,otp=viewModel.otp.value){
+                  Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
+                  if(it.status=="0"){
+                        rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN)
+                      viewModel.otp.value=""
+                  }
+                  else{
+                      viewModel.isError.value=true
+                      viewModel.errorMessage.value=""
+                  }
+              }
+
+            }
         }
     }
 

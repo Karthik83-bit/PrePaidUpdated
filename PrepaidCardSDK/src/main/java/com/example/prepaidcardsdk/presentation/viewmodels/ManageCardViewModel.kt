@@ -122,8 +122,8 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
 
 
 
-    fun resetPin(onSucess:(ResetPinResponseModel)->Unit){
-        handleFlow(resetPinUseCase.invoke(pin =reenterPin.value, otp =Otp.value), onLoading ={
+    fun resetPin(pin:String=reenterPin.value,otp: String=Otp.value,onSucess:(ResetPinResponseModel)->Unit){
+        handleFlow(resetPinUseCase.invoke(pin =pin, otp =otp), onLoading ={
             isLoading.value=it
         } ,
             onFailure = {
@@ -184,12 +184,12 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
     fun changeCardStatus(
         otp: String = Otp.value,
         status: String,
-        params: String,
+
         onSucesss: (ChangeStatusResponseModel) -> Unit,
 
     ){
 
-        handleFlow(changeCardStatus.invoke(otp,status,params), onLoading = {
+        handleFlow(changeCardStatus.invoke(otp,status), onLoading = {
                                                                     isLoading.value=it
         }, onSuccess = {
 

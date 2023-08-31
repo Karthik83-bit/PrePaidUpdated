@@ -50,6 +50,7 @@ class VerifyOTPViewModel @Inject constructor(val verifyOTPUseCase: VerifyOTPUseC
                                 SDK_CONSTANTS.customerId = it.customerResponse.userId.toString()
                                 SDK_CONSTANTS.kycType = it.customerResponse.kycType
                                 SDK_CONSTANTS.mobileNumber=it.customerResponse.mobileNumber.toString()
+                                SDK_CONSTANTS.email=it.customerResponse.email
                             }
                         }
                     }

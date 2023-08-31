@@ -36,6 +36,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -48,6 +50,7 @@ import com.example.prepaidcardsdk.ui.theme.Resetcolor
 
 import com.example.prepaidcardsdk.ui.theme.Cultured
 import com.example.prepaidcardsdk.ui.theme.HitextColor
+import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.cdback
 import com.example.prepaidcardsdk.ui.theme.finocolor
 import com.example.prepaidcardsdk.ui.theme.light_finocolor
@@ -82,11 +85,11 @@ fun CustomCheckField( state:MutableState<Boolean>,text:String,res:Int,onSwitch:(
                     Box(Modifier.height(40.dp).width(70.dp))
                 },
                 colors = SwitchDefaults.colors(
-                    checkedTrackColor = light_finocolor,
+                    checkedTrackColor = White,
                     uncheckedIconColor = light_finocolor,
-                    uncheckedThumbColor = light_finocolor,
+                    uncheckedThumbColor = White,
                     disabledUncheckedThumbColor = light_finocolor,
-                    checkedThumbColor = Color.White,
+                    checkedThumbColor = finocolor,
 
                     disabledUncheckedIconColor = light_finocolor,
                     checkedIconColor = Color.White,
@@ -94,7 +97,7 @@ fun CustomCheckField( state:MutableState<Boolean>,text:String,res:Int,onSwitch:(
                     disabledCheckedBorderColor = Color.Transparent,
                     checkedBorderColor =Color.Transparent ,
                     disabledUncheckedBorderColor = Color.Transparent,
-                    uncheckedTrackColor = Color.White.copy(0.5f)
+                    uncheckedTrackColor = cancelGray
 
 
                 ),

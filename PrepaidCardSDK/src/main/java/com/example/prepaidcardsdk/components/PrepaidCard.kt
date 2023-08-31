@@ -290,7 +290,8 @@ fun PrepaidCard(
 
                 OutlinedButton(
                     onClick = {
-                        manageCardViewModel.viewBalanceOtpSheetState.value = true
+                              viewBalance()
+
 //                        if (buttonText == "View Details") {
 //                            buttonText = "Available Balance:\n ${avlbaln}"
 //                        }else{

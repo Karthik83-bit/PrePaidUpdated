@@ -26,6 +26,7 @@ fun NewBene(
     title: String,
     subtitle: String,
     accNum: String,
+    onclick:()->Unit,
     delete: ()->Unit
 ){
 
@@ -33,7 +34,7 @@ fun NewBene(
         Modifier
             .padding(10.dp)
             .fillMaxWidth()
-            .clickable { /*rootnavController.navigate(Destination.TRANSACTION)*/ },
+            .clickable { onclick() },
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         OutlinedCard(modifier = Modifier.fillMaxWidth()) {
@@ -68,7 +69,7 @@ fun NewBene(
     }
 }
 @Composable
-fun newBeneList(list: MutableList<BeneNameResp>) {
+fun newBeneList(list: MutableList<BeneNameResp>,onClick:()->Unit) {
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         list.map { item ->
@@ -76,6 +77,9 @@ fun newBeneList(list: MutableList<BeneNameResp>) {
                 title = item.title,
                 subtitle = item.subtitle,
                 accNum = item.accNum,
+                onclick = {
+onClick()
+                }
 
                 ) {
                 list.remove(item)

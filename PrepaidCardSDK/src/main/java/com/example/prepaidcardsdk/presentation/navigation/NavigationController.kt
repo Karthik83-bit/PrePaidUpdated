@@ -88,11 +88,8 @@ composable(Destination.SEND_MONEY_SCREEN){
         }
 
         composable(Destination.CARD_ACTIVATION_SCREEN){
-            CardActivationScreen(rootNavController,viewModel= hiltViewModel<CardActivationViewModel>())
-//            VerifyOTP(rootNavController)
-        }
-        composable(Destination.KYC_SCREEN){
-            KycScreen(rootNavController)
+            CardActivationScreen(rootNavController,viewModel= hiltViewModel<CardActivationViewModel>(), verifyOTPViewModel = hiltViewModel<VerifyOTPViewModel>(), manageCardViewModel = hiltViewModel<ManageCardViewModel>())
+
         }
         composable(Destination.TRANSACTION_STATEMENTS_HISTORY+"/{filter}", arguments = listOf(navArgument("filter"){type=
             NavType.StringType})){
@@ -103,7 +100,7 @@ composable(Destination.SEND_MONEY_SCREEN){
 
 
             val viewModel= hiltViewModel<GeneratePinViewModel>()
-            SetPinScreen(rootNavController,viewModel, manageViewModel = hiltViewModel<ManageCardViewModel>())
+            SetPinScreen(rootNavController,viewModel, manageViewModel = hiltViewModel<ManageCardViewModel>(), verifyOTPViewModel = hiltViewModel<VerifyOTPViewModel>())
         }
         composable(Destination.ENTER_OTP_SCREEN){
             val viewModel= hiltViewModel<ManageCardViewModel>()

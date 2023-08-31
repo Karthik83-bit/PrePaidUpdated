@@ -4,5 +4,6 @@ data class ChangeStatusRequestModel(
     val cardRefId: String,
     val cardStatus: String,
     val otp:String,
-    val params:String,
+    val mobileNUmber:String
+
 )

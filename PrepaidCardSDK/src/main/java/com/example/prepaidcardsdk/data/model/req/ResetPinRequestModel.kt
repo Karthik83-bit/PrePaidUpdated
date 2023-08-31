@@ -4,5 +4,6 @@ data class ResetPinRequestModel(
     val cardRefId: String?="98102384501",
     val encryptPin: String?,
     val otp: String?,
+    val mobilNumber: String
   
 )

@@ -935,7 +935,7 @@ fun EnterOTPPinSheet(state: MutableState<String>,
                 modifier = Modifier
                     .clickable(enabled = timer.value == 0) {
                         timer.value = 5
-                        verifyViewModel.sendOtp {
+                        verifyViewModel.sendOtp (params="CARD_OTP"){
                             if (it.status == "0") {
                                 showTimer.value=! showTimer.value
                                 Toast.makeText(context, "OTP sent successfuly", Toast.LENGTH_SHORT).show()

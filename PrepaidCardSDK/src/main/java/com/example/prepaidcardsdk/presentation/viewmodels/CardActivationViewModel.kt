@@ -22,25 +22,25 @@ class CardActivationViewModel @Inject constructor(val changeCardStatusUseCase: C
     var isError: MutableState<Boolean> = mutableStateOf(false)
     var errorMessage: MutableState<String> = mutableStateOf("")
     var response:MutableState<ChangeStatusResponseModel?> = mutableStateOf(null)
-    fun changeCardStatus(onComplete:(ChangeStatusResponseModel?)->Unit) {
-        viewModelScope.launch {
-            handleFlow<ChangeStatusResponseModel>(response = changeCardStatusUseCase.invoke(
-                "1234",
-                "active",
-                params
-            ),
-                onLoading = {
-                    isLoading.value = it
-                },
-                onFailure = {
-                    isError.value = true
-                    errorMessage.value = it
-
-                },
-                onSuccess = {
-                    onComplete(it)
-                })
-        }
-
-    }
+//    fun changeCardStatus(onComplete:(ChangeStatusResponseModel?)->Unit) {
+//        viewModelScope.launch {
+//            handleFlow<ChangeStatusResponseModel>(response = changeCardStatusUseCase.invoke(
+//                "1234",
+//                "active",
+//
+//            ),
+//                onLoading = {
+//                    isLoading.value = it
+//                },
+//                onFailure = {
+//                    isError.value = true
+//                    errorMessage.value = it
+//
+//                },
+//                onSuccess = {
+//                    onComplete(it)
+//                })
+//        }
+//
+//    }
 }

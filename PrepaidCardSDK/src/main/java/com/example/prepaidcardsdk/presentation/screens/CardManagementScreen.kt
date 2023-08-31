@@ -149,6 +149,9 @@ fun CardManagementScreen(
                     verifyViewModel.destination.value = ""
 
                 }
+                verifyViewModel.verifyOtp.value=""
+                cardDataViewModel.otp.value=""
+                viewModel.otp.value=""
 
 
                 verifyViewModel.errorMessage.value = ""
@@ -353,7 +356,7 @@ fun CardManagementScreen(
     @Composable
     fun EnterOTPPinSheet(state: MutableState<String>, oncancel: () -> Unit, onSubmit: () -> Unit) {
         val timer = remember {
-            mutableStateOf(5)
+            mutableStateOf(60)
         }
         val showTimer = remember {
             mutableStateOf(false)
@@ -515,7 +518,7 @@ fun CardManagementScreen(
                         onClick = {
                             onSubmit()
 
-                            manageViewModel.Otp.value = ""
+
                         },
                         shape = RoundedCornerShape(5.dp),
                         modifier = Modifier
@@ -557,7 +560,7 @@ fun CardManagementScreen(
                         color = Color.Black,
                         fontWeight = FontWeight.ExtraBold,
                         modifier = Modifier.clickable(enabled = timer.value == 0) {
-                            timer.value = 5
+                            timer.value = 60
                             verifyViewModel.sendOtp(num = SDK_CONSTANTS.mobileNumber,params = "CARD_OTP") {
                                 if (it.status == "0") {
                                     showTimer.value = !showTimer.value
@@ -648,8 +651,20 @@ fun CardManagementScreen(
                                 manageViewModel.startanim,
 
                                 viewBalance = {
-                                    manageViewModel.viewBalanceOtp.value =
-                                        !manageViewModel.viewBalanceOtp.value
+
+                                    verifyViewModel.sendOtp(SDK_CONSTANTS.mobileNumber,params="View_Card_OTP"){
+                                        if(it.status=="0"){
+                                            manageViewModel.viewBalanceOtpSheetState.value =true
+
+                                        }
+                                        else{
+                                            manageViewModel.isError.value=true
+                                            manageViewModel.errorMessage.value=it.statusDesc
+                                        }
+                                    }
+
+
+
                                 },
 
 
@@ -712,7 +727,15 @@ fun CardManagementScreen(
                                     onCheckedChange = {
 
                                         if (manageViewModel.cvvValue.value.isEmpty()) {
-                                            manageViewModel.cvvOtpSheetState.value = true
+                                            verifyViewModel.sendOtp(SDK_CONSTANTS.mobileNumber, params = "View_CVV_OTP"){
+                                                if(it.status=="0"){
+                                                    manageViewModel.cvvOtpSheetState.value = true
+                                                }else{
+                                                    manageViewModel.isError.value=true
+                                                    manageViewModel.errorMessage.value=it.statusDesc
+                                                }
+                                            }
+
                                         } else {
                                             manageViewModel.cvvUI.value =
                                                 !manageViewModel.cvvUI.value
@@ -889,7 +912,24 @@ fun CardManagementScreen(
                                         text = "Block",
                                         res = R.drawable.group_two
                                     ) {
-                                        manageViewModel.blockCardSheetState.value = true
+                                        var params=if (SDK_CONSTANTS.isBlock == true) {
+
+                                            "UNBLOCK_OTP"
+
+                                        } else {
+
+                                            "Temporary_Block_OTP"
+                                        }
+                                        verifyViewModel.sendOtp(num=SDK_CONSTANTS.mobileNumber,params=params){
+                                            if(it.status=="0"){
+                                                manageViewModel.blockCardSheetState.value = true
+                                            }
+                                            else{
+                                                manageViewModel.isError.value=true
+                                                manageViewModel.errorMessage.value=it.statusDesc
+                                            }
+                                        }
+
                                     }
 
 //                                CustomCheckField(
@@ -1446,14 +1486,7 @@ fun CardManagementScreen(
                                                             )
                                                         }
                                                     }
-                                                    CustomCheckBox(
-                                                        manageViewModel.serviceRadioState,
-                                                        "Add Money"
-                                                    )
-                                                    CustomCheckBox(
-                                                        manageViewModel.serviceRadioState,
-                                                        "Send Money"
-                                                    )
+
                                                 }
                                                 if (SDK_CONSTANTS.isVirtual == true) {
                                                     CustomCheckBox(
@@ -1579,7 +1612,7 @@ fun CardManagementScreen(
 //                            delay(2000)
 //                            manageViewModel.commingSoonSheet.value=false
                             if (manageViewModel.serviceRadioState.value.equals("Send Money")) {
-                                rootNavController.navigate(Destination.SEND_MONEY_SCREEN)
+                                rootNavController.navigate(Destination.SELECT_BENE)
                             }
 //                        }
 
@@ -1695,14 +1728,7 @@ fun CardManagementScreen(
         ) {
             EnterOTPPinSheet(state = manageViewModel.Otp,
                 oncancel = { manageViewModel.blockOtpSheetState.value = false }) {
-                var params=if (SDK_CONSTANTS.isBlock == true) {
 
-                    "Temporary_Unblock_OTP"
-
-            } else {
-
-                    "Temporary_Block_OTP"
-        }
                 val stat = if (SDK_CONSTANTS.isBlock == true) {
 
                      "unblock"
@@ -1710,13 +1736,17 @@ fun CardManagementScreen(
                 } else {
                     "block"
                 }
-                manageViewModel.changeCardStatus(status = stat, params =params , onSucesss = {
+                manageViewModel.changeCardStatus(status = stat , onSucesss = {
                     if (it != null) {
                         if (it.status == "0") {
                             sucess.value = true
                             sucessMsg.value = "SucessFully ${stat}ed"
                             manageViewModel.blockOtpSheetState.value = false
+                            manageViewModel.Otp.value = ""
                         }
+                    }
+                    else{
+                        manageViewModel.Otp.value = ""
                     }
                     Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
 
@@ -1729,7 +1759,7 @@ fun CardManagementScreen(
                     }
 
                 })
-                manageViewModel.Otp.value = ""
+
 
 
             }
@@ -1754,6 +1784,7 @@ fun CardManagementScreen(
                             if (it.status == "0") {
                                 sucess.value = true
                                 sucessMsg.value = "Cvv sucessfully fetched"
+                                manageViewModel.Otp.value = ""
                                 manageViewModel.cvvOtpSheetState.value = false
                                 manageViewModel.cvvUI.value = !manageViewModel.cvvUI.value
                                 manageViewModel.cardFace.value =
@@ -1762,9 +1793,10 @@ fun CardManagementScreen(
                             } else {
                                 manageViewModel.isError.value = true
                                 manageViewModel.errorMessage.value = it.statusDesc
+                                manageViewModel.Otp.value = ""
                             }
                         }
-                        manageViewModel.Otp.value = ""
+
                         Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
                         if (it.status.equals("0")) {
 
@@ -1801,31 +1833,34 @@ fun CardManagementScreen(
             color = light_finocolor
         ) {
 
-            EnterOTPPinSheet(state = manageViewModel.Otp, oncancel = {
+            EnterOTPPinSheet(state = cardDataViewModel.otp, oncancel = {
                 manageViewModel.viewBalanceOtpSheetState.value = false
 
 
             }) {
-                cardDataViewModel.viewCardData("181", SDK_CONSTANTS.cardNumber) {
+                cardDataViewModel.viewCardData(SDK_CONSTANTS.customerId, SDK_CONSTANTS.cardNumber) {
                     if (it != null) {
                         if (it.status == "0") {
                             sucess.value = true
                             sucessMsg.value = "Data sucessfully fetched"
+                            cardDataViewModel.otp.value=""
                             manageViewModel.cardDataMask.value = false
                             manageViewModel.viewBalanceOtpSheetState.value = false
-                            manageViewModel.Otp.value = ""
+                            cardDataViewModel.otp.value = ""
                         } else {
                             manageViewModel.isError.value = true
                             manageViewModel.errorMessage.value = it.statusDesc
-                            manageViewModel.Otp.value = ""
+                            cardDataViewModel.otp.value=""
+
                         }
                     } else {
                         manageViewModel.isError.value = true
                         manageViewModel.errorMessage.value = "Something Went Wrong"
+                        cardDataViewModel.otp.value=""
                     }
 
                 }
-                manageViewModel.Otp.value = ""
+
 
 
             }

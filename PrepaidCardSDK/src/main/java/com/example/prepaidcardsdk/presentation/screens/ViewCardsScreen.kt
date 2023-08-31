@@ -159,8 +159,10 @@ Scaffold(modifier = Modifier.blur(if(viewModel.commingsoonSheet.value)10.dp else
                     viewModel.isError.value = false
                     if (viewModel.destination.value.isNotEmpty()) {
 
-                        rootNavController.navigate(Destination.ENTER_MOBILE_NUM_SCREEN)
+                        rootNavController.navigate(viewModel.destination.value)
                         viewModel.destination.value = ""
+                    }else{
+                        rootNavController.navigate(Destination.ENTER_MOBILE_NUM_SCREEN)
                     }
                 }
             }
@@ -253,27 +255,32 @@ Scaffold(modifier = Modifier.blur(if(viewModel.commingsoonSheet.value)10.dp else
                                     modifier = Modifier
                                         .height(180.dp)
                                         .width(300.dp)
-                                        .clickable(onClick = {
+                                        .clickable(onClick =
+                                        {
                                             if (it != null) {
                                                 SDK_CONSTANTS.cardRefId = it.cardRefId
                                             }
-                                            it.cardRefId?.let { it1 ->
-                                                viewModel.viewCardData(
-                                                    cardRefId = it1,
-                                                    customerId = "181"
-                                                )
 
-                                                { res ->
+                                            if (it != null) {
 
-                                                    if (res != null) {
-                                                        if (res.status == "0") {
                                                             //hotlist
                                                             val hotlist =
-                                                                res.viewcardresponseWrapper.isHotlist
+                                                                it.isHotlist
                                                             val isBlock =
-                                                                res.viewcardresponseWrapper.isBlock
+                                                                it.isBlock
                                                             val isActive =
-                                                                res.viewcardresponseWrapper.isActive
+                                                               it.isActive
+                                                SDK_CONSTANTS.isBlock=isBlock
+                                                SDK_CONSTANTS.isActive=isActive
+                                                SDK_CONSTANTS.isHotList=it.isHotlist
+
+
+                                                SDK_CONSTANTS.isVirtual=it.isVirtual
+//                                                SDK_CONSTANTS.cardUser=it.nameonCard
+//                                                SDK_CONSTANTS.expiryDate= it.viewcardresponseWrapper.expiryDate.toString()
+//                                                SDK_CONSTANTS.availbalance= it.viewcardresponseWrapper?.balance?:""
+                                                SDK_CONSTANTS.cardType=it.cardType
+                                                SDK_CONSTANTS.isPinSet=it.isPINSet?:false
                                                             //
                                                             if (!hotlist) {
                                                                 if (isBlock) {
@@ -314,18 +321,12 @@ Scaffold(modifier = Modifier.blur(if(viewModel.commingsoonSheet.value)10.dp else
 
                                                             }
 
-                                                        } else {
 
-                                                            viewModel.isError.value = true
-                                                            viewModel.errorMessage.value =
-                                                                "Card is Hot Listed"
-                                                            viewModel.destination.value =
-                                                                Destination.VIEW_CARDS_SCREEN
-                                                        }
                                                     }
-                                                }
-                                            }
-                                        })
+
+
+                                        }
+                                        )
                                 ) {
                                     Column(
                                         Modifier.padding(20.dp),
@@ -384,78 +385,71 @@ Scaffold(modifier = Modifier.blur(if(viewModel.commingsoonSheet.value)10.dp else
                                 ),
                                 modifier = Modifier
                                     .padding(10.dp)
-                                    .clickable(onClick = {
+                                    .clickable(onClick =
+                                    {
                                         if (it != null) {
                                             SDK_CONSTANTS.cardRefId = it.cardRefId
                                         }
 
-                                        it.cardRefId?.let { it1 ->
-                                            viewModel.viewCardData(
-                                                cardRefId = it1,
-                                                customerId = "181"
-                                            )
-                                            { res ->
+                                        if (it != null) {
 
-                                                if (res != null) {
-                                                    if (res.status == "0") {
-                                                        //hotlist
-                                                        val hotlist =
-                                                            res.viewcardresponseWrapper.isHotlist
-                                                        val isBlock =
-                                                            res.viewcardresponseWrapper.isBlock
-                                                        val isActive =
-                                                            res.viewcardresponseWrapper.isActive
+                                            //hotlist
+                                            val hotlist =
+                                                it.isHotlist
+                                            val isBlock =
+                                                it.isBlock
+                                            val isActive =
+                                                it.isActive
 
-                                                        if (!hotlist) {
-                                                            if (isBlock) {
-                                                                viewModel.isBlocked.value =
-                                                                    true
-                                                                viewModel.destination.value =
-                                                                    Destination.ENTER_OTP_SCREEN
+                                            SDK_CONSTANTS.isBlock=isBlock
+                                            SDK_CONSTANTS.isActive=isActive
+                                            SDK_CONSTANTS.isHotList=it.isHotlist
+                                            //
+                                            if (!hotlist) {
+                                                if (isBlock) {
+                                                    viewModel.isBlocked.value =
+                                                        true
+                                                    viewModel.destination.value =
+                                                        Destination.ENTER_OTP_SCREEN
 //                                                                        viewModel.isError.value =
 //                                                                            true
-                                                                viewModel.errorMessage.value =
-                                                                    "Card is Blocked"
-                                                                viewModel.destination.value =
-                                                                    Destination.ENTER_OTP_SCREEN
+                                                    viewModel.errorMessage.value =
+                                                        "Card is Blocked"
+                                                    viewModel.destination.value =
+                                                        Destination.ENTER_OTP_SCREEN
 
 
-                                                            } else {
-                                                                if (isActive) {
-                                                                    rootNavController.navigate(
-                                                                        Destination.CARD_MANAGEMENT_SCREEN
-                                                                    )
-                                                                } else {
-                                                                    viewModel.isError.value =
-                                                                        true
-                                                                    viewModel.errorMessage.value =
-                                                                        "Card is Inactive"
-                                                                    viewModel.destination.value =
-                                                                        Destination.CARD_ACTIVATION_SCREEN
+                                                } else {
+                                                    if (isActive) {
 
-                                                                }
-                                                            }
-                                                        } else {
-
-                                                            viewModel.isError.value = true
-                                                            viewModel.errorMessage.value =
-                                                                "Card is Hot Listed"
-                                                            viewModel.destination.value =
-                                                                ""
-                                                        }
-
+                                                        rootNavController.navigate(
+                                                            Destination.CARD_MANAGEMENT_SCREEN
+                                                        )
                                                     } else {
-
-                                                        viewModel.isError.value = true
+                                                        viewModel.isError.value =
+                                                            true
                                                         viewModel.errorMessage.value =
-                                                            "Card is Hot Listed"
+                                                            "Card is Inactive"
                                                         viewModel.destination.value =
-                                                            Destination.VIEW_CARDS_SCREEN
+                                                            Destination.CARD_ACTIVATION_SCREEN
+
                                                     }
                                                 }
+                                            } else {
+
+                                                viewModel.isError.value = true
+                                                viewModel.errorMessage.value =
+                                                    "Card is Hot Listed"
+
+
                                             }
+
+
                                         }
-                                    })
+
+
+                                    }
+                                    )
                             ) {
                                 Box(
                                     modifier = Modifier
@@ -593,7 +587,7 @@ Scaffold(modifier = Modifier.blur(if(viewModel.commingsoonSheet.value)10.dp else
         {
             ClickableText(text = AnnotatedString("Link a new card"), onClick ={
 
-                verifyViewModel.sendOtp(SDK_CONSTANTS.mobileNumber) {
+                verifyViewModel.sendOtp(SDK_CONSTANTS.mobileNumber, params = "") {
                     if(it.status=="0"){
                         viewModel.linkCardSheet.value=true
                     }
@@ -644,7 +638,7 @@ Scaffold(modifier = Modifier.blur(if(viewModel.commingsoonSheet.value)10.dp else
                                     fontSize = 12.sp
                                 )
                                 BasicTextField(
-                                    value = "Karthik@gmail.com",
+                                    value = SDK_CONSTANTS.email,
 
                                     keyboardOptions = KeyboardOptions(
                                         keyboardType = KeyboardType.Email,
@@ -753,7 +747,7 @@ Scaffold(modifier = Modifier.blur(if(viewModel.commingsoonSheet.value)10.dp else
 
 
 
-                    if (SDK_CONSTANTS.kycType == "min_kyc") {
+                    if (SDK_CONSTANTS.kycType.equals("Min-KYC")) {
                         Text(text = "Your KYC is Pending, Please complete your KYC and proceed further", fontWeight = FontWeight.ExtraBold, modifier = Modifier
                             .background(color = cdback)
                             .basicMarquee(
