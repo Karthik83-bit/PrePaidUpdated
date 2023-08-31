@@ -87,6 +87,7 @@ import com.example.prepaidcardsdk.components.CustomBlockedAlertDialog
 import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.data.model.resp.toViewcardresponseWrapperDomain
 import com.example.prepaidcardsdk.presentation.viewmodels.CardDataViewModel
+import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.ui.theme.HitextColor
 import com.example.prepaidcardsdk.ui.theme.cancelGray
@@ -100,6 +101,7 @@ import com.example.prepaidcardsdk.ui.theme.light_finocolor
 import com.example.prepaidcardsdk.ui.theme.lighttealGreen
 import com.example.prepaidcardsdk.ui.theme.neon
 import com.example.prepaidcardsdk.ui.theme.tealGreen
+import com.example.prepaidcardsdk.utils.PARAMS
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -108,7 +110,7 @@ import kotlinx.coroutines.launch
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 
-fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataViewModel,verifyViewModel:VerifyOTPViewModel)
+fun ViewCardsScreen(rootNavController: NavHostController, viewModel: CardDataViewModel,verifyViewModel:VerifyOTPViewModel,manageViewModel:ManageCardViewModel)
 {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -130,6 +132,7 @@ Scaffold(modifier = Modifier.blur(if(viewModel.commingsoonSheet.value)10.dp else
             .padding(it)
             .padding(horizontal = 16.dp)
             .fillMaxSize()
+            .background(Color.White)
             .verticalScroll(enabled = true, state = ScrollState(0))
 
     ) {
@@ -142,11 +145,17 @@ Scaffold(modifier = Modifier.blur(if(viewModel.commingsoonSheet.value)10.dp else
                     viewModel.errorMessage.value = ""
                 })
                 {
+                    verifyViewModel.sendOtp(SDK_CONSTANTS.mobileNumber, params = PARAMS.unblock){
+                        if(it.status=="0"){
+                            rootNavController.navigate(Destination.ENTER_OTP_SCREEN) {
 
-                    rootNavController.navigate(Destination.ENTER_OTP_SCREEN) {
 
-
+                            }
+                        }
                     }
+
+
+
                     viewModel.isBlocked.value = false
                     viewModel.isError.value = false
                     viewModel.errorMessage.value = ""
@@ -167,7 +176,7 @@ Scaffold(modifier = Modifier.blur(if(viewModel.commingsoonSheet.value)10.dp else
                 }
             }
 
-        } else if (viewModel.isLoading.value) {
+        } else if (viewModel.isLoading.value||verifyViewModel.isLoading.value) {
             AlertDialog(onDismissRequest = { /*TODO*/ }) {
                 CustomLoader()
             }
@@ -232,9 +241,9 @@ Scaffold(modifier = Modifier.blur(if(viewModel.commingsoonSheet.value)10.dp else
 
 
         LaunchedEffect(key1 = true) {
-            if (viewModel.cardList.value?.isEmpty() == true) {
+
                 viewModel.cardDataByCustomer()
-            }
+
         }
 
         viewModel.cardList.value?.let {
@@ -263,66 +272,60 @@ Scaffold(modifier = Modifier.blur(if(viewModel.commingsoonSheet.value)10.dp else
 
                                             if (it != null) {
 
-                                                            //hotlist
-                                                            val hotlist =
-                                                                it.isHotlist
-                                                            val isBlock =
-                                                                it.isBlock
-                                                            val isActive =
-                                                               it.isActive
-                                                SDK_CONSTANTS.isBlock=isBlock
-                                                SDK_CONSTANTS.isActive=isActive
-                                                SDK_CONSTANTS.isHotList=it.isHotlist
+                                                //hotlist
+                                                val hotlist =
+                                                    it.isHotlist
+                                                val isBlock =
+                                                    it.isBlock
+                                                val isActive =
+                                                    it.isActive
+                                                if(SDK_CONSTANTS.isBlock==null) {
 
-
-                                                SDK_CONSTANTS.isVirtual=it.isVirtual
-//                                                SDK_CONSTANTS.cardUser=it.nameonCard
-//                                                SDK_CONSTANTS.expiryDate= it.viewcardresponseWrapper.expiryDate.toString()
-//                                                SDK_CONSTANTS.availbalance= it.viewcardresponseWrapper?.balance?:""
-                                                SDK_CONSTANTS.cardType=it.cardType
-                                                SDK_CONSTANTS.isPinSet=it.isPINSet?:false
-                                                            //
-                                                            if (!hotlist) {
-                                                                if (isBlock) {
-                                                                    viewModel.isBlocked.value =
-                                                                        true
-                                                                    viewModel.destination.value =
-                                                                        Destination.ENTER_OTP_SCREEN
+                                                    SDK_CONSTANTS.isBlock = isBlock
+                                                    SDK_CONSTANTS.isActive = isActive
+                                                    SDK_CONSTANTS.isHotList = it.isHotlist
+                                                }
+                                                if (SDK_CONSTANTS.isHotList!=true) {
+                                                    if (SDK_CONSTANTS.isBlock==true) {
+                                                        viewModel.isBlocked.value =
+                                                            true
+                                                        viewModel.destination.value =
+                                                            Destination.ENTER_OTP_SCREEN
 //                                                                        viewModel.isError.value =
 //                                                                            true
-                                                                    viewModel.errorMessage.value =
-                                                                        "Card is Blocked"
-                                                                    viewModel.destination.value =
-                                                                        Destination.ENTER_OTP_SCREEN
+                                                        viewModel.errorMessage.value =
+                                                            "Card is Blocked"
+                                                        viewModel.destination.value =
+                                                            Destination.ENTER_OTP_SCREEN
 
 
-                                                                } else {
-                                                                    if (isActive) {
+                                                    } else {
+                                                        if (SDK_CONSTANTS.isActive==true) {
 
-                                                                        rootNavController.navigate(
-                                                                            Destination.CARD_MANAGEMENT_SCREEN
-                                                                        )
-                                                                    } else {
-                                                                        viewModel.isError.value =
-                                                                            true
-                                                                        viewModel.errorMessage.value =
-                                                                            "Card is Inactive"
-                                                                        viewModel.destination.value =
-                                                                            Destination.CARD_ACTIVATION_SCREEN
+                                                            rootNavController.navigate(
+                                                                Destination.CARD_MANAGEMENT_SCREEN
+                                                            )
+                                                        } else {
+                                                            viewModel.isError.value =
+                                                                true
+                                                            viewModel.errorMessage.value =
+                                                                "Card is Inactive"
+                                                            viewModel.destination.value =
+                                                                Destination.CARD_ACTIVATION_SCREEN
 
-                                                                    }
-                                                                }
-                                                            } else {
-
-                                                                viewModel.isError.value = true
-                                                                viewModel.errorMessage.value =
-                                                                    "Card is Hot Listed"
-
-
-                                                            }
-
-
+                                                        }
                                                     }
+                                                } else {
+
+                                                    viewModel.isError.value = true
+                                                    viewModel.errorMessage.value =
+                                                        "Card is Hot Listed"
+
+
+                                                }
+
+
+                                            }
 
 
                                         }
@@ -400,13 +403,14 @@ Scaffold(modifier = Modifier.blur(if(viewModel.commingsoonSheet.value)10.dp else
                                                 it.isBlock
                                             val isActive =
                                                 it.isActive
+                                            if(SDK_CONSTANTS.isBlock==null) {
 
-                                            SDK_CONSTANTS.isBlock=isBlock
-                                            SDK_CONSTANTS.isActive=isActive
-                                            SDK_CONSTANTS.isHotList=it.isHotlist
-                                            //
-                                            if (!hotlist) {
-                                                if (isBlock) {
+                                                SDK_CONSTANTS.isBlock = isBlock
+                                                SDK_CONSTANTS.isActive = isActive
+                                                SDK_CONSTANTS.isHotList = it.isHotlist
+                                                }
+                                            if (SDK_CONSTANTS.isHotList!=true) {
+                                                if (SDK_CONSTANTS.isBlock==true) {
                                                     viewModel.isBlocked.value =
                                                         true
                                                     viewModel.destination.value =
@@ -420,7 +424,7 @@ Scaffold(modifier = Modifier.blur(if(viewModel.commingsoonSheet.value)10.dp else
 
 
                                                 } else {
-                                                    if (isActive) {
+                                                    if (SDK_CONSTANTS.isActive==true) {
 
                                                         rootNavController.navigate(
                                                             Destination.CARD_MANAGEMENT_SCREEN

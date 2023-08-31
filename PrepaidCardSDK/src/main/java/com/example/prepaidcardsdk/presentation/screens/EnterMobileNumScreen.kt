@@ -171,7 +171,7 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
     Column(
         Modifier
             .fillMaxSize()
-            .padding(20.dp)
+
             .background(Color.White)
             .blur(if (viewModel.verifyOTPScaffoldState.value) 10.dp else 0.dp)
             .verticalScroll(enabled = true, state = ScrollState(0)), horizontalAlignment = Alignment.CenterHorizontally)

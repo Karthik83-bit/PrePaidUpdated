@@ -66,7 +66,7 @@ composable(Destination.SEND_MONEY_SCREEN){
 
         composable(Destination.VIEW_CARDS_SCREEN){
             val verifyOTPViewModel= hiltViewModel<VerifyOTPViewModel>()
-            ViewCardsScreen(rootNavController, viewModel = hiltViewModel<CardDataViewModel>(),verifyOTPViewModel)
+            ViewCardsScreen(rootNavController, viewModel = hiltViewModel<CardDataViewModel>(), verifyViewModel = verifyOTPViewModel, hiltViewModel<ManageCardViewModel>())
         }
         composable(Destination.CARD_MANAGEMENT_SCREEN){
             CardManagementScreen(rootNavController,

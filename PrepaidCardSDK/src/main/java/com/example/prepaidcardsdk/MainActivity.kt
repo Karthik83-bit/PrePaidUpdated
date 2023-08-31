@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.example.prepaidcardsdk.components.RootView
 import com.example.prepaidcardsdk.presentation.navigation.NavigationController
 import com.example.prepaidcardsdk.ui.theme.PrepaidCardTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,13 +28,18 @@ class MainActivity : ComponentActivity(){
         setContent {
             PrepaidCardTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
+                RootView {
                     val rootNavController = rememberNavController()
                     NavigationController(rootNavController, viewModel = viewModel())
+
                 }
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colorScheme.background
+//                ) {
+//                    val rootNavController = rememberNavController()
+//                    NavigationController(rootNavController, viewModel = viewModel())
+//                }
             }
         }
     }
