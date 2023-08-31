@@ -39,7 +39,7 @@ class RepositoryImplementation @Inject constructor(val apiService: APIService):R
     }
 
     override fun changeCardStatus(otp: String, cardStatus: String): Flow<NetworkResponse<ChangeStatusResponseModel>> {
-        val reqBody= ChangeStatusRequestModel(cardRefId = SDK_CONSTANTS.cardRefId?:"168", cardStatus = cardStatus,otp, mobileNUmber = SDK_CONSTANTS.mobileNumber)
+        val reqBody= ChangeStatusRequestModel(cardRefId = SDK_CONSTANTS.cardRefId?:"168", cardStatus = cardStatus,otp, mobileNumber = SDK_CONSTANTS.mobileNumber)
 
         return handleFlowResponse(call = {apiService.changeStatus(reqBody)},{it})
     }

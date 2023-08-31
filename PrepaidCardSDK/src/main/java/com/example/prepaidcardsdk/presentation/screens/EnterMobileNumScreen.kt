@@ -364,15 +364,8 @@ fun EnterMobileNumScreen(rootNavController: NavHostController, viewModel: Verify
         }, shape = RoundedCornerShape(500.dp), elevation = ButtonDefaults.buttonElevation(20.dp), modifier = Modifier
             .size(80.dp), colors = ButtonDefaults.buttonColors(Color.White)) {
 
-            val lottie by rememberLottieComposition(spec =LottieCompositionSpec.RawRes(R.raw.slide)
 
-            )
-            val startAnim= remember{
-                mutableStateOf(false)
-            }
-
-            val progress by animateLottieCompositionAsState(composition = lottie, iterations = LottieConstants.IterateForever)
-            LottieAnimation(composition = lottie, progress = { progress }, modifier = Modifier.size(80.dp).scale(2f))
+            Text(">", fontFamily = FontFamily(Font(R.font.poppins_black)), color = Color.Black, fontSize = 30.sp)
 
         }
 

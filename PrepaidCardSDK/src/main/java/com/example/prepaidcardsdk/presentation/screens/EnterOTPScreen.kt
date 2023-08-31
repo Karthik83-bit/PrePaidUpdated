@@ -58,6 +58,7 @@ import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.ui.theme.Cultured
 import com.example.prepaidcardsdk.ui.theme.cancelGray
 import com.example.prepaidcardsdk.ui.theme.finocolor
+import com.example.prepaidcardsdk.utils.PARAMS
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -65,49 +66,49 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardViewModel, verifyViewModel: VerifyOTPViewModel) {
+fun EnterOTPScreen(
+    rootNavController: NavHostController,
+    viewModel: ManageCardViewModel,
+    verifyViewModel: VerifyOTPViewModel,
+) {
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
     var context = LocalContext.current
-    var success= remember {
+    var success = remember {
         mutableStateOf(false)
     }
-    var scope= rememberCoroutineScope()
-    val textlist=listOf(
-        remember {
+    var scope = rememberCoroutineScope()
+    val textlist = listOf(remember {
 
-            mutableStateOf(
-                TextFieldValue(
-                    text = "",
-                    selection = TextRange(0)
-                )
-            )},
-        remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = "", selection = TextRange(0)
+            )
+        )
+    }, remember {
 
-            mutableStateOf(
-                TextFieldValue(
-                    text = "",
-                    selection = TextRange(0)
-                )
-            )},
-        remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = "", selection = TextRange(0)
+            )
+        )
+    }, remember {
 
-            mutableStateOf(
-                TextFieldValue(
-                    text = "",
-                    selection = TextRange(0)
-                )
-            )},
-        remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = "", selection = TextRange(0)
+            )
+        )
+    }, remember {
 
-            mutableStateOf(
-                TextFieldValue(
-                    text = "",
-                    selection = TextRange(0)
-                )
-            )}
+        mutableStateOf(
+            TextFieldValue(
+                text = "", selection = TextRange(0)
+            )
+        )
+    }
 
     )
-    val focusRequesterList= listOf<FocusRequester>(
+    val focusRequesterList = listOf<FocusRequester>(
         FocusRequester(),
         FocusRequester(),
         FocusRequester(),
@@ -125,11 +126,11 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
 
     if (verifyViewModel.isError.value) {
         AlertDialog(onDismissRequest = { }) {
-            CustomAlertDialog(verifyViewModel.errorMessage.value){
+            CustomAlertDialog(verifyViewModel.errorMessage.value) {
                 verifyViewModel.isError.value = false
-                if(verifyViewModel.destination.value.isNotEmpty()){
+                if (verifyViewModel.destination.value.isNotEmpty()) {
                     rootNavController.navigate(verifyViewModel.destination.value)
-                    verifyViewModel.destination.value=""
+                    verifyViewModel.destination.value = ""
 
                 }
 
@@ -140,7 +141,7 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
 
         }
     }
-    if(verifyViewModel.isLoading.value){
+    if (verifyViewModel.isLoading.value) {
         AlertDialog(onDismissRequest = { /*TODO*/ }) {
             CustomLoader()
         }
@@ -151,23 +152,23 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
             rootNavController.popBackStack()
         }
     }) {
-        if(viewModel.isError.value){
+        if (viewModel.isError.value) {
             AlertDialog(onDismissRequest = { /*TODO*/ }) {
                 CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
-                    viewModel.isError.value=false
-                    viewModel.errorMessage.value=""
-                    if(viewModel.navDest.value.isNotEmpty()) {
+                    viewModel.isError.value = false
+                    viewModel.errorMessage.value = ""
+                    if (viewModel.navDest.value.isNotEmpty()) {
                         rootNavController.navigate(Destination.VIEW_CARDS_SCREEN) {
                             popUpTo(Destination.VIEW_CARDS_SCREEN)
                         }
 
                     }
-                    viewModel.navDest.value=""
+                    viewModel.navDest.value = ""
                 }
             }
 
         }
-        if(viewModel.isLoading.value){
+        if (viewModel.isLoading.value) {
             AlertDialog(onDismissRequest = { /*TODO*/ }) {
                 CustomLoader()
             }
@@ -178,8 +179,8 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
                 .fillMaxSize()
                 .verticalScroll(enabled = true, state = ScrollState(0))
         ) {
-            val activity= LocalContext.current as Activity
-            val keyBoardcontroller=LocalSoftwareKeyboardController.current
+            val activity = LocalContext.current as Activity
+            val keyBoardcontroller = LocalSoftwareKeyboardController.current
 //            CustomTopBar {rootNavController.navigate(Destination.PAGE_FOURTY_ONE)}
             Column(
                 Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -209,7 +210,7 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
                             if (it.length <= 4) {
                                 viewModel.Otp.value = it
                             }
-                            if(it.length==4){
+                            if (it.length == 4) {
                                 if (keyBoardcontroller != null) {
                                     keyBoardcontroller.hide()
                                 }
@@ -233,37 +234,35 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween
+                        .padding(20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    if (timer.value == 0){
-                        Text(
-                            "Resend Otp",
+                    if (timer.value == 0) {
+                        Text("Resend Otp",
                             fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
                             fontSize = 14.sp,
                             color = Color.Black,
                             fontWeight = FontWeight.ExtraBold,
-                            modifier = Modifier.clickable { verifyViewModel.VerifyOtp {
+                            modifier = Modifier.clickable {
+                                verifyViewModel.VerifyOtp {
 
-                                if (it.status == "0") {
-                                    rootNavController.navigate(Destination.VIEW_CARDS_SCREEN)
-                                    verifyViewModel.verifyOtp.value=""
+                                    if (it.status == "0") {
+                                        rootNavController.navigate(Destination.VIEW_CARDS_SCREEN)
+                                        verifyViewModel.verifyOtp.value = ""
+                                    } else if (verifyViewModel.verifyOtp.value == "") {
+                                        verifyViewModel.isError.value = true
+                                        verifyViewModel.errorMessage.value = "Otp can't be blank."
+                                        verifyViewModel.destination.value = Destination.MPIN_SCREEN
+                                    } else {
+                                        verifyViewModel.isError.value = true
+                                        verifyViewModel.errorMessage.value = it.statusDesc
+                                        verifyViewModel.destination.value = Destination.MPIN_SCREEN
+                                        verifyViewModel.mobilenum.value = ""
+                                        verifyViewModel.verifyOtp.value = ""
+                                    }
                                 }
-                                else if(verifyViewModel.verifyOtp.value == "") {
-                                    verifyViewModel.isError.value =true
-                                    verifyViewModel.errorMessage.value ="Otp can't be blank."
-                                    verifyViewModel.destination.value = Destination.MPIN_SCREEN
-                                }else
-                                {
-                                    verifyViewModel.isError.value = true
-                                    verifyViewModel.errorMessage.value = it.statusDesc
-                                    verifyViewModel.destination.value = Destination.MPIN_SCREEN
-                                    verifyViewModel. mobilenum.value=""
-                                    verifyViewModel.verifyOtp.value=""
-                                }
-                            } }
-                        )
-                    }
-                    else {
+                            })
+                    } else {
                         Text(
                             "Resend Otp",
                             fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
@@ -292,88 +291,84 @@ fun EnterOTPScreen(rootNavController: NavHostController, viewModel: ManageCardVi
                     buttonColor = finocolor,
                     onClick = {
                         textlist.forEach {
-                            viewModel.Otp.value=viewModel.Otp.value+it.value.text
+                            viewModel.Otp.value = viewModel.Otp.value + it.value.text
                         }
-                        if(viewModel.Otp.value.isEmpty()||viewModel.Otp.value.length<4){
-                            viewModel.isError.value=true
-                            viewModel.errorMessage.value="Enter a valid otp"
-                            viewModel.navDest.value=""
+                        if (viewModel.Otp.value.isEmpty() || viewModel.Otp.value.length < 4) {
+                            viewModel.isError.value = true
+                            viewModel.errorMessage.value = "Enter a valid otp"
+                            viewModel.navDest.value = ""
                         }
-                        val status=when{
+                        val status = when {
 
-                            SDK_CONSTANTS.isBlock==true->"unblock"
+                            SDK_CONSTANTS.isBlock == true -> "unblock"
 
-                            SDK_CONSTANTS.isActive==false->"active"
-
-
+                            SDK_CONSTANTS.isActive == false -> "active"
 
 
-                            else->""
+                            else -> ""
                         }
-                        val params=if(status.equals("Active")){
-                            "ACTIVATION_OTP"
+                        val params = if (status.equals("Active")) {
+                            PARAMS.activate
+                        } else {
+                            PARAMS.unblock
                         }
-                        else{
-                            "UNBLOCK_OTP"
-                        }
-                        if(SDK_CONSTANTS.isPinSet!=true){
-                            viewModel.resetPin(pin = viewModel.reenterPin.value, otp = viewModel.Otp.value) {
-                                if(it.status=="0"){
+                        if (SDK_CONSTANTS.isPinSet != true) {
+                            viewModel.resetPin(
+                                pin = viewModel.reenterPin.value,
+                                otp = viewModel.Otp.value
+                            ) {
+                                if (it.status == "0") {
                                     rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN)
-                                }
-                                else{
-                                    viewModel.isError.value=true
-                                    viewModel.errorMessage.value=it.statusDesc
-                                    viewModel.navDest.value=Destination.VIEW_CARDS_SCREEN
+                                } else {
+                                    viewModel.isError.value = true
+                                    viewModel.errorMessage.value = it.statusDesc
+                                    viewModel.navDest.value = Destination.VIEW_CARDS_SCREEN
 
                                 }
                             }
 
-                        }
-                        else{
-                    viewModel.changeCardStatus(viewModel.Otp.value, status = status){
-                        Toast.makeText(context,it.statusDesc,Toast.LENGTH_LONG).show()
-                        if(it.status=="0"){
-                            success.value=true
-                                scope.launch {
-                                    delay(2000)
-success.value=false
-                                }
-                            if(status=="active"){
-                                SDK_CONSTANTS.isActive=true
-                            }
-                            else{
-                                SDK_CONSTANTS.isBlock=false
-                                viewModel.blockCardUI.value=false
-                            }
-
-
-
-                            if(SDK_CONSTANTS.isActive==true){
-                                if(SDK_CONSTANTS.isPinSet==true){
-                                    rootNavController.navigate(Destination.GENERATE_PIN_SCREEN){
-
+                        } else {
+                            viewModel.changeCardStatus(viewModel.Otp.value, status = status) {
+                                Toast.makeText(context, it.statusDesc, Toast.LENGTH_LONG).show()
+                                if (it.status == "0") {
+                                    success.value = true
+                                    scope.launch {
+                                        delay(2000)
+                                        success.value = false
                                     }
+                                    if (status == "active") {
+                                        SDK_CONSTANTS.isActive = true
+                                    } else {
+                                        SDK_CONSTANTS.isBlock = false
+                                        viewModel.blockCardUI.value = false
+                                    }
+
+
+
+                                    if (SDK_CONSTANTS.isActive == true) {
+                                        if (SDK_CONSTANTS.isPinSet == true) {
+                                            rootNavController.navigate(Destination.GENERATE_PIN_SCREEN) {
+
+                                            }
+                                        }
+
+                                        rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN) {
+                                            this.popUpTo(Destination.VIEW_CARDS_SCREEN)
+                                        }
+                                    } else {
+                                        rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN) {
+                                            this.popUpTo(Destination.VIEW_CARDS_SCREEN)
+                                        }
+                                    }
+
+                                } else {
+                                    viewModel.isError.value = true
+                                    viewModel.errorMessage.value = it.statusDesc
+                                    viewModel.navDest.value = Destination.VIEW_CARDS_SCREEN
                                 }
 
-                                rootNavController.navigate(Destination.CARD_MANAGEMENT_SCREEN){
-                                    this.popUpTo(Destination.VIEW_CARDS_SCREEN)
-                                }
                             }
-                            else{
-                                rootNavController.navigate(Destination.CARD_ACTIVATION_SCREEN){
-                                    this.popUpTo(Destination.VIEW_CARDS_SCREEN)
-                                }
-                            }
-
                         }
-                        else{
-                            viewModel.isError.value=true
-                            viewModel.errorMessage.value=it.statusDesc
-                            viewModel.navDest.value=Destination.VIEW_CARDS_SCREEN
-                        }
-
-                    }}
                     },
 
                     )
@@ -381,9 +376,9 @@ success.value=false
                     text = "CANCEL",
                     buttonColor = cancelGray,
                     onClick = {
-                              rootNavController.navigate(Destination.VIEW_CARDS_SCREEN){
-                                  popUpTo(Destination.VIEW_CARDS_SCREEN)
-                              }
+                        rootNavController.navigate(Destination.VIEW_CARDS_SCREEN) {
+                            popUpTo(Destination.VIEW_CARDS_SCREEN)
+                        }
                     },
 
                     )
