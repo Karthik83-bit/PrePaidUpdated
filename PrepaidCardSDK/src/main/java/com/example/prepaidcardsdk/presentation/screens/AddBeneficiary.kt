@@ -109,8 +109,11 @@ fun AddBene(rootnavController: NavHostController, beneficiaryViewModel: Benefici
                     else if (enterIFSC.value.isEmpty()){
                         ifscError.value = true
                         ifscErrorMessage.value = "Please Enter the IFSC Code"
+                    }else if (!enterIFSC.value.matches(ifscPattern.toRegex())) {
+                        ifscError.value = true
+                        ifscErrorMessage.value ="Please Enter a Valid IFSC code"
                     }
-                    else if (enterBene.value.isNotEmpty() && enterBank.value.isNotEmpty() && accNum.value.isNotEmpty() && accNum.value.length in 9..18 && reEnterAccNum.value.isNotEmpty() && enterIFSC.value.isNotEmpty()) {
+                    else if (enterBene.value.isNotEmpty() && enterBank.value.isNotEmpty() && accNum.value.isNotEmpty() && accNum.value.length in 9..18 && reEnterAccNum.value.isNotEmpty() && enterIFSC.value.isNotEmpty() && enterIFSC.value.matches(ifscPattern.toRegex()) && enterIFSC.value.length == 11) {
                         beneficiaryViewModel.list.add(
                             BeneNameResp(
                                 enterBene.value,
