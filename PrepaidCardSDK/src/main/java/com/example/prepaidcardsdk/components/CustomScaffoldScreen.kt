@@ -9,6 +9,9 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.EaseOutBack
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
@@ -41,6 +44,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,6 +54,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
@@ -70,10 +75,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 
 import com.example.prepaidcard.utils.STRING
 import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.components.CustomAlertDialog
+import com.example.prepaidcardsdk.components.CustomSheetAlertDialog
 import com.example.prepaidcardsdk.components.Timer
 //import com.example.prepaidcardsdk.components.CustomSucessDialog
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
@@ -785,6 +796,7 @@ fun CustomScaffoldScreen(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EnterOTPPinSheet(state: MutableState<String>,
+                     manageViewModel: ManageCardViewModel?=null,
                      verifyViewModel: VerifyOTPViewModel,
                      oncancel: () -> Unit,
                      onSubmit: () -> Unit) {
@@ -810,8 +822,53 @@ fun EnterOTPPinSheet(state: MutableState<String>,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
-            Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
+            Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            if (manageViewModel != null) {
+                if (verifyViewModel.isLoading.value||manageViewModel.isLoading.value ) {
+                    val rotate = remember {
+                        mutableStateOf(false)
+                    }
+                    LaunchedEffect(key1 = true) {
+                        rotate.value = true
+                    }
+                    val rotat = animateFloatAsState(
+                        targetValue = if (rotate.value) 360f else 0f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(
+                                2000, 0, easing = EaseOutBack
+                            ),
+                        )
+                    )
+
+
+                    val animation by rememberLottieComposition(
+                        spec = LottieCompositionSpec.RawRes(
+                            R.raw.whitesq_loader
+                        )
+                    )
+                    val progress by animateLottieCompositionAsState(
+                        composition = animation, iterations = LottieConstants.IterateForever
+                    )
+
+                    LottieAnimation(
+                        composition = animation,
+                        progress = { progress },
+                        modifier = Modifier
+                            .size(90.dp)
+
+                    )
+
+
+        //
+        //                CustomSheetAlertDialog(errMsg = manageViewModel.errorMessage.value) {
+        //                    manageViewModel.isError.value=false
+        //                    oncancel()
+        //                }
+                }
+            }
+
+
             val comt = LocalContext.current
             Text(
                 text = "Enter OTP",

@@ -27,6 +27,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +43,8 @@ import com.example.prepaidcardsdk.R
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -164,12 +167,18 @@ val pindontMatch=remember{
                                 it >= viewModel.enterPin.value.length -> "0"
                                 else -> viewModel.enterPin.value[it]
                             }
-                            Box(
+                            Card(
+                                colors = CardDefaults.cardColors(White),
+                                elevation = CardDefaults.cardElevation(50.dp),
+                                modifier=
                                 Modifier
                                     .width(70.dp)
                                     .height(50.dp)
-                                    .background(Color.LightGray, shape = RoundedCornerShape(5.dp)), contentAlignment = Alignment.Center) {
-                                Text(char.toString())
+                              ) {
+                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                                    Text(char.toString())
+                                }
+
                             }
 
                         }
@@ -201,12 +210,18 @@ val pindontMatch=remember{
                                 it >= viewModel.reenterPin.value.length -> "0"
                                 else -> "*"
                             }
-                            Box(
+                            Card(
+                                colors = CardDefaults.cardColors(White),
+                                elevation = CardDefaults.cardElevation(50.dp),
+                                modifier=
                                 Modifier
                                     .width(70.dp)
                                     .height(50.dp)
-                                    .background(Color.LightGray, shape = RoundedCornerShape(5.dp)), contentAlignment = Alignment.Center) {
-                                Text(char.toString())
+                                   ) {
+                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                                    Text(char.toString())
+                                }
+
                             }
 
                         }
@@ -317,7 +332,7 @@ val pindontMatch=remember{
             initOffset = 1000,
             color = if (viewModel.isError.value) Red.copy(0.6f) else light_finocolor
         ) {
-            EnterOTPPinSheet(state = viewModel.otp,verifyOTPViewModel,
+            EnterOTPPinSheet(state = viewModel.otp, verifyViewModel = verifyOTPViewModel,
                 oncancel = { verifyOTPViewModel.verifyOTPScaffoldState.value = false }) {
 
               manageViewModel.resetPin(pin = viewModel.reenterPin.value,otp=viewModel.otp.value){

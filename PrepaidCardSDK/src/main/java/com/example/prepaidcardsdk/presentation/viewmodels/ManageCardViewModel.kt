@@ -194,8 +194,9 @@ class ManageCardViewModel @Inject constructor(val resetPinUseCase: ResetPinUseCa
         }, onSuccess = {
 
             if(it!=null){
+                onSucesss(it)
                 if(it.status=="0") {
-                    onSucesss(it)
+
 
                     if (status.equals("block")) {
                         SDK_CONSTANTS.isBlock = true

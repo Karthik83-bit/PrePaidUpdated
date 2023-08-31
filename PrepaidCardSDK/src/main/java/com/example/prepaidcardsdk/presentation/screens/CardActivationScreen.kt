@@ -49,10 +49,13 @@ import com.example.prepaidcard.components.CustomTopBar
 import com.example.prepaidcard.components.EnterOTPPinSheet
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.components.CustomAlertDialog
+import com.example.prepaidcardsdk.components.CustomLoader
 import com.example.prepaidcardsdk.presentation.viewmodels.CardActivationViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.ui.theme.light_finocolor
+import com.example.prepaidcardsdk.utils.PARAMS
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 
 
@@ -80,61 +83,60 @@ Box(){
         var textFieldSize by remember { mutableStateOf(Size.Zero) }
         if (viewModel.isError.value) {
             AlertDialog(onDismissRequest = { }) {
-                Card(Modifier.size(300.dp)) {
-                    Box(Modifier.fillMaxSize()) {
 
-                        Column(
-                            Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.SpaceBetween,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Row(){
-                                Box(Modifier.fillMaxWidth(0.8f))
-                               IconButton(onClick = {
-                                   viewModel.isError.value = false
-                                   viewModel.cardActivationToggleState.value=false
-
-                               }) {
-                                   Icon(painterResource(id = R.drawable.baseline_close_24),"")
-                               }
-                            }
-                            Icon(painterResource(id = R.drawable.baseline_error_24), contentDescription = "",Modifier.fillMaxSize(0.5f), tint = Color.Red)
-                            Box(
-                                Modifier
-                                    .weight(2f)
-                                    .padding(5.dp), contentAlignment = Alignment.Center){
-                                Text(viewModel.errorMessage.value.replaceFirstChar {
-                                                                                   it.uppercase()
-                                }, fontWeight = FontWeight(400), style = TextStyle(
-                                fontSize = 20.sp
-
-                                ),)
-
-                            }
-//                            Button(onClick = {
-//                                viewModel.isError.value = false
-//                                viewModel.cardActivationToggleState.value=false
+                CustomAlertDialog(errMsg = viewModel.errorMessage.value) {
+                    viewModel.isError.value=false
+                    viewModel.errorMessage.value=""
+                }
+//                Card(Modifier.size(300.dp)) {
+//                    Box(Modifier.fillMaxSize()) {
 //
-//                            }, shape = RoundedCornerShape(5.dp)) {
-//                                Text("ok")
+//                        Column(
+//                            Modifier.fillMaxSize(),
+//                            verticalArrangement = Arrangement.SpaceBetween,
+//                            horizontalAlignment = Alignment.CenterHorizontally
+//                        ) {
+//                            Row(){
+//                                Box(Modifier.fillMaxWidth(0.8f))
+//                               IconButton(onClick = {
+//                                   viewModel.isError.value = false
+//                                   viewModel.cardActivationToggleState.value=false
+//
+//                               }) {
+//                                   Icon(painterResource(id = R.drawable.baseline_close_24),"")
+//                               }
+//                            }
+//                            Icon(painterResource(id = R.drawable.baseline_error_24), contentDescription = "",Modifier.fillMaxSize(0.5f), tint = Color.Red)
+//                            Box(
+//                                Modifier
+//                                    .weight(2f)
+//                                    .padding(5.dp), contentAlignment = Alignment.Center){
+//                                Text(viewModel.errorMessage.value.replaceFirstChar {
+//                                                                                   it.uppercase()
+//                                }, fontWeight = FontWeight(400), style = TextStyle(
+//                                fontSize = 20.sp
+//
+//                                ),)
 //
 //                            }
-                        }
-
-                    }
-
-                }
+////                            Button(onClick = {
+////                                viewModel.isError.value = false
+////                                viewModel.cardActivationToggleState.value=false
+////
+////                            }, shape = RoundedCornerShape(5.dp)) {
+////                                Text("ok")
+////
+////                            }
+//                        }
+//
+//                    }
+//
+//                }
 
             }
-        } else if (viewModel.isLoading.value) {
+        } else if (viewModel.isLoading.value||verifyOTPViewModel.isLoading.value) {
             AlertDialog(onDismissRequest = { }) {
-                Card(Modifier.size(300.dp)) {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
-
-                    }
-
-                }
+              CustomLoader()
 
             }
         }
@@ -163,7 +165,7 @@ val state= remember {
                 ) {
                     viewModel.cardActivationToggleState.value =
                         !viewModel.cardActivationToggleState.value
-                    verifyOTPViewModel.sendOtp(SDK_CONSTANTS.mobileNumber, params = "ACTIVATION_OTP"){
+                    verifyOTPViewModel.sendOtp(SDK_CONSTANTS.mobileNumber, params = PARAMS.activate){
                         if(it.status=="0"){
                             verifyOTPViewModel.verifyOTPScaffoldState.value=true
                         }
@@ -182,29 +184,27 @@ val state= remember {
 
                 }
 
+                FlipCard(name = "", cardno = "****-****-****-****", exp ="***" , avlbaln ="*****" , cardfaceState = remember {
+                    mutableStateOf(CardFace.Front)
+                } , startanim = remember {
+                    mutableStateOf(true)
+                } ) {
 
+                }
             }
         }
     }
-CustomSheetWrap(state = remember {
-    mutableStateOf(true)
-}) {
-    FlipCard(name = "", cardno = "****-****-****-****", exp ="***" , avlbaln ="*****" , cardfaceState = remember {
-        mutableStateOf(CardFace.Front)
-    } , startanim = remember {
-        mutableStateOf(false)
-    } ) {
 
-    }
 
-}
+
+
     CustomSheetWrap(
         state = verifyOTPViewModel.verifyOTPScaffoldState,
 
         initOffset = 1000,
         color = if (viewModel.isError.value) Color.Red.copy(0.6f) else light_finocolor
     ) {
-        EnterOTPPinSheet(state = verifyOTPViewModel.verifyOtp,verifyOTPViewModel,
+        EnterOTPPinSheet(state = verifyOTPViewModel.verifyOtp,manageCardViewModel,verifyOTPViewModel,
             oncancel = { verifyOTPViewModel.verifyOTPScaffoldState.value = false }) {
 
             manageCardViewModel.changeCardStatus(otp = verifyOTPViewModel.verifyOtp.value, status = "active"){
@@ -221,6 +221,7 @@ CustomSheetWrap(state = remember {
                 else{
                     viewModel.isError.value=true
                     viewModel.errorMessage.value=it.statusDesc
+                    verifyOTPViewModel.verifyOTPScaffoldState.value=false
                 }
             }
 

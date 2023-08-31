@@ -106,6 +106,7 @@ import com.example.prepaidcardsdk.ui.theme.Resetcolor
 import com.example.prepaidcardsdk.ui.theme.cdback
 import com.example.prepaidcardsdk.ui.theme.finocolor
 import com.example.prepaidcardsdk.ui.theme.light_finocolor
+import com.example.prepaidcardsdk.utils.PARAMS
 import com.example.prepaidcardsdk.utils.SDK_CONSTANTS
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -398,7 +399,7 @@ fun CardManagementScreen(
 
                 val animation by rememberLottieComposition(
                     spec = LottieCompositionSpec.RawRes(
-                        R.raw.cardscan
+                        R.raw.whitesq_loader
                     )
                 )
                 val progress by animateLottieCompositionAsState(
@@ -410,7 +411,7 @@ fun CardManagementScreen(
                     progress = { progress },
                     modifier = Modifier
                         .size(90.dp)
-                        .rotate(rotat.value)
+
                 )
 
 
@@ -914,11 +915,11 @@ fun CardManagementScreen(
                                     ) {
                                         var params=if (SDK_CONSTANTS.isBlock == true) {
 
-                                            "UNBLOCK_OTP"
+                                            PARAMS.unblock
 
                                         } else {
 
-                                            "Temporary_Block_OTP"
+                                            PARAMS.block
                                         }
                                         verifyViewModel.sendOtp(num=SDK_CONSTANTS.mobileNumber,params=params){
                                             if(it.status=="0"){
@@ -1094,49 +1095,49 @@ fun CardManagementScreen(
 
 
                                             }
-                                            Row(
-                                                Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.SpaceBetween,
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-
-                                                Text(
-                                                    text = "POS",
-                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                    fontSize = 18.sp,
-                                                    fontWeight = FontWeight(700),
-                                                )
-                                                Spacer(modifier = Modifier.width(20.dp))
-                                                Column {
-                                                    Row(
-                                                        modifier = Modifier
-                                                            .fillMaxWidth()
-                                                            .padding(horizontal = 10.dp)
-                                                            .graphicsLayer {
-                                                                translationY = -30f
-                                                            },
-                                                        horizontalArrangement = Arrangement.SpaceBetween
-                                                    ) {
-
-                                                        Text(
-                                                            "0",
-                                                            fontWeight = FontWeight(900),
-                                                            fontSize = 10.sp,
-                                                            color = finocolor
-                                                        )
-
-
-                                                        Text(
-                                                            "10000",
-                                                            fontWeight = FontWeight(900),
-                                                            fontSize = 10.sp,
-                                                            color = finocolor
-                                                        )
-                                                    }
-                                                }
-
-
-                                            }
+//                                            Row(
+//                                                Modifier.fillMaxWidth(),
+//                                                horizontalArrangement = Arrangement.SpaceBetween,
+//                                                verticalAlignment = Alignment.CenterVertically
+//                                            ) {
+//
+//                                                Text(
+//                                                    text = "POS",
+//                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+//                                                    fontSize = 18.sp,
+//                                                    fontWeight = FontWeight(700),
+//                                                )
+//                                                Spacer(modifier = Modifier.width(20.dp))
+//                                                Column {
+//                                                    Row(
+//                                                        modifier = Modifier
+//                                                            .fillMaxWidth()
+//                                                            .padding(horizontal = 10.dp)
+//                                                            .graphicsLayer {
+//                                                                translationY = -30f
+//                                                            },
+//                                                        horizontalArrangement = Arrangement.SpaceBetween
+//                                                    ) {
+//
+//                                                        Text(
+//                                                            "0",
+//                                                            fontWeight = FontWeight(900),
+//                                                            fontSize = 10.sp,
+//                                                            color = finocolor
+//                                                        )
+//
+//
+//                                                        Text(
+//                                                            "10000",
+//                                                            fontWeight = FontWeight(900),
+//                                                            fontSize = 10.sp,
+//                                                            color = finocolor
+//                                                        )
+//                                                    }
+//                                                }
+//
+//
+//                                            }
                                             Column(
                                                 Modifier.fillMaxWidth(),
                                                 horizontalAlignment = Alignment.Start,
@@ -1243,50 +1244,50 @@ fun CardManagementScreen(
 
 
                                             }
-                                            Row(
-                                                Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.SpaceBetween,
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-
-                                                Text(
-                                                    text = "ECOM",
-                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                                    fontSize = 18.sp,
-                                                    fontWeight = FontWeight(700),
-                                                )
-                                                Spacer(modifier = Modifier.width(10.dp))
-
-                                                Column {
-                                                    Row(
-                                                        modifier = Modifier
-                                                            .fillMaxWidth()
-                                                            .padding(horizontal = 10.dp)
-                                                            .graphicsLayer {
-                                                                translationY = -30f
-                                                            },
-                                                        horizontalArrangement = Arrangement.SpaceBetween
-                                                    ) {
-
-                                                        Text(
-                                                            "0",
-                                                            fontWeight = FontWeight(900),
-                                                            fontSize = 10.sp,
-                                                            color = finocolor
-                                                        )
-
-
-                                                        Text(
-                                                            "10000",
-                                                            fontWeight = FontWeight(900),
-                                                            fontSize = 10.sp,
-                                                            color = finocolor
-                                                        )
-                                                    }
-                                                }
-
-
-                                            }
+//                                            Row(
+//                                                Modifier.fillMaxWidth(),
+//                                                horizontalArrangement = Arrangement.SpaceBetween,
+//                                                verticalAlignment = Alignment.CenterVertically
+//                                            ) {
+//
+//                                                Text(
+//                                                    text = "ECOM",
+//                                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+//                                                    fontSize = 18.sp,
+//                                                    fontWeight = FontWeight(700),
+//                                                )
+//                                                Spacer(modifier = Modifier.width(10.dp))
+//
+//                                                Column {
+//                                                    Row(
+//                                                        modifier = Modifier
+//                                                            .fillMaxWidth()
+//                                                            .padding(horizontal = 10.dp)
+//                                                            .graphicsLayer {
+//                                                                translationY = -30f
+//                                                            },
+//                                                        horizontalArrangement = Arrangement.SpaceBetween
+//                                                    ) {
+//
+//                                                        Text(
+//                                                            "0",
+//                                                            fontWeight = FontWeight(900),
+//                                                            fontSize = 10.sp,
+//                                                            color = finocolor
+//                                                        )
+//
+//
+//                                                        Text(
+//                                                            "10000",
+//                                                            fontWeight = FontWeight(900),
+//                                                            fontSize = 10.sp,
+//                                                            color = finocolor
+//                                                        )
+//                                                    }
+//                                                }
+//
+//
+//                                            }
                                             Column(
                                                 Modifier.fillMaxWidth(),
                                                 horizontalAlignment = Alignment.Start,
