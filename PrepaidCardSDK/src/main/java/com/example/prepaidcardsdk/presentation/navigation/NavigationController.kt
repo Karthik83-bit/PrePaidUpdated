@@ -43,6 +43,7 @@ import com.example.prepaidcardsdk.presentation.viewmodels.SendMoneyViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.VerifyOTPViewModel
 import com.example.prepaidcardsdk.screens.ViewCardsScreen
 import com.example.prepaidcardsdk.presentation.screens.AddBene
+import com.example.prepaidcardsdk.presentation.screens.MyApp
 import com.example.prepaidcardsdk.presentation.screens.beneSelectScreen
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -90,6 +91,10 @@ composable(Destination.SEND_MONEY_SCREEN){
             CardActivationScreen(rootNavController,viewModel= hiltViewModel<CardActivationViewModel>(), verifyOTPViewModel = hiltViewModel<VerifyOTPViewModel>(), manageCardViewModel = hiltViewModel<ManageCardViewModel>())
 
         }
+        composable(Destination.TRANSACTION_STATEMENTS_HISTORY){
+
+            Screen26(rootNavController,it.arguments?.getString("filter"))
+        }
         composable(Destination.TRANSACTION_STATEMENTS_HISTORY+"/{filter}", arguments = listOf(navArgument("filter"){type=
             NavType.StringType})){
 
@@ -111,6 +116,9 @@ composable(Destination.SEND_MONEY_SCREEN){
 
         composable(Destination.TRANSACTION_INFO){
             TransactionInfo(rootNavController)
+        }
+        composable(Destination.DOWNLOAD_PDF){
+            MyApp()
         }
     }
 }

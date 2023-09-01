@@ -17,5 +17,6 @@ const val APPLY_CARD_SCREEN = "PageFourteen"
     const val SEND_MONEY_SCREEN="SendMoney"
     const val SELECT_BENE ="SelectBeneficiary"
     const val ADD_BENE ="AddBene"
+    const val DOWNLOAD_PDF="DownloadTransactions"
 
 }

@@ -1,6 +1,9 @@
 package com.example.prepaidcard.screens
 
 
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
 import android.os.Build
 
 import androidx.annotation.RequiresApi
@@ -17,6 +20,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -31,6 +35,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDatePickerState
 
 import androidx.compose.runtime.Composable
@@ -39,14 +44,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
 
 //import com.example.prepaidcard.R
@@ -55,6 +63,7 @@ import com.example.prepaidcard.components.CustomTransactionItem
 import com.example.prepaidcard.utils.Destination
 import com.example.prepaidcard.utils.FilterOption
 import com.example.prepaidcardsdk.R
+import com.example.prepaidcardsdk.components.AepsRequireDataFromApp
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -85,6 +94,7 @@ fun Screen26(rootNavController: NavHostController, string: String?) {
     val filterPosition = remember {
         mutableStateOf(Offset(0f, 0f))
     }
+    val context= LocalContext.current
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun convertMillisToDate(millis: Long, formatPattern: String = "yyyy-MM-dd HH:mm:ss"): String {
@@ -97,9 +107,41 @@ fun Screen26(rootNavController: NavHostController, string: String?) {
         return dateFormat.format(date).split(" ")[0]
     }
 
-Scaffold(topBar = { CustomTopBar {
-    rootNavController.popBackStack()
-}}) {
+Scaffold(topBar = { TopAppBar(title = {Text("TransactionHistory")}, actions = {
+    IconButton(onClick = {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if ((ActivityCompat.checkSelfPermission(
+                    context, Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED) && (ActivityCompat.checkSelfPermission(
+                    context, Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED)
+            ) {
+                ActivityCompat.requestPermissions(
+                    context as Activity, AepsRequireDataFromApp.permissionsList, 1
+                )
+                return@IconButton
+            }
+        } else {
+            if ((ActivityCompat.checkSelfPermission(
+                    context, Manifest.permission.READ_MEDIA_IMAGES
+                ) != PackageManager.PERMISSION_GRANTED) && (ActivityCompat.checkSelfPermission(
+                    context, Manifest.permission.READ_MEDIA_VIDEO
+                ) != PackageManager.PERMISSION_GRANTED)
+                && (ActivityCompat.checkSelfPermission(
+                    context, Manifest.permission.READ_MEDIA_AUDIO
+                ) != PackageManager.PERMISSION_GRANTED)
+            ) {
+                ActivityCompat.requestPermissions(
+                    context as Activity, AepsRequireDataFromApp.permissionsList1, 1
+                )
+                return@IconButton
+            }
+        }
+        rootNavController.navigate(Destination.DOWNLOAD_PDF)
+    }, modifier = Modifier.size(40.dp)) {
+        Icon(painter = painterResource(id = R.drawable.download), contentDescription = "", modifier = Modifier.size(20.dp))
+    }
+}) }) {
     Column(modifier = Modifier.padding(it)) {
 
 

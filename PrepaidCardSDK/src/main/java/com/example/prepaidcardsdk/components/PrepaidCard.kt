@@ -1,5 +1,8 @@
 package com.example.newui.components
 
+import android.graphics.drawable.Icon
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.animateFloatAsState
@@ -20,9 +23,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.Icon
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,8 +46,11 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -52,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.prepaidcardsdk.R
 import com.example.prepaidcardsdk.presentation.viewmodels.GeneratePinViewModel
 import com.example.prepaidcardsdk.presentation.viewmodels.ManageCardViewModel
 import com.example.prepaidcardsdk.ui.theme.Resetcolor
@@ -71,6 +81,7 @@ enum class CardFace(val angle: Float) {
     abstract val next: CardFace
 }
 
+@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun FlipCard(
     name: String,
@@ -102,6 +113,9 @@ fun FlipCard(
             easing = EaseInOut,
         )
     )
+
+
+
     val scale= animateFloatAsState(
         targetValue = if(startanim.value)0.98f else 1.3f,
         animationSpec = tween(
@@ -127,12 +141,15 @@ fun FlipCard(
     val cont = LocalContext.current
 
     Card(
-        modifier = Modifier.zIndex(100f).blur(blur).background(Color.Black.copy(scaleparam*1))
+        modifier = Modifier
+            .zIndex(100f)
+            .blur(blur)
+            .background(Color.Black.copy(scaleparam * 1))
             .rotate(rotate.value)
-            .scale(scale.value-scaleparam)
+            .scale(scale.value - scaleparam)
             .graphicsLayer {
-                translationX =translate.value
-                translationY=translatep
+                translationX = translate.value
+                translationY = translatep
             },
         colors = CardDefaults.cardColors(Color.Transparent)
     ) {
@@ -185,6 +202,7 @@ fun FlipCard(
 }
 
 
+@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun PrepaidCard(
     clickable: Modifier,
@@ -215,13 +233,16 @@ fun PrepaidCard(
             .padding(5.dp)
             .drawBehind {
 
-            }.background(Color.Transparent,
+            }
+            .background(
+                Color.Transparent,
                 RoundedCornerShape(10.dp)
             ),
         contentAlignment = Alignment.Center
 
 
     ) {
+        val clipBoard= LocalClipboardManager.current
 
 
 //            Canvas(modifier = Modifier
@@ -239,7 +260,9 @@ fun PrepaidCard(
         Image(
             modifier = Modifier
                 .width(1200.dp)
-                .height(280.dp).background(Color.Transparent,
+                .height(280.dp)
+                .background(
+                    Color.Transparent,
                     RoundedCornerShape(10.dp)
                 ),
 
@@ -335,19 +358,34 @@ fun PrepaidCard(
                         )
                         Spacer(modifier = Modifier.height(5.dp))
 //                    Text(if(manageCardViewModel.cardDataMask.value||SDK_CONSTANTS.cardNumber.isEmpty())"${cardFormat(cardno)}" else cardSpaceFormat(cardno), color = Color.Black, style = TextStyle(letterSpacing = 7.sp),fontWeight = FontWeight(600), fontSize = 18.sp,)
-                        Text(
+                        SelectionContainer() {
+                            Row(){
+                            Text(
 
-                                if (manageCardViewModel.cardDataMask.value) cardFormat(
+                                if (!manageCardViewModel.cardDataMask.value) cardFormat(
                                     cardno
                                 ) else cardSpaceFormat(cardno)
 //                            "XXXX_XXXX_XXXX_123"
-                            ,
-                            color = Resetcolor,
-                            style = TextStyle(letterSpacing = 4.sp),
-                            fontWeight = FontWeight(600),
-                            fontSize = 18.sp,
-                            fontFamily = FontFamily(Font(com.example.prepaidcardsdk.R.font.poppins_regular))
-                        )
+                                ,
+                                color = Resetcolor,
+                                style = TextStyle(letterSpacing = 4.sp),
+                                fontWeight = FontWeight(600),
+                                fontSize = 18.sp,
+                                fontFamily = FontFamily(Font(com.example.prepaidcardsdk.R.font.poppins_regular))
+                            )
+                                if (!manageCardViewModel.cardDataMask.value) {
+                                    IconButton(onClick = {
+                                        clipBoard.setText(AnnotatedString(cardno))
+                                    }) {
+                                        Icon(
+                                            painterResource(id = R.drawable.baseline_content_copy_24),
+                                            ""
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
 
 
                     }
